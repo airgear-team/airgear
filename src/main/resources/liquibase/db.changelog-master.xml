@@ -110,5 +110,10 @@
                 onUpdate="CASCADE"/>
     </changeSet>
 
+    <changeSet id="addDefaultRoles" author="ilya.deus">
+        <sql>INSERT INTO role (name, description) VALUES ('USER', 'This is role for simple users')</sql>
+        <sql>INSERT INTO role (name, description) VALUES ('MODERATOR', 'This is role for moderator')</sql>
+        <sql>INSERT INTO role (name, description) VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
+    </changeSet>
 
 </databaseChangeLog>
