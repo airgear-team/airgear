@@ -1,5 +1,6 @@
 package com.airgear.model;
 
+import com.airgear.model.goods.Goods;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column
@@ -37,10 +38,10 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLES",
             joinColumns = {
-            @JoinColumn(name = "USER_ID")
+                    @JoinColumn(name = "USER_ID")
             },
             inverseJoinColumns = {
-            @JoinColumn(name = "ROLE_ID") })
+                    @JoinColumn(name = "ROLE_ID")})
     private Set<Role> roles;
 
     @JsonIgnore

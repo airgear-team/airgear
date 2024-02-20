@@ -1,7 +1,7 @@
 package com.airgear.controller;
 
 import com.airgear.exception.ForbiddenException;
-import com.airgear.model.Goods;
+import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
