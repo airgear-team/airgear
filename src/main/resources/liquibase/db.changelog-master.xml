@@ -24,6 +24,9 @@
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 

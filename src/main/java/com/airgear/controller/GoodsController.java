@@ -2,6 +2,7 @@ package com.airgear.controller;
 
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.Goods;
+import com.airgear.model.GoodsStatus;
 import com.airgear.model.User;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
@@ -74,7 +75,8 @@ public class GoodsController {
         if(user.getId()!=goods.getUser().getId() && !user.getRoles().contains("ADMIN")){
             throw new ForbiddenException("It is not your goods");
         }
-        goodsService.deleteGoodsById(goodsId);
+        goods.setGoodsStatus(GoodsStatus.DELETED);
+
         return ResponseEntity.noContent().build();
     }
 

@@ -39,4 +39,8 @@ public class Goods {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @NotNull(message = "Goods status cannot be null")
+    @JoinColumn(name = "status", nullable = false)
+    private GoodsStatus goodsStatus;
+
 }
