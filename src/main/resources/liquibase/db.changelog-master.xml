@@ -63,6 +63,12 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
+            <column name="created_at" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
     </changeSet>
 
