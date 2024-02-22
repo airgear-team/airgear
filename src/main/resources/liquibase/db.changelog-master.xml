@@ -116,4 +116,18 @@
         <sql>INSERT INTO role (name, description) VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
     </changeSet>
 
+    <!-- Add columns created_at, last_modified, deleted_at for Goods Table -->
+    <changeSet id="addColumnGoodsDates" author="Olena">
+        <addColumn tableName="goods">
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+            <column name="deleted_at" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
