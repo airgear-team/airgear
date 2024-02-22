@@ -1,6 +1,6 @@
 package com.airgear.repository;
 
-import com.airgear.model.Goods;
+import com.airgear.model.goods.Goods;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Set;

@@ -1,6 +1,6 @@
 package com.airgear.service;
 
-import com.airgear.model.Goods;
+import com.airgear.model.goods.Goods;
 
 import java.util.Set;
 

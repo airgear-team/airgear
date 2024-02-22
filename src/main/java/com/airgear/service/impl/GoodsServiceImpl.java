@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.model.Goods;
+import com.airgear.model.goods.Goods;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;

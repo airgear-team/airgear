@@ -1,14 +1,14 @@
-package com.airgear.model;
+package com.airgear.model.goods;
 
 /**
- * The {@code GoodsCategory} enumeration represents different categories of goods.
+ * The {@code Category} enumeration represents different categories of goods.
  * Each constant corresponds to a specific category, and can be used to classify goods in a system.
  * <p>
  *
  * @author Oleksandr Tuleninov
  * @version 01
  */
-public enum GoodsCategory {
+public enum Category {
 
     REAL_ESTATE,
     TRANSPORT_AND_SPECIAL_EQUIPMENT,

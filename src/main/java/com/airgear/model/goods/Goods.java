@@ -1,5 +1,6 @@
-package com.airgear.model;
+package com.airgear.model.goods;
 
+import com.airgear.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,6 @@ public class Goods {
 
     @NotNull(message = "Goods category cannot be null")
     @JoinColumn(name = "category", nullable = false)
-    private GoodsCategory goodsCategory;
+    private Category category;
 
 }
