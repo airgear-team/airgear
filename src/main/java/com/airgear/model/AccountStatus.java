@@ -1,6 +1,5 @@
 package com.airgear.model;
 
-import com.airgear.model.enums.AccountStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,7 @@ public class AccountStatus {
     private long id;
 
     @Column
-    private Enum<AccountStatusEnum> statusName;
+    private String statusName;
 
     @Column
     private String description;

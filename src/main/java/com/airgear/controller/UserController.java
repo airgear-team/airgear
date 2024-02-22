@@ -3,8 +3,6 @@ package com.airgear.controller;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.Goods;
 import com.airgear.model.User;
-import com.airgear.dto.UserDto;
-import com.airgear.model.enums.AccountStatusEnum;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
@@ -55,11 +53,11 @@ public class UserController {
     @DeleteMapping(value = "/{username}/deleteAccount")
     public ResponseEntity<String> deleteAccount(Authentication auth, @PathVariable String username) {
         User user = userService.findByUsername(auth.getName());
-        if (!user.getUsername().equals(username) || user.getRoles().contains("ADMIN")) {
-            throw new ForbiddenException("Insufficient privileges");
+        if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> "ADMIN".equals(role.getName()))) {
+            userService.setAccountStatus(username, accountStatusRepository.findByStatusName("INACTIVE").getId());
+            return ResponseEntity.noContent().build();
         }
-        userService.setAccountStatus(username, accountStatusRepository.findByStatusName(AccountStatusEnum.INACTIVE).getId());
-        return ResponseEntity.noContent().build();
+        throw new ForbiddenException("Insufficient privileges");
     }
 
 }

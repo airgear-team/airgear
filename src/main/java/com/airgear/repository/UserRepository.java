@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
 
-
     @Modifying
     @Transactional
-    @Query(value = "UPDATE user SET account_status_id = ? where id = ?", nativeQuery = true)
-    void setAccountStatusId(@Param("id") long userId, @Param("account_status_id") long accountStatusId);
+    @Query(value = "UPDATE user SET account_status_id = :accountStatusId WHERE id = :userId", nativeQuery = true)
+    int setAccountStatusId(@Param("accountStatusId") long accountStatusId, @Param("userId") long userId);
+
 }
