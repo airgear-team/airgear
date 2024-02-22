@@ -1,4 +1,4 @@
-package com.airgear.model;
+package com.airgear.model.goods;
 
 /**
  * The {@code GoodsStatus} enumeration representing the status of goods.
@@ -10,6 +10,8 @@ package com.airgear.model;
  */
 public enum GoodsStatus {
 
-    ACTIVE, INACTIVE, DELETED
+    ACTIVE,
+    INACTIVE,
+    DELETED
 
 }

@@ -1,5 +1,6 @@
-package com.airgear.model;
+package com.airgear.model.goods;
 
+import com.airgear.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
