@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -78,4 +81,23 @@ public class GoodsController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/random-goods")
+    public List<Goods> getRandomGoods() {
+        int goodsQuantity = 9;
+        List<Goods> allProducts = goodsService.getAllGoods();
+        List<Goods> randomProducts = new ArrayList<>();
+
+        Random random = new Random();
+        int numProductsToSelect = Math.min(allProducts.size(), goodsQuantity);
+
+        while (randomProducts.size() < numProductsToSelect) {
+            int randomIndex = random.nextInt(allProducts.size());
+            Goods randomProduct = allProducts.get(randomIndex);
+
+            if (!randomProducts.contains(randomProduct)) {
+                randomProducts.add(randomProduct);
+            }
+        }
+        return randomProducts;
+    }
 }
