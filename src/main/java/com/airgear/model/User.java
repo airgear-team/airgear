@@ -47,4 +47,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Goods> goods;
 
+    private long accountStatusId;
+
 }
