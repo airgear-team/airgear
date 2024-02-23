@@ -35,6 +35,17 @@ public class Goods {
     @Size(min = 3, max = 255, message = "Location length must be between 3 and 255 characters")
     private String location;
 
+    @Embedded
+    private Deposit deposit;
+
+    @Embeddable
+    class Deposit {
+        private BigDecimal amount;
+        private Currency currency;
+
+        enum Currency {UAH, EUR, USD}
+    }
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
