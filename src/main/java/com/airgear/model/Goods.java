@@ -31,6 +31,9 @@ public class Goods {
     @NotNull(message = "Price cannot be null")
     private BigDecimal price;
 
+    @NotNull(message = "Weekends price cannot be null")
+    private BigDecimal weekendsPrice;
+
     @NotBlank(message = "Location cannot be blank")
     @Size(min = 3, max = 255, message = "Location length must be between 3 and 255 characters")
     private String location;
