@@ -7,11 +7,12 @@ import java.util.List;
 
 public interface UserService {
 
+    void setAccountStatus(String username, long accountStatusId);
+
     User save(UserDto user);
 
     List<User> findAll();
 
     User findByUsername(String username);
 
-    void setAccountStatus(String username, long accountStatusId);
 }

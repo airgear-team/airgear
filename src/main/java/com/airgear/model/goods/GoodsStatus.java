@@ -1,5 +1,11 @@
 package com.airgear.model.goods;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
 /**
  * The {@code GoodsStatus} enumeration representing the status of goods.
  * Goods can have one of the following statuses: ACTIVE, INACTIVE, or DELETED.
@@ -8,10 +14,17 @@ package com.airgear.model.goods;
  * @author Oleksandr Tuleninov
  * @version 01
  */
-public enum GoodsStatus {
+@Data
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+public class GoodsStatus {
 
-    ACTIVE,
-    INACTIVE,
-    DELETED
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private long id;
+
+    @Column
+    private String name;
 
 }

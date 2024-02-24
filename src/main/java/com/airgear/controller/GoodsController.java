@@ -5,6 +5,7 @@ import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.User;
+import com.airgear.repository.GoodsStatusRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -24,6 +26,8 @@ public class GoodsController {
     private UserService userService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private GoodsStatusRepository goodsStatusRepository;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/featured")
@@ -36,8 +40,11 @@ public class GoodsController {
     @PostMapping
     public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) {
         User user = userService.findByUsername(auth.getName());
-        goods.setUser(user);
-        Goods savedGoods = goodsService.saveGoods(goods.getGoodsFromDto());
+        Goods newGoods = goods.getGoodsFromDto();
+        newGoods.setUser(user);
+        GoodsStatus status = goodsStatusRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("GoodsStatus not found"));
+        newGoods.setGoodsStatus(status);
+        Goods savedGoods = goodsService.saveGoods(newGoods);
         return savedGoods;
     }
 
@@ -76,8 +83,8 @@ public class GoodsController {
         if(user.getId()!=goods.getUser().getId() && !user.getRoles().contains("ADMIN")){
             throw new ForbiddenException("It is not your goods");
         }
-        goods.setGoodsStatus(GoodsStatus.DELETED);
-
+        goods.setGoodsStatus(new GoodsStatus(2, ""));
+        goodsService.updateGoods(goods);
         return ResponseEntity.noContent().build();
     }
 

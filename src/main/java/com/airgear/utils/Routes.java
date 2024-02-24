@@ -1,4 +1,4 @@
-package com.airgear;
+package com.airgear.utils;
 
 /**
  * The {@code Routes} class contains the routes for application.

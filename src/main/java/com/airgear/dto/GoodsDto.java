@@ -2,6 +2,7 @@ package com.airgear.dto;
 
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
+import com.airgear.model.goods.GoodsStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ public class GoodsDto {
         goods.setPrice(price);
         goods.setLocation(location);
         goods.setUser(user);
-
         return goods;
     }
+
 }

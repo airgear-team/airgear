@@ -1,6 +1,7 @@
 package com.airgear.controller;
 
 import com.airgear.exception.ForbiddenException;
+import com.airgear.model.AccountStatus;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
 import com.airgear.repository.AccountStatusRepository;
@@ -50,11 +51,11 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @DeleteMapping(value = "/{username}/deleteAccount")
+    @DeleteMapping(value = "/{username}")
     public ResponseEntity<String> deleteAccount(Authentication auth, @PathVariable String username) {
         User user = userService.findByUsername(auth.getName());
         if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> "ADMIN".equals(role.getName()))) {
-            userService.setAccountStatus(username, accountStatusRepository.findByStatusName("INACTIVE").getId());
+            userService.setAccountStatus(username, 2);
             return ResponseEntity.noContent().build();
         }
         throw new ForbiddenException("Insufficient privileges");

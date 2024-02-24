@@ -38,7 +38,6 @@ public class Goods {
     @NotNull(message = "Price cannot be null")
     private BigDecimal price;
 
-    @NotNull(message = "Weekends price cannot be null")
     private BigDecimal weekendsPrice;
 
     @NotBlank(message = "Location cannot be blank")
@@ -60,11 +59,15 @@ public class Goods {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @NotNull(message = "Goods status cannot be null")
-    @JoinColumn(name = "status", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "goods_goods_status",
+            joinColumns = {
+                    @JoinColumn(name = "goods_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "goods_status_id")})
     private GoodsStatus goodsStatus;
 
-    @NotBlank(message = "The phone number must not be blank")
     @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
     @Pattern(regexp = "^\\+380\\d{9}$", message = "The phone number must be in the format +380XXXXXXXXX")
     @JoinColumn(name = "phone")

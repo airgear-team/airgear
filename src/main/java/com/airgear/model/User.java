@@ -55,6 +55,8 @@ public class User {
     @Column(name = "deleted_at")
     private OffsetDateTime deleteAt;
 
-    private long accountStatusId;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_status_id")
+    private AccountStatus accountStatus;
 
 }
