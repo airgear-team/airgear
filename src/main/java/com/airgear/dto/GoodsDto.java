@@ -1,6 +1,6 @@
 package com.airgear.dto;
 
-import com.airgear.model.Goods;
+import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;

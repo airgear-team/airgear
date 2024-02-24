@@ -1,6 +1,6 @@
 package com.airgear.data.generator;
 import com.airgear.dto.UserDto;
-import com.airgear.model.Goods;
+import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.UserRepository;

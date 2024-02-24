@@ -174,12 +174,12 @@
   
     <!-- Add created_at, deleted_at fields to the User Table -->
     <changeSet id="1.0.9" author="Oleksandr Tuleninov">
-        <addColumn tableName="users">
+        <addColumn tableName="user">
             <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
-        <addColumn tableName="users">
+        <addColumn tableName="user">
             <column name="deleted_at" type="TIMESTAMPTZ">
                 <constraints nullable="true"/>
             </column>

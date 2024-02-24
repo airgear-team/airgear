@@ -1,8 +1,6 @@
 package com.airgear.service.impl;
 
 import com.airgear.model.goods.Goods;
-import com.airgear.dto.GoodsDto;
-import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
@@ -32,8 +30,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Goods saveGoods(@Valid GoodsDto goodsDto) {
-        Goods goods = goodsDto.getGoodsFromDto();
+    public Goods saveGoods(@Valid Goods goods) {
         goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }

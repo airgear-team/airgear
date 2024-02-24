@@ -37,7 +37,7 @@ public class GoodsController {
     public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) {
         User user = userService.findByUsername(auth.getName());
         goods.setUser(user);
-        Goods savedGoods = goodsService.saveGoods(goods);
+        Goods savedGoods = goodsService.saveGoods(goods.getGoodsFromDto());
         return savedGoods;
     }
 

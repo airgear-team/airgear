@@ -1,8 +1,6 @@
 package com.airgear.service;
 
 import com.airgear.model.goods.Goods;
-import com.airgear.dto.GoodsDto;
-import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +13,7 @@ public interface GoodsService {
 
     void deleteGoodsById(Long id);
 
-    Goods saveGoods(GoodsDto goods);
+    Goods saveGoods(Goods goods);
 
     Goods updateGoods(Goods goods);
 
