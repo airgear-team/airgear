@@ -2,10 +2,13 @@ package com.airgear.service.impl;
 
 import com.airgear.model.goods.Goods;
 import com.airgear.dto.GoodsDto;
-import com.airgear.model.Goods;
+import com.airgear.model.goods.Goods;
+import com.airgear.model.goods.response.GoodsResponse;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -19,7 +22,7 @@ public class GoodsServiceImpl implements GoodsService {
     private GoodsRepository goodsRepository;
 
     @Override
-    public Goods getGoodsById(Long id){
+    public Goods getGoodsById(Long id) {
         return goodsRepository.getReferenceById(id);
     }
 
@@ -45,6 +48,12 @@ public class GoodsServiceImpl implements GoodsService {
     public Set<Goods> getAllGoodsByUsername(String username) {
         Set<Goods> goodsSet = goodsRepository.getGoodsByUserName(username);
         return goodsSet;
+    }
+
+    @Override
+    public Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName) {
+        return goodsRepository.findAllByNameLikeIgnoreCase(pageable, goodsName)
+                .map(GoodsResponse::fromGoods);
     }
 
 }
