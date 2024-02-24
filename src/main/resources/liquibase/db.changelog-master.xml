@@ -212,4 +212,42 @@
         </createTable>
     </changeSet>
 
+        <!-- Create Favorite_Goods Join Table -->
+        <changeSet id="1.1.1" author="vladyslav.haivoronskyi">
+            <createTable tableName="user_favorite_goods">
+                <column name="user_id" type="BIGINT">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+                <column name="goods_id" type="BIGINT">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+            </createTable>
+        </changeSet>
+
+        <!-- Add Foreign Key Constraint for User_Favorite_Goods Table -->
+        <changeSet id="1.1.2" author="vladyslav.haivoronskyi">
+            <addForeignKeyConstraint
+                    baseTableName="user_favorite_goods"
+                    baseColumnNames="user_id"
+                    constraintName="fk_user_favorite_goods_user"
+                    referencedTableName="user"
+                    referencedColumnNames="id"
+                    onDelete="CASCADE"
+                    onUpdate="CASCADE"/>
+            <addForeignKeyConstraint
+                    baseTableName="user_favorite_goods"
+                    baseColumnNames="goods_id"
+                    constraintName="fk_user_favorite_goods_goods"
+                    referencedTableName="goods"
+                    referencedColumnNames="id"
+                    onDelete="CASCADE"
+                    onUpdate="CASCADE"/>
+        </changeSet>
+
+    <changeSet id="addDefaultGoods" author="vladyslav.haivoronskyi">
+        <sql>INSERT INTO goods (name, description, price, location, user_id, created_at)
+             VALUES ('DefaultName', 'DefaultDescription', 100.00, 'DefaultLocation', 1, NOW());
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

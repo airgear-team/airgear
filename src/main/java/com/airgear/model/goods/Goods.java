@@ -2,6 +2,7 @@ package com.airgear.model.goods;
 
 import com.airgear.model.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Data
 @Entity
@@ -87,4 +89,13 @@ public class Goods {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime deletedAt;
 
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_FAVORITE_GOODS",
+            joinColumns = {
+                    @JoinColumn(name = "GOODS_ID")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "USER_ID")})
+    private Set<User> usersAddedToFavorite;
 }
