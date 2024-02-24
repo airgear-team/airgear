@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -65,6 +66,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(role);
         newUser.setRoles(roleSet);
+        newUser.setCreatedAt(OffsetDateTime.now());
         return userRepository.save(newUser);
     }
 
