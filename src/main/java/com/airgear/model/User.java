@@ -54,4 +54,6 @@ public class User {
     @Column(name = "deleted_at")
     private OffsetDateTime deleteAt;
 
+    private long accountStatusId;
+
 }

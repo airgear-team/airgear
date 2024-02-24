@@ -118,6 +118,45 @@
                 onUpdate="CASCADE"/>
     </changeSet>
 
+    <!-- Add account_status_id field in Table User-->
+    <changeSet id="1.0.6" author="vladyslav.haivoronskyi">
+        <addColumn tableName="user">
+            <column name="account_status_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Create Account_Status Table -->
+    <changeSet id="1.0.7" author="vladyslav.haivoronskyi">
+        <createTable tableName="account_status">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="status_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Add Foreign Key Constraint for Account_Status Table -->
+    <changeSet id="1.0.8" author="vladyslav.haivoronskyi">
+        <addForeignKeyConstraint
+                baseTableName="user"
+                baseColumnNames="account_status_id"
+                constraintName="fk_user_account_status"
+                referencedTableName="account_status"
+                referencedColumnNames="id"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"/>
+    </changeSet>
+
+    <changeSet id="addDefaultStatus" author="vladyslav.haivoronskyi">
+        <sql>INSERT INTO account_status (status_name, description) VALUES ('ACTIVE', 'This is status for active users')</sql>
+        <sql>INSERT INTO account_status (status_name, description) VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
+    </changeSet>
+
     <changeSet id="addDefaultRoles" author="ilya.deus">
         <sql>INSERT INTO role (name, description) VALUES ('USER', 'This is role for simple users')</sql>
         <sql>INSERT INTO role (name, description) VALUES ('MODERATOR', 'This is role for moderator')</sql>

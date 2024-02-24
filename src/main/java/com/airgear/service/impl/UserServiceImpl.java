@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.airgear.exception.ForbiddenException;
+import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.model.Role;
 import com.airgear.model.User;
@@ -27,6 +30,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AccountStatusRepository accountStatusRepository;
 
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
@@ -59,8 +65,18 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public void setAccountStatus(String username, long accountStatusId) {
+        User user = userRepository.findByUsername(username);
+        if (user == null || user.getAccountStatusId() == accountStatusId) {
+            throw new ForbiddenException("User not found or was already deleted");
+        }
+        userRepository.setAccountStatusId(accountStatusId, user.getId());
+    }
+
+    @Override
     public User save(UserDto user) {
         User newUser = user.getUserFromDto();
+        newUser.setAccountStatusId(accountStatusRepository.findByStatusName("ACTIVE").getId());
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         Role role = roleService.findByName("USER");
         Set<Role> roleSet = new HashSet<>();
@@ -69,5 +85,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         newUser.setCreatedAt(OffsetDateTime.now());
         return userRepository.save(newUser);
     }
+
 
 }

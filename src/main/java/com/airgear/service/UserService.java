@@ -13,4 +13,5 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    void setAccountStatus(String username, long accountStatusId);
 }
