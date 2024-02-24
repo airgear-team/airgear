@@ -143,18 +143,6 @@
         <sql>INSERT INTO account_status (status_name, description) VALUES ('ACTIVE', 'This is status for active users')</sql>
         <sql>INSERT INTO account_status (status_name, description) VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
     </changeSet>
-
-
-    <changeSet id="addMapTableUserAndAccountStatus" author="ilya.deus">
-        <createTable tableName="user_account_status">
-            <column name="user_id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="account_status_id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-        </createTable>
-    </changeSet>
   
       <!-- Add Phone to the Goods Table -->
     <changeSet id="1.0.7" author="Oleksandr Tuleninov">

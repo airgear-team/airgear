@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.airgear.exception.ForbiddenException;
-import com.airgear.model.AccountStatus;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.model.Role;
