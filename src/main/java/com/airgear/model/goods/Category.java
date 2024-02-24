@@ -1,23 +1,31 @@
 package com.airgear.model.goods;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.Objects;
+
 /**
- * The {@code Category} enumeration represents different categories of goods.
- * Each constant corresponds to a specific category, and can be used to classify goods in a system.
+ * The {@code Category} Represents a category entity in the database.
  * <p>
  *
  * @author Oleksandr Tuleninov
  * @version 01
  */
-public enum Category {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "category")
+public class Category {
 
-    REAL_ESTATE,
-    TRANSPORT_AND_SPECIAL_EQUIPMENT,
-    TECH_AND_ELECTRONICS,
-    CLOTHING_AND_ACCESSORIES,
-    RECREATION_EQUIPMENT,
-    TOOLS_AND_EQUIPMENT,
-    SPORTS_EQUIPMENT,
-    BEAUTY_AND_HEALTH,
-    EVENT_GOODS
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(nullable = false)
+    private String name;
 
 }

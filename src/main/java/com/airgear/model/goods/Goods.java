@@ -40,8 +40,8 @@ public class Goods {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @NotNull(message = "Goods category cannot be null")
-    @JoinColumn(name = "category", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
 }
