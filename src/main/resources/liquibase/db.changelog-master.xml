@@ -186,4 +186,13 @@
         </addColumn>
     </changeSet>
 
+    <!-- Add Goods Status to the Goods Table -->
+    <changeSet id="1.0.8" author="Oleksandr Tuleninov">
+        <addColumn tableName="goods">
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

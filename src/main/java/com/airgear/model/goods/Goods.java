@@ -1,5 +1,6 @@
-package com.airgear.model;
+package com.airgear.model.goods;
 
+import com.airgear.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -53,6 +54,10 @@ public class Goods {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @NotNull(message = "Goods status cannot be null")
+    @JoinColumn(name = "status", nullable = false)
+    private GoodsStatus goodsStatus;
 
     @NotBlank(message = "The phone number must not be blank")
     @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
