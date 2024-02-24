@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
@@ -49,5 +50,11 @@ public class Goods {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @NotBlank(message = "The phone number must not be blank")
+    @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
+    @Pattern(regexp = "^\\+380\\d{9}$", message = "The phone number must be in the format +380XXXXXXXXX")
+    @JoinColumn(name = "phone")
+    private String phoneNumber;
 
 }

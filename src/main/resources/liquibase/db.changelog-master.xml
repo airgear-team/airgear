@@ -116,4 +116,13 @@
         <sql>INSERT INTO role (name, description) VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
     </changeSet>
 
+    <!-- Add Phone to the Goods Table -->
+    <changeSet id="1.0.7" author="Oleksandr Tuleninov">
+        <addColumn tableName="goods">
+            <column name="phone" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
