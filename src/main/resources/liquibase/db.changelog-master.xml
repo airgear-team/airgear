@@ -27,6 +27,14 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="Add_weekends_price" author="Oleksandr Panchenko">
+        <addColumn tableName="goods">
+            <column name="weekends_price" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
     <!-- Create Role Table -->
     <changeSet id="1.0.1" author="ilya.deus">
         <createTable tableName="role">
@@ -115,15 +123,24 @@
         <sql>INSERT INTO role (name, description) VALUES ('MODERATOR', 'This is role for moderator')</sql>
         <sql>INSERT INTO role (name, description) VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
     </changeSet>
-
+  
+      <!-- Add Phone to the Goods Table -->
+    <changeSet id="1.0.7" author="Oleksandr Tuleninov">
+        <addColumn tableName="goods">
+            <column name="phone" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+  
     <!-- Add created_at, deleted_at fields to the User Table -->
     <changeSet id="1.0.9" author="Oleksandr Tuleninov">
-        <addColumn tableName="user">
+        <addColumn tableName="users">
             <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
-        <addColumn tableName="user">
+        <addColumn tableName="users">
             <column name="deleted_at" type="TIMESTAMPTZ">
                 <constraints nullable="true"/>
             </column>

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
@@ -31,12 +32,32 @@ public class Goods {
     @NotNull(message = "Price cannot be null")
     private BigDecimal price;
 
+    @NotNull(message = "Weekends price cannot be null")
+    private BigDecimal weekendsPrice;
+
     @NotBlank(message = "Location cannot be blank")
     @Size(min = 3, max = 255, message = "Location length must be between 3 and 255 characters")
     private String location;
 
+    @Embedded
+    private Deposit deposit;
+
+    @Embeddable
+    class Deposit {
+        private BigDecimal amount;
+        private Currency currency;
+
+        enum Currency {UAH, EUR, USD}
+    }
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @NotBlank(message = "The phone number must not be blank")
+    @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
+    @Pattern(regexp = "^\\+380\\d{9}$", message = "The phone number must be in the format +380XXXXXXXXX")
+    @JoinColumn(name = "phone")
+    private String phoneNumber;
 
 }
