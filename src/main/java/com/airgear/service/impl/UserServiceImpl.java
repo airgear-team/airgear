@@ -85,6 +85,4 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         newUser.setCreatedAt(OffsetDateTime.now());
         return userRepository.save(newUser);
     }
-
-
 }
