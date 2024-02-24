@@ -1,5 +1,6 @@
 package com.airgear.controller;
 
+import com.airgear.dto.GoodsDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
@@ -33,7 +34,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
-    public Goods createGoods(Authentication auth, @RequestBody Goods goods) {
+    public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) {
         User user = userService.findByUsername(auth.getName());
         goods.setUser(user);
         Goods savedGoods = goodsService.saveGoods(goods);
@@ -63,7 +64,7 @@ public class GoodsController {
         if (updatedGoods.getLocation() != null) {
             existingGoods.setLocation(updatedGoods.getLocation());
         }
-        Goods updatedGoodsEntity = goodsService.saveGoods(existingGoods);
+        Goods updatedGoodsEntity = goodsService.updateGoods(existingGoods);
         return ResponseEntity.ok(updatedGoodsEntity);
     }
 
