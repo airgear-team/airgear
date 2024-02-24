@@ -82,22 +82,7 @@ public class GoodsController {
     }
 
     @GetMapping("/random-goods")
-    public List<Goods> getRandomGoods() {
-        int goodsQuantity = 9;
-        List<Goods> allGoods = goodsService.getAllGoods();
-        List<Goods> randomGoods = new ArrayList<>();
-
-        Random random = new Random();
-        int numProductsToSelect = Math.min(allGoods.size(), goodsQuantity);
-
-        while (randomGoods.size() < numProductsToSelect) {
-            int randomIndex = random.nextInt(allGoods.size());
-            Goods randomProduct = allGoods.get(randomIndex);
-
-            if (!randomGoods.contains(randomProduct)) {
-                randomGoods.add(randomProduct);
-            }
-        }
-        return randomGoods;
+    public List<Goods> getRandomGoods(@RequestParam(defaultValue = "9") int goodsQuantity) {
+        return goodsService.getRandomGoods(goodsQuantity);
     }
 }

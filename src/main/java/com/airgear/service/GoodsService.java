@@ -12,4 +12,5 @@ public interface GoodsService {
     Goods saveGoods(Goods goods);
     Set<Goods> getAllGoodsByUsername(String username);
     List<Goods> getAllGoods();
+    List<Goods> getRandomGoods(int goodsQuantity);
 }

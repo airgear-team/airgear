@@ -37,11 +37,13 @@ public class GoodsServiceImpl implements GoodsService {
         Set<Goods> goodsSet = goodsRepository.getGoodsByUserName(username);
         return goodsSet;
     }
-
     @Override
     public List<Goods> getAllGoods() {
         List<Goods> goodsList = goodsRepository.findAll();
         return goodsList;
     }
-
+    @Override
+    public List<Goods> getRandomGoods(int goodsQuantity) {
+        return goodsRepository.getRandomGoods(goodsQuantity);
+    }
 }
