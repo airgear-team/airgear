@@ -153,17 +153,22 @@
     </changeSet>
 
     <changeSet id="addDefaultStatus" author="vladyslav.haivoronskyi">
-        <sql>INSERT INTO account_status (status_name, description) VALUES ('ACTIVE', 'This is status for active users')</sql>
-        <sql>INSERT INTO account_status (status_name, description) VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
+        <sql>INSERT INTO account_status (status_name, description)
+             VALUES ('ACTIVE', 'This is status for active users')</sql>
+        <sql>INSERT INTO account_status (status_name, description)
+             VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
     </changeSet>
 
     <changeSet id="addDefaultRoles" author="ilya.deus">
-        <sql>INSERT INTO role (name, description) VALUES ('USER', 'This is role for simple users')</sql>
-        <sql>INSERT INTO role (name, description) VALUES ('MODERATOR', 'This is role for moderator')</sql>
-        <sql>INSERT INTO role (name, description) VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('USER', 'This is role for simple users')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('MODERATOR', 'This is role for moderator')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
     </changeSet>
-  
-      <!-- Add Phone to the Goods Table -->
+
+    <!-- Add Phone to the Goods Table -->
     <changeSet id="1.0.7" author="Oleksandr Tuleninov">
         <addColumn tableName="goods">
             <column name="phone" type="VARCHAR(255)">
@@ -171,15 +176,15 @@
             </column>
         </addColumn>
     </changeSet>
-  
+
     <!-- Add created_at, deleted_at fields to the User Table -->
     <changeSet id="1.0.9" author="Oleksandr Tuleninov">
-        <addColumn tableName="users">
+        <addColumn tableName="user">
             <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
-        <addColumn tableName="users">
+        <addColumn tableName="user">
             <column name="deleted_at" type="TIMESTAMPTZ">
                 <constraints nullable="true"/>
             </column>
@@ -194,5 +199,40 @@
             </column>
         </addColumn>
     </changeSet>
+    <!-- Creating the user_reviews table -->
+    <changeSet id="1.0.10" author="Opanasenko-Mykhailo">
+        <createTable tableName="user_reviews">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="reviewer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reviewed_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rating" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="user_reviews"
+                baseColumnNames="reviewer_id"
+                referencedTableName="user"
+                referencedColumnNames="id" constraintName="fk_reviewer_id"/>
+        <addForeignKeyConstraint
+                baseTableName="user_reviews"
+                baseColumnNames="reviewed_user_id"
+                referencedTableName="user"
+                referencedColumnNames="id" constraintName="fk_reviewed_user_id"/>
+    </changeSet>
+
 
 </databaseChangeLog>
