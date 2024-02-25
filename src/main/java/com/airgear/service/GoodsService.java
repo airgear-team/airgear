@@ -21,4 +21,6 @@ public interface GoodsService {
 
     Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName);
 
+    void saveGoodsView(String ip, Long userId, Goods goods);
+
 }

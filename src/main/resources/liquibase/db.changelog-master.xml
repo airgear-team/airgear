@@ -152,7 +152,7 @@
             </column>
         </addColumn>
     </changeSet>
-  
+
     <!-- Add created_at, deleted_at fields to the User Table -->
     <changeSet id="1.0.9" author="Oleksandr Tuleninov">
         <addColumn tableName="user">
@@ -244,10 +244,39 @@
                     onUpdate="CASCADE"/>
         </changeSet>
 
-    <changeSet id="addDefaultGoods" author="vladyslav.haivoronskyi">
-        <sql>INSERT INTO goods (name, description, price, location, user_id, created_at)
-             VALUES ('DefaultName', 'DefaultDescription', 100.00, 'DefaultLocation', 1, NOW());
-        </sql>
+<!--    <changeSet id="addDefaultGoods" author="vladyslav.haivoronskyi">-->
+<!--        <sql>INSERT INTO goods (name, description, price, location, user_id, created_at)-->
+<!--             VALUES ('DefaultName', 'DefaultDescription', 100.00, 'DefaultLocation', 1, NOW());-->
+<!--        </sql>-->
+<!--    </changeSet>-->
+
+    <changeSet id="addGoodsView" author="vladyslav.haivoronskyi">
+        <createTable tableName="goods_view">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ip" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 
+    <changeSet id="addGoodsViewForeignKey" author="vladyslav.haivoronskyi">
+        <addForeignKeyConstraint baseTableName="goods_view"
+                                 baseColumnNames="goods_id"
+                                 constraintName="fk_goods_view_goods_id"
+                                 referencedTableName="goods"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+    </changeSet>
 </databaseChangeLog>
