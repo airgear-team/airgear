@@ -1,12 +1,8 @@
 package com.airgear.model.goods;
 
 import com.airgear.model.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.*;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -15,14 +11,15 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"user", "usersAddedToFavorite"})
+@ToString(exclude = {"user", "usersAddedToFavorite"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Goods {
 
     @Id
@@ -57,9 +54,11 @@ public class Goods {
         enum Currency {UAH, EUR, USD}
     }
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "goods_goods_status",
