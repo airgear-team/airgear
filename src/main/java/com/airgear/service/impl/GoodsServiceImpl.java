@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Service(value = "goodsService")
@@ -21,7 +22,8 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods getGoodsById(Long id) {
-        return goodsRepository.getReferenceById(id);
+        Optional<Goods> goodsOptional = goodsRepository.findById(id);
+        return goodsOptional.orElse(null);
     }
 
     @Override

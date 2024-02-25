@@ -8,6 +8,7 @@ import com.airgear.model.User;
 import com.airgear.repository.GoodsStatusRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
+@Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/goods")
@@ -49,6 +51,21 @@ public class GoodsController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/{goodsId}")
+    public ResponseEntity<Goods> getGoodsById(Authentication auth, @PathVariable Long goodsId) {
+        log.info("auth name : {}", auth.getName());
+        Goods goods = goodsService.getGoodsById(goodsId);
+        if (goods == null) {
+            throw new ForbiddenException("Goods not found");
+        }
+        if (!goods.getGoodsStatus().getName().equals("ACTIVE")) {
+            throw new ForbiddenException("Goods was deleted");
+        }
+
+        return ResponseEntity.ok(goods);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PutMapping("/{goodsId}")
     public ResponseEntity<Goods> updateGoods(
             Authentication auth,
@@ -77,16 +94,17 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{goodsId}")
-    public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId){
+    public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId) {
         User user = userService.findByUsername(auth.getName());
         Goods goods = goodsService.getGoodsById(goodsId);
-        if(user.getId()!=goods.getUser().getId() && !user.getRoles().contains("ADMIN")){
+        if (user.getId() != goods.getUser().getId() && !user.getRoles().contains("ADMIN")) {
             throw new ForbiddenException("It is not your goods");
         }
         goods.setGoodsStatus(new GoodsStatus(2, ""));
         goodsService.updateGoods(goods);
         return ResponseEntity.noContent().build();
     }
+
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("addToFavorites/{goodsId}")
     public ResponseEntity<Goods> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
