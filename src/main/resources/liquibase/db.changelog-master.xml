@@ -119,9 +119,12 @@
     </changeSet>
 
     <changeSet id="addDefaultRoles" author="ilya.deus">
-        <sql>INSERT INTO role (name, description) VALUES ('USER', 'This is role for simple users')</sql>
-        <sql>INSERT INTO role (name, description) VALUES ('MODERATOR', 'This is role for moderator')</sql>
-        <sql>INSERT INTO role (name, description) VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('USER', 'This is role for simple users')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('MODERATOR', 'This is role for moderator')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
     </changeSet>
 
     <!-- Create Account_Status Table -->
@@ -140,11 +143,13 @@
     </changeSet>
 
     <changeSet id="addDefaultStatus" author="vladyslav.haivoronskyi">
-        <sql>INSERT INTO account_status (status_name, description) VALUES ('ACTIVE', 'This is status for active users')</sql>
-        <sql>INSERT INTO account_status (status_name, description) VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
+        <sql>INSERT INTO account_status (status_name, description)
+             VALUES ('ACTIVE', 'This is status for active users')</sql>
+        <sql>INSERT INTO account_status (status_name, description)
+             VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
     </changeSet>
-  
-      <!-- Add Phone to the Goods Table -->
+
+    <!-- Add Phone to the Goods Table -->
     <changeSet id="1.0.7" author="Oleksandr Tuleninov">
         <addColumn tableName="goods">
             <column name="phone" type="VARCHAR(255)">
@@ -195,9 +200,12 @@
     </changeSet>
 
     <changeSet id="addDefaultGoodsStatus" author="vladyslav.haivoronskyi">
-        <sql>INSERT INTO goods_status (name) VALUES ('ACTIVE')</sql>
-        <sql>INSERT INTO goods_status (name) VALUES ('INACTIVE')</sql>
-        <sql>INSERT INTO goods_status (name) VALUES ('DELETED')</sql>
+        <sql>INSERT INTO goods_status (name)
+             VALUES ('ACTIVE')</sql>
+        <sql>INSERT INTO goods_status (name)
+             VALUES ('INACTIVE')</sql>
+        <sql>INSERT INTO goods_status (name)
+             VALUES ('DELETED')</sql>
     </changeSet>
 
     <!-- Create User_Roles Join Table -->
@@ -212,37 +220,37 @@
         </createTable>
     </changeSet>
 
-        <!-- Create Favorite_Goods Join Table -->
-        <changeSet id="1.1.1" author="vladyslav.haivoronskyi">
-            <createTable tableName="user_favorite_goods">
-                <column name="user_id" type="BIGINT">
-                    <constraints nullable="false" primaryKey="true"/>
-                </column>
-                <column name="goods_id" type="BIGINT">
-                    <constraints nullable="false" primaryKey="true"/>
-                </column>
-            </createTable>
-        </changeSet>
+    <!-- Create Favorite_Goods Join Table -->
+    <changeSet id="1.1.1" author="vladyslav.haivoronskyi">
+        <createTable tableName="user_favorite_goods">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
 
-        <!-- Add Foreign Key Constraint for User_Favorite_Goods Table -->
-        <changeSet id="1.1.2" author="vladyslav.haivoronskyi">
-            <addForeignKeyConstraint
-                    baseTableName="user_favorite_goods"
-                    baseColumnNames="user_id"
-                    constraintName="fk_user_favorite_goods_user"
-                    referencedTableName="user"
-                    referencedColumnNames="id"
-                    onDelete="CASCADE"
-                    onUpdate="CASCADE"/>
-            <addForeignKeyConstraint
-                    baseTableName="user_favorite_goods"
-                    baseColumnNames="goods_id"
-                    constraintName="fk_user_favorite_goods_goods"
-                    referencedTableName="goods"
-                    referencedColumnNames="id"
-                    onDelete="CASCADE"
-                    onUpdate="CASCADE"/>
-        </changeSet>
+    <!-- Add Foreign Key Constraint for User_Favorite_Goods Table -->
+    <changeSet id="1.1.2" author="vladyslav.haivoronskyi">
+        <addForeignKeyConstraint
+                baseTableName="user_favorite_goods"
+                baseColumnNames="user_id"
+                constraintName="fk_user_favorite_goods_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="user_favorite_goods"
+                baseColumnNames="goods_id"
+                constraintName="fk_user_favorite_goods_goods"
+                referencedTableName="goods"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
 
 <!--    <changeSet id="addDefaultGoods" author="vladyslav.haivoronskyi">-->
 <!--        <sql>INSERT INTO goods (name, description, price, location, user_id, created_at)-->
