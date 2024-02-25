@@ -27,8 +27,6 @@ public class UserController {
     private UserService userService;
     @Autowired
     private GoodsService goodsService;
-    @Autowired
-    private AccountStatusRepository accountStatusRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -60,5 +58,13 @@ public class UserController {
         }
         throw new ForbiddenException("Insufficient privileges");
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/activeUsers", method = RequestMethod.GET)
+    public List<User> getAllActiveUsers(Authentication auth) {
+        log.info("auth name : {}", auth.getName());
+        return userService.findActiveUsers();
+    }
+
 
 }
