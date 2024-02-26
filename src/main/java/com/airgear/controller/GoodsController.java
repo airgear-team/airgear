@@ -9,6 +9,7 @@ import com.airgear.repository.GoodsStatusRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.time.OffsetDateTime;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -44,8 +46,7 @@ public class GoodsController {
         newGoods.setUser(user);
         GoodsStatus status = goodsStatusRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("GoodsStatus not found"));
         newGoods.setGoodsStatus(status);
-        Goods savedGoods = goodsService.saveGoods(newGoods);
-        return savedGoods;
+        return goodsService.saveGoods(newGoods);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
@@ -87,5 +88,14 @@ public class GoodsController {
         goodsService.updateGoods(goods);
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/getcountnewgoods")
+    public Integer findCountNewGoodsFromPeriod(Authentication auth,
+         @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
+         @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate) {
+        return goodsService.getNewGoodsFromPeriod(fromDate, toDate);
+    }
+
 
 }
