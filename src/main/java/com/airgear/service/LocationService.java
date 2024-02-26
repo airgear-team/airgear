@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface LocationService {
+
     Location addLocation(Location location);
     List<Region> getAllRegions();
+    Region getRegionById(Long id);
 
 }

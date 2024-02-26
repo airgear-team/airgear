@@ -28,6 +28,11 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    public Region getRegionById(Long id) {
+        return regionRepository.getReferenceById(id);
+    }
+
+    @Override
     public Location addLocation(Location location) {
         return locationRepository.save(location);
     }
