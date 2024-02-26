@@ -9,14 +9,12 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-public class Location {
+public class Region {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private final String settlement;
-
-    private Long regionId;
+    private String region;
 
 }
