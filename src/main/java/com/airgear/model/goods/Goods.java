@@ -40,9 +40,9 @@ public class Goods {
 
     private BigDecimal weekendsPrice;
 
-    @NotBlank(message = "Location cannot be blank")
-    @Size(min = 3, max = 255, message = "Location length must be between 3 and 255 characters")
-    private String location;
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     @Embedded
     private Deposit deposit;

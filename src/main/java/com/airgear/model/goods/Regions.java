@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-public class Region {
+public class Regions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

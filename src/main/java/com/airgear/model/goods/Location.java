@@ -15,7 +15,7 @@ public class Location {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    private final String settlement;
+    private String settlement;
 
     private Long regionId;
 

@@ -3,6 +3,7 @@ package com.airgear.dto;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
 import com.airgear.model.goods.GoodsStatus;
+import com.airgear.model.goods.Location;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public class GoodsDto {
     private String name;
     private String description;
     private BigDecimal price;
-    private String location;
+    private Location location;
     private User user;
 
     public Goods getGoodsFromDto(){

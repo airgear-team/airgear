@@ -1,9 +1,9 @@
 package com.airgear.service.impl;
 
 import com.airgear.model.goods.Location;
-import com.airgear.model.goods.Region;
+import com.airgear.model.goods.Regions;
 import com.airgear.repository.LocationRepository;
-import com.airgear.repository.RegionRepository;
+import com.airgear.repository.RegionsRepository;
 import com.airgear.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,26 +14,26 @@ import java.util.List;
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
-    private final RegionRepository regionRepository;
+    private final RegionsRepository regionsRepository;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, RegionRepository regionRepository) {
+    public LocationServiceImpl(LocationRepository locationRepository, RegionsRepository regionsRepository) {
         this.locationRepository = locationRepository;
-        this.regionRepository = regionRepository;
+        this.regionsRepository = regionsRepository;
     }
 
     @Override
-    public List<Region> getAllRegions() {
-        return regionRepository.findAll();
+    public List<Regions> getAllRegions() {
+        return regionsRepository.findAll();
     }
 
     @Override
-    public Region getRegionById(Long id) {
-        return regionRepository.getReferenceById(id);
+    public Regions getRegionById(Long id) {
+        return regionsRepository.getReferenceById(id);
     }
 
     @Override
-    public Location addLocation(Location location) {
-        return locationRepository.save(location);
+    public void addLocation(Location location) {
+        locationRepository.save(location);
     }
 }

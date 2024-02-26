@@ -1,15 +1,14 @@
 package com.airgear.service;
 
 import com.airgear.model.goods.Location;
-import com.airgear.model.goods.Region;
+import com.airgear.model.goods.Regions;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface LocationService {
 
-    Location addLocation(Location location);
-    List<Region> getAllRegions();
-    Region getRegionById(Long id);
+    void addLocation(Location location);
+    List<Regions> getAllRegions();
+    Regions getRegionById(Long id);
 
 }
