@@ -215,4 +215,47 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="createRegionsTable" author="alex.ilchenko">
+        <createTable tableName="regions">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="region" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="insertRegionData" author="alex.ilchenko">
+        <sql>INSERT INTO regions (region) VALUES ('Вінницька');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Волинська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Дніпропетровська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Донецька');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Житомирська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Закарпатська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Запорізька');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Івано-Франківська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Київ');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Київська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Кіровоградська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Луганська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Львівська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Миколаївська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Одеська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Полтавська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Республіка Крим');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Рівненська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Севастополь');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Сумська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Тернопільська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Харківська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Херсонська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Хмельницька');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Черкаська');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Чернівецька');</sql>
+        <sql>INSERT INTO regions (region) VALUES ('Чернігівська');</sql>
+    </changeSet>
+
+
+
 </databaseChangeLog>
