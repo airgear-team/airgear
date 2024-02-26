@@ -1,12 +1,13 @@
 package com.airgear.service;
 
+import com.airgear.model.goods.Location;
+import com.airgear.model.goods.Region;
+
 import java.util.HashMap;
 import java.util.List;
 
 public interface LocationService {
-
-    HashMap<String, String> getAllRegions() throws Exception;
-    List<String> getSettlementsOfRegion(String region) throws Exception;
-
+    Location addLocation(Location location);
+    List<Region> getAllRegions();
 
 }
