@@ -5,8 +5,10 @@ import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.User;
+import com.airgear.model.goods.Location;
 import com.airgear.repository.GoodsStatusRepository;
 import com.airgear.service.GoodsService;
+import com.airgear.service.LocationService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +30,8 @@ public class GoodsController {
     private GoodsService goodsService;
     @Autowired
     private GoodsStatusRepository goodsStatusRepository;
+    @Autowired
+    private LocationService locationService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/featured")
@@ -42,6 +46,22 @@ public class GoodsController {
         User user = userService.findByUsername(auth.getName());
         Goods newGoods = goods.getGoodsFromDto();
         newGoods.setUser(user);
+
+        String settlement = newGoods.getLocation().getSettlement();
+
+        Location existingLocation = locationService.getLocationBySettlement(settlement);
+
+        Location savedLocation;
+        if (existingLocation != null) {
+            savedLocation = existingLocation;
+        } else {
+            Location location = new Location();
+            location.setSettlement(settlement);
+            location.setRegionId(newGoods.getLocation().getRegionId());
+            savedLocation = locationService.addLocation(location);
+        }
+        newGoods.setLocation(savedLocation);
+
         GoodsStatus status = goodsStatusRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("GoodsStatus not found"));
         newGoods.setGoodsStatus(status);
         Goods savedGoods = goodsService.saveGoods(newGoods);

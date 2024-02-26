@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface LocationService {
 
-    void addLocation(Location location);
+    Location addLocation(Location location);
+    Location getLocationBySettlement(String settlement);
     List<Regions> getAllRegions();
     Regions getRegionById(Long id);
 

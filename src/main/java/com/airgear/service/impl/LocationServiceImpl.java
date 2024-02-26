@@ -28,12 +28,18 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    public Location getLocationBySettlement(String settlement) {
+        return locationRepository.findBySettlement(settlement);
+    }
+
+    @Override
     public Regions getRegionById(Long id) {
         return regionsRepository.getReferenceById(id);
     }
 
     @Override
-    public void addLocation(Location location) {
+    public Location addLocation(Location location) {
         locationRepository.save(location);
+        return location;
     }
 }
