@@ -1,17 +1,21 @@
 package com.airgear.controller;
 
 import com.airgear.exception.ForbiddenException;
+import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -76,6 +80,16 @@ public class GoodsController {
         }
         goodsService.deleteGoodsById(goodsId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/filter")
+    public Page<Goods> filterGoods(
+            @RequestParam(name = "category", required = false) Category category,
+            @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
+            @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
+            Pageable pageable) {
+        return goodsService.filterGoods(category, minPrice, maxPrice, pageable);
     }
 
 }
