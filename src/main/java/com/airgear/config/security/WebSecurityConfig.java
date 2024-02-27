@@ -1,4 +1,4 @@
-package com.airgear.config;
+package com.airgear.config.security;
 
 import com.airgear.security.JwtAuthenticationFilter;
 import com.airgear.security.UnauthorizedEntryPoint;
@@ -44,7 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/authenticate", "/auth/register").permitAll()
+                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .antMatchers("/auth/authenticate", "/auth/service/authenticate", "/auth/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint).and()
