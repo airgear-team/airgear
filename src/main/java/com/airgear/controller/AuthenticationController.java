@@ -6,6 +6,7 @@ import com.airgear.model.User;
 import com.airgear.security.TokenProvider;
 import com.airgear.service.ThirdPartyTokenHandler;
 import com.airgear.service.UserService;
+import com.airgear.utils.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(Routes.AUTH)
 public class AuthenticationController {
 
     @Autowired
