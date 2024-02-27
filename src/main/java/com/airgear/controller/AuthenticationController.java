@@ -37,14 +37,7 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> generateToken(@RequestBody UserDto userDto) throws AuthenticationException {
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        userDto.getUsername(),
-                        userDto.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String token = jwtTokenUtil.generateToken(authentication);
+        final String token = getToken(userDto);
         return ResponseEntity.ok(new AuthToken(token));
     }
 
@@ -59,6 +52,11 @@ public class AuthenticationController {
 
         if (userService.findByUsername(user.getUsername()) == null) userService.save(user);
 
+        final String token = getToken(user);
+        return ResponseEntity.ok(new AuthToken(token));
+    }
+
+    private String getToken(UserDto user) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
@@ -66,7 +64,6 @@ public class AuthenticationController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String token = jwtTokenUtil.generateToken(authentication);
-        return ResponseEntity.ok(new AuthToken(token));
+        return jwtTokenUtil.generateToken(authentication);
     }
 }

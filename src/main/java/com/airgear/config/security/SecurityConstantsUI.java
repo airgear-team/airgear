@@ -16,7 +16,6 @@ public final class SecurityConstantsUI {
         throw new AssertionError("non-instantiable class");
     }
 
-    public static final String AUTH_CLAIM = "Authorization";
     public static final String THIRD_PARTY_SERVICE = "Service";
 
 }

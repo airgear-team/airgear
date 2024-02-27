@@ -4,11 +4,11 @@ import com.airgear.config.security.ThirdPartyService;
 import com.airgear.dto.UserDto;
 import com.airgear.service.GoogleTokenHandler;
 import com.airgear.service.ThirdPartyTokenHandler;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.airgear.config.security.SecurityConstantsUI.AUTH_CLAIM;
 import static com.airgear.config.security.SecurityConstantsUI.THIRD_PARTY_SERVICE;
 import static com.airgear.config.security.ThirdPartyService.valueOf;
 
@@ -42,7 +42,7 @@ public class ThirdPartyTokenHandlerImpl implements ThirdPartyTokenHandler {
     public UserDto execute(HttpServletRequest request) {
         String thirdPartyService = request.getHeader(THIRD_PARTY_SERVICE);
         ThirdPartyService service = valueOf(thirdPartyService);
-        String token = request.getHeader(AUTH_CLAIM);
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         return switch (service) {
             case GOOGLE -> googleTokenHandler.execute(token);
