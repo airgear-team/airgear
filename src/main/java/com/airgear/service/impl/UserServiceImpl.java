@@ -1,10 +1,7 @@
 package com.airgear.service.impl;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.airgear.exception.ForbiddenException;
 import com.airgear.repository.AccountStatusRepository;
@@ -15,6 +12,7 @@ import com.airgear.dto.UserDto;
 import com.airgear.service.RoleService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -62,6 +60,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<Map<String, Integer>> getUserGoodsCount(Pageable pageable) {
+        return userRepository.findUserGoodsCount(pageable);
     }
 
     @Override
