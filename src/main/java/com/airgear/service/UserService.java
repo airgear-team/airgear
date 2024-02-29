@@ -3,6 +3,7 @@ package com.airgear.service;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface UserService {
@@ -15,4 +16,5 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
 }
