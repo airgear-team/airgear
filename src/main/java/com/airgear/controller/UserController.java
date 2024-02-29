@@ -33,6 +33,7 @@ public class UserController {
     private GoodsService goodsService;
     @Autowired
     private AccountStatusRepository accountStatusRepository;
+    private static final int MAX_LIMIT = 500;
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -68,7 +69,9 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/goods-count")
     public List<Map<String, Integer>> getTopUserGoodsCount(@RequestParam(required = false, defaultValue = "30") int limit) {
-
+        if (limit > MAX_LIMIT) {
+            throw new IllegalArgumentException("Limit exceeds maximum value of 500");
+        }
         //it will be possible to implement pagination on the frontend in the future
         Pageable pageable = PageRequest.of(0, limit);
 
