@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -58,5 +59,8 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "account_status_id")
     private AccountStatus accountStatus;
+
+    @OneToMany(mappedBy = "user")
+    private List<Complaint> complaints;
 
 }

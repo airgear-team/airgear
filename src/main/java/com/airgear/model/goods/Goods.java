@@ -1,5 +1,6 @@
 package com.airgear.model.goods;
 
+import com.airgear.model.Complaint;
 import com.airgear.model.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Entity
@@ -86,5 +88,8 @@ public class Goods {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime deletedAt;
+
+    @OneToMany(mappedBy = "goods")
+    private List<Complaint> complaints;
 
 }
