@@ -1,5 +1,6 @@
 package com.airgear.dto;
 
+import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
 import com.airgear.model.goods.GoodsStatus;
@@ -14,10 +15,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoodsDto {
+
     private String name;
     private String description;
     private BigDecimal price;
+    private BigDecimal weekendsPrice;
     private Location location;
+    private Category category;
+    private String phoneNumber;
     private User user;
 
     public Goods getGoodsFromDto(){
@@ -25,7 +30,10 @@ public class GoodsDto {
         goods.setName(name);
         goods.setDescription(description);
         goods.setPrice(price);
+        goods.setWeekendsPrice(weekendsPrice);
         goods.setLocation(location);
+        goods.setCategory(category);
+        goods.setPhoneNumber(phoneNumber);
         goods.setUser(user);
         return goods;
     }

@@ -48,4 +48,14 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsSet;
     }
 
+    @Override
+    public Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName) {
+        return null;
+    }
+
+    @Override
+    public int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate) {
+        return 0;
+    }
+
 }

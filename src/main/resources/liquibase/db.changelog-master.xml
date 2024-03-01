@@ -24,9 +24,6 @@
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="category" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
 
@@ -308,7 +305,7 @@
     </changeSet>
 
     <!-- Insert data to Category Table -->
-    <changeSet id="1.0.9" author="Oleksandr Tuleninov">
+    <changeSet id="addCategoryTable" author="Oleksandr Tuleninov">
         <sql>INSERT INTO category (name) VALUES ('REAL_ESTATE')</sql>
         <sql>INSERT INTO category (name) VALUES ('TRANSPORT_AND_SPECIAL_EQUIPMENT')</sql>
         <sql>INSERT INTO category (name) VALUES ('TECH_AND_ELECTRONICS')</sql>
@@ -323,7 +320,8 @@
     <!-- Add Category to Goods Table -->
     <changeSet id="1.0.10" author="Oleksandr Tuleninov">
         <addColumn tableName="goods">
-            <column name="category_id" type="VARCHAR(255)">
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="category_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
@@ -332,13 +330,13 @@
     <!-- Add Foreign Key Constraint for Goods Table -->
     <changeSet id="1.0.11" author="Oleksandr Tuleninov">
         <addForeignKeyConstraint
-            baseTableName="goods"
-            baseColumnNames="category_id"
-            constraintName="fk_goods_category_fk"
-            referencedTableName="category"
-            referencedColumnNames="id"
-            onDelete="CASCADE"
-            onUpdate="CASCADE"/>
+                baseTableName="goods"
+                baseColumnNames="category_id"
+                constraintName="fk_goods_category_fk"
+                referencedTableName="category"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
     </changeSet>
 
 </databaseChangeLog>
