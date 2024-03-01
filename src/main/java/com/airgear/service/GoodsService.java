@@ -5,6 +5,8 @@ import com.airgear.model.goods.response.GoodsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Set;
 
 public interface GoodsService {
@@ -20,5 +22,7 @@ public interface GoodsService {
     Set<Goods> getAllGoodsByUsername(String username);
 
     Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName);
+
+    int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
 }
