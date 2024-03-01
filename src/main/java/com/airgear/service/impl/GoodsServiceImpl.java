@@ -2,6 +2,7 @@ package com.airgear.service.impl;
 
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
+import com.airgear.model.goods.Goods;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,18 +46,6 @@ public class GoodsServiceImpl implements GoodsService {
     public Set<Goods> getAllGoodsByUsername(String username) {
         Set<Goods> goodsSet = goodsRepository.getGoodsByUserName(username);
         return goodsSet;
-    }
-
-    @Override
-    public Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName) {
-        return goodsRepository.findAllByNameLikeIgnoreCase(pageable, goodsName)
-                .map(GoodsResponse::fromGoods);
-    }
-
-    @Override
-    public int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate) {
-
-        return goodsRepository.findCountNewGoodsFromPeriod(fromDate, toDate);
     }
 
 }

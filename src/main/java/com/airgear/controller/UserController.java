@@ -1,7 +1,6 @@
 package com.airgear.controller;
 
 import com.airgear.exception.ForbiddenException;
-import com.airgear.model.AccountStatus;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
 import com.airgear.repository.AccountStatusRepository;

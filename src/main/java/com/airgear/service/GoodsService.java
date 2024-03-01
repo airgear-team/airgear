@@ -4,6 +4,7 @@ import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.airgear.model.goods.Goods;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;

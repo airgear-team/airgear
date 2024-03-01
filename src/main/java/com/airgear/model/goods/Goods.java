@@ -14,8 +14,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 
 @Data
 @Entity
@@ -38,6 +36,9 @@ public class Goods {
     @NotNull(message = "Price cannot be null")
     private BigDecimal price;
 
+    @NotBlank(message = "Location cannot be blank")
+    @Size(min = 3, max = 255, message = "Location length must be between 3 and 255 characters")
+    private String location;
     private BigDecimal weekendsPrice;
 
     @ManyToOne
@@ -59,6 +60,11 @@ public class Goods {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+}
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "goods_goods_status",
             joinColumns = {

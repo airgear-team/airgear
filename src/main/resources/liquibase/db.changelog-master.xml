@@ -146,7 +146,7 @@
         <sql>INSERT INTO account_status (status_name, description) VALUES ('ACTIVE', 'This is status for active users')</sql>
         <sql>INSERT INTO account_status (status_name, description) VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
     </changeSet>
-  
+
       <!-- Add Phone to the Goods Table -->
     <changeSet id="1.0.7" author="Oleksandr Tuleninov">
         <addColumn tableName="goods">
@@ -155,7 +155,7 @@
             </column>
         </addColumn>
     </changeSet>
-  
+
     <!-- Add created_at, deleted_at fields to the User Table -->
     <changeSet id="1.0.9" author="Oleksandr Tuleninov">
         <addColumn tableName="user">
@@ -293,6 +293,52 @@
                                  referencedTableName="location"
                                  referencedColumnNames="id"/>
         <dropColumn tableName="goods" columnName="location"/>
+    </changeSet>
+
+    <!-- Create Category Table -->
+    <changeSet id="1.0.6" author="Oleksandr Tuleninov">
+        <createTable tableName="category">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Insert data to Category Table -->
+    <changeSet id="1.0.9" author="Oleksandr Tuleninov">
+        <sql>INSERT INTO category (name) VALUES ('REAL_ESTATE')</sql>
+        <sql>INSERT INTO category (name) VALUES ('TRANSPORT_AND_SPECIAL_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name) VALUES ('TECH_AND_ELECTRONICS')</sql>
+        <sql>INSERT INTO category (name) VALUES ('CLOTHING_AND_ACCESSORIES')</sql>
+        <sql>INSERT INTO category (name) VALUES ('RECREATION_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name) VALUES ('TOOLS_AND_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name) VALUES ('SPORTS_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name) VALUES ('BEAUTY_AND_HEALTH')</sql>
+        <sql>INSERT INTO category (name) VALUES ('EVENT_GOODS')</sql>
+    </changeSet>
+
+    <!-- Add Category to Goods Table -->
+    <changeSet id="1.0.10" author="Oleksandr Tuleninov">
+        <addColumn tableName="goods">
+            <column name="category_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add Foreign Key Constraint for Goods Table -->
+    <changeSet id="1.0.11" author="Oleksandr Tuleninov">
+        <addForeignKeyConstraint
+            baseTableName="goods"
+            baseColumnNames="category_id"
+            constraintName="fk_goods_category_fk"
+            referencedTableName="category"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE"/>
     </changeSet>
 
 </databaseChangeLog>
