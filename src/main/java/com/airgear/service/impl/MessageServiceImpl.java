@@ -4,6 +4,7 @@ import com.airgear.exception.MessageExceptions;
 import com.airgear.model.User;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.message.Message;
+import com.airgear.model.message.request.ChangeTextRequest;
 import com.airgear.model.message.request.SaveMessageRequest;
 import com.airgear.model.message.response.MessageResponse;
 import com.airgear.repository.GoodsRepository;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.airgear.exception.GoodsExceptions.goodsNotFound;
+import static com.airgear.exception.MessageExceptions.messageNotFound;
 import static com.airgear.exception.UserExceptions.userNotFound;
 
 @Service
@@ -60,8 +62,20 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    public MessageResponse changeTextMessage(UUID messageId, ChangeTextRequest request) {
+        Message message = getMessage(messageId);
+        message.setText(request.text());
+        return MessageResponse.fromMessage(message);
+    }
+
+    private Message getMessage(UUID messageId) {
+        return messageRepository.findById(messageId)
+                .orElseThrow(() -> messageNotFound(messageId));
+    }
+
+    @Override
     public void deleteMessageById(UUID messageId) {
-        if (!messageRepository.existsById(messageId)) throw MessageExceptions.messageNotFound(messageId);
+        if (!messageRepository.existsById(messageId)) throw messageNotFound(messageId);
         messageRepository.deleteById(messageId);
     }
 

@@ -1,5 +1,6 @@
 package com.airgear.service;
 
+import com.airgear.model.message.request.ChangeTextRequest;
 import com.airgear.model.message.request.SaveMessageRequest;
 import com.airgear.model.message.response.MessageResponse;
 import org.springframework.data.domain.Page;
@@ -16,5 +17,8 @@ public interface MessageService {
 
     MessageResponse create(SaveMessageRequest request);
 
+    MessageResponse changeTextMessage(UUID messageId, ChangeTextRequest request);
+
     void deleteMessageById(UUID messageId);
+
 }

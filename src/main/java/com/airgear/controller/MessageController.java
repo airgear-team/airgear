@@ -1,11 +1,13 @@
 package com.airgear.controller;
 
+import com.airgear.model.message.request.ChangeTextRequest;
 import com.airgear.model.message.request.SaveMessageRequest;
 import com.airgear.model.message.response.MessageResponse;
 import com.airgear.service.MessageService;
 import com.airgear.utils.Routes;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -65,10 +67,21 @@ public class MessageController {
                 .body(response);
     }
 
+    @PatchMapping(
+            value = "/{messageId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public MessageResponse changeText(@PathVariable UUID messageId,
+                                      @RequestBody @Valid ChangeTextRequest request) {
+        return messageService.changeTextMessage(messageId, request);
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{messageId}")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     public void deleteMessageById(@PathVariable UUID messageId) {
         messageService.deleteMessageById(messageId);
     }
+
 }
