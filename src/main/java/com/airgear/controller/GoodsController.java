@@ -5,8 +5,8 @@ import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.User;
-import com.airgear.repository.GoodsStatusRepository;
 import com.airgear.service.GoodsService;
+import com.airgear.service.GoodsStatusService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -27,7 +26,7 @@ public class GoodsController {
     @Autowired
     private GoodsService goodsService;
     @Autowired
-    private GoodsStatusRepository goodsStatusRepository;
+    private GoodsStatusService goodsStatusService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/featured")
@@ -42,7 +41,7 @@ public class GoodsController {
         User user = userService.findByUsername(auth.getName());
         Goods newGoods = goods.getGoodsFromDto();
         newGoods.setUser(user);
-        GoodsStatus status = goodsStatusRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("GoodsStatus not found"));
+        GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
         Goods savedGoods = goodsService.saveGoods(newGoods);
         return savedGoods;
@@ -83,8 +82,8 @@ public class GoodsController {
         if(user.getId()!=goods.getUser().getId() && !user.getRoles().contains("ADMIN")){
             throw new ForbiddenException("It is not your goods");
         }
-        goods.setGoodsStatus(new GoodsStatus(2, ""));
-        goodsService.updateGoods(goods);
+        goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
+        goodsService.deleteGoods(goods);
         return ResponseEntity.noContent().build();
     }
 

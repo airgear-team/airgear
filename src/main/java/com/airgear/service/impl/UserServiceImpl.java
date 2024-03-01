@@ -70,6 +70,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (user == null || user.getAccountStatus().getId() == accountStatusId) {
             throw new ForbiddenException("User not found or was already deleted");
         }
+        if (accountStatusId==2L) {
+            user.setDeleteAt(OffsetDateTime.now());
+        }
         userRepository.setAccountStatusId(accountStatusId, user.getId());
     }
 

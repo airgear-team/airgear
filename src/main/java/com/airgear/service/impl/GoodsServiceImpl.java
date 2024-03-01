@@ -25,8 +25,9 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public void deleteGoodsById(Long id) {
-        goodsRepository.deleteById(id);
+    public void deleteGoods(Goods goods) {
+        goods.setDeletedAt(OffsetDateTime.now());
+        goodsRepository.save(goods);
     }
 
     @Override

@@ -39,13 +39,13 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    public User getUserByUserName(@RequestParam String username) {
+    public User getUserByUserName(@PathVariable String username) {
         return userService.findByUsername(username);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
     @RequestMapping(value = "/{username}/goods", method = RequestMethod.GET)
-    public Set<Goods> getAllGoodsBy(@RequestParam String username) {
+    public Set<Goods> getAllGoodsBy(@PathVariable String username) {
         Set<Goods> goodsSet = goodsService.getAllGoodsByUsername(username);
         return goodsSet;
     }
