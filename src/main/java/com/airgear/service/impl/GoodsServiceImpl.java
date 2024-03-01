@@ -53,4 +53,10 @@ public class GoodsServiceImpl implements GoodsService {
                 .map(GoodsResponse::fromGoods);
     }
 
+    @Override
+    public int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate) {
+
+        return goodsRepository.findCountNewGoodsFromPeriod(fromDate, toDate);
+    }
+
 }
