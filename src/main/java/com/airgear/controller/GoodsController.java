@@ -1,11 +1,16 @@
 package com.airgear.controller;
 
+import com.airgear.dto.ComplaintDTO;
 import com.airgear.dto.GoodsDto;
 import com.airgear.exception.ForbiddenException;
+import com.airgear.model.Complaint;
+import com.airgear.model.ComplaintCategory;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.User;
+import com.airgear.repository.ComplaintRepository;
 import com.airgear.repository.GoodsStatusRepository;
+import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +33,8 @@ public class GoodsController {
     private GoodsService goodsService;
     @Autowired
     private GoodsStatusRepository goodsStatusRepository;
+    @Autowired
+    private ComplaintService complaintService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/featured")
@@ -77,15 +84,32 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{goodsId}")
-    public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId){
+    public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId) {
         User user = userService.findByUsername(auth.getName());
         Goods goods = goodsService.getGoodsById(goodsId);
-        if(user.getId()!=goods.getUser().getId() && !user.getRoles().contains("ADMIN")){
+        if (user.getId() != goods.getUser().getId() && !user.getRoles().contains("ADMIN")) {
             throw new ForbiddenException("It is not your goods");
         }
         goods.setGoodsStatus(new GoodsStatus(2, ""));
         goodsService.updateGoods(goods);
         return ResponseEntity.noContent().build();
+    }
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @PostMapping("/goods/{goodsId}/complaint")
+    public ResponseEntity<Complaint> addComplaint
+            (Authentication auth,
+             @PathVariable Long goodsId,
+             @PathVariable Long complaintCategoryId,
+             @RequestBody ComplaintDTO complaint) {
+        Complaint newComplaint = complaint.getComplaintFromDto();
+        User user = userService.findByUsername(auth.getName());
+        Goods goods = goodsService.getGoodsById(goodsId);
+        ComplaintCategory complaintCategory = complaintService.getComplaintCategoryById(complaintCategoryId);
+        newComplaint.setUser(user);
+        newComplaint.setGoods(goods);
+        newComplaint.setComplaintCategory(complaintCategory);
+        complaintService.save(newComplaint);
+        return ResponseEntity.ok(newComplaint);
     }
 
 }

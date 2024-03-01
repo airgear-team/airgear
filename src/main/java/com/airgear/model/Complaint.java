@@ -1,9 +1,9 @@
 package com.airgear.model;
 
 import com.airgear.model.goods.Goods;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
@@ -11,7 +11,7 @@ import java.time.OffsetDateTime;
 @Data
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class Complaint {
 
     @Id
