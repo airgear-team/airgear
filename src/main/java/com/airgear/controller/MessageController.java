@@ -7,7 +7,6 @@ import com.airgear.service.MessageService;
 import com.airgear.utils.Routes;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -72,6 +71,7 @@ public class MessageController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     public MessageResponse changeText(@PathVariable UUID messageId,
                                       @RequestBody @Valid ChangeTextRequest request) {
         return messageService.changeTextMessage(messageId, request);
@@ -83,5 +83,4 @@ public class MessageController {
     public void deleteMessageById(@PathVariable UUID messageId) {
         messageService.deleteMessageById(messageId);
     }
-
 }

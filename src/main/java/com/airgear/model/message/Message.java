@@ -5,6 +5,7 @@ import com.airgear.model.goods.Goods;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class Message {
 
     @Id
+    @Type(type = "uuid-char")
     @GeneratedValue
     private UUID id;
 
@@ -27,7 +29,7 @@ public class Message {
     @JoinColumn(name = "goods_id", nullable = false)
     private Goods goods;
 
-    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

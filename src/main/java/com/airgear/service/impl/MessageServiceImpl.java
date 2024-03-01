@@ -1,6 +1,5 @@
 package com.airgear.service.impl;
 
-import com.airgear.exception.MessageExceptions;
 import com.airgear.model.User;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.message.Message;
