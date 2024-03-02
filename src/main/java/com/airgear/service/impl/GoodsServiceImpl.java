@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import com.airgear.repository.GoodsRepository;
@@ -90,5 +91,4 @@ public class GoodsServiceImpl implements GoodsService {
             return goodsRepository.findAll(pageable);
         }
     }
-
 }
