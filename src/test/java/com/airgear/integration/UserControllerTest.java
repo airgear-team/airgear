@@ -11,12 +11,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
+import com.airgear.model.goods.Location;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.RoleRepository;
 import com.airgear.repository.UserRepository;
+import com.airgear.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.AssertionsForClassTypes;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +33,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -46,51 +54,9 @@ public class UserControllerTest {
     @Autowired
     private TestRestTemplate template;
     private static HttpHeaders headers;
-
-    @BeforeAll
-    public static void initTest() throws JSONException {
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        userJSON = new JSONObject();
-        userJSON.put("name","UserTestUSER");
-        userJSON.put("username","UserTestUSER");
-        userJSON.put("password","1234");
-    }
-
-    @Test
-    public void testAuthenticate(){
-        HttpEntity<?> entity = new HttpEntity<>(userJSON.toString(), headers);
-        User user = userService.findByUsername("UserTestUSER");
-        if (user==null){
-            user = template.postForObject("http://localhost:"+port+"/auth/register",entity, User.class);
-            if(user ==null){
-                throw new RuntimeException("Не создался пользователь!");
-            }
-            else System.out.println("Пользователь создан!");
-        }
-        ResponseEntity<AuthToken> response = template.exchange("http://localhost:"+8888+"/auth/authenticate", HttpMethod.POST,
-                         entity, AuthToken.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        headers.set("Authorization","Bearer"+response.getBody().getToken());
-    }
-
-    @Test
-    public void createGoods() throws JSONException {
-        JSONObject goodsJSON = new JSONObject();
-        goodsJSON.put("name","bolt222");
-        goodsJSON.put("price",100.00);
-        goodsJSON.put("description","gggggggggggggg");
-        goodsJSON.put("location","nnnnnnnnnnnnn");
-        goodsJSON.put("user",userJSON);
-        HttpEntity<?> entity = new HttpEntity<>(goodsJSON.toString(), headers);
-        GoodsDto goodsRes = template.postForObject("http://localhost:"+port+"/goods",entity, GoodsDto.class);
-        assertNotNull(goodsRes);
-        assertThat(goodsRes.getName()).isEqualTo("bolt222");
     private static User userTest;
     private static User adminTest;
     private static User moderatorTest;
-    @Autowired
-    private TestRestTemplate template;
     private static HttpHeaders headersUser;
     private static HttpHeaders headersAdmin;
     private static HttpHeaders headersModerator;
@@ -104,6 +70,20 @@ public class UserControllerTest {
     private AccountStatusRepository accountStatusRepository;
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
+
+    @Test
+    public void createGoods() throws JSONException {
+        JSONObject goodsJSON = new JSONObject();
+        goodsJSON.put("name", "bolt222");
+        goodsJSON.put("price", 100.00);
+        goodsJSON.put("description", "gggggggggggggg");
+        goodsJSON.put("location", "nnnnnnnnnnnnn");
+        goodsJSON.put("user", userJSON);
+        HttpEntity<?> entity = new HttpEntity<>(goodsJSON.toString(), headers);
+        GoodsDto goodsRes = template.postForObject("http://localhost:" + port + "/goods", entity, GoodsDto.class);
+        assertNotNull(goodsRes);
+        assertThat(goodsRes.getName()).isEqualTo("bolt222");
+    }
 
     @BeforeAll
     public static void initTest() {
@@ -154,8 +134,8 @@ public class UserControllerTest {
         if (response.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
             if (isRegister) {
                 user = template.postForObject("http://localhost:" + port + "/auth/register", entity, User.class);
-                Assertions.assertNotNull(user.getCreatedAt());
-                Assertions.assertNotNull(user.getAccountStatus());
+                assertNotNull(user.getCreatedAt());
+                assertNotNull(user.getAccountStatus());
                 Assertions.assertEquals(1L, user.getAccountStatus().getId());
             }else{
                 user.setPassword(bcryptEncoder.encode(user.getPassword()));
@@ -167,8 +147,8 @@ public class UserControllerTest {
             log.info("User: "+user.getUsername()+" create!");
         }
         response = template.exchange("http://localhost:" + port + "/auth/authenticate", HttpMethod.POST, entity, AuthToken.class);
-        AssertionsForClassTypes.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertNotNull(response.getBody().getToken());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertNotNull(response.getBody().getToken());
         currentHeaders.set("Authorization", "Bearer" + (response.getBody()).getToken());
 
         log.info("token "+user.getUsername()+":" + (response.getBody()).getToken());
@@ -177,13 +157,13 @@ public class UserControllerTest {
     @Test
     @Order(2)
     public void createGoodsByUser(){
-        GoodsDto goods = new GoodsDto("bolt", "description", BigDecimal.valueOf(100.0D), "location", userTest);
+        GoodsDto goods = new GoodsDto("bolt", "description", BigDecimal.valueOf(100.0D), null, new Location(), new Category(), "+380984757533", userTest);
         HttpEntity<?> entity = new HttpEntity<>(goods, headersUser);
         goodsTest = template.postForObject("http://localhost:" + port + "/goods", entity, Goods.class);
-        Assertions.assertNotNull(goodsTest);
-        AssertionsForClassTypes.assertThat(goodsTest.getName()).isEqualTo("bolt");
-        Assertions.assertNotNull(goodsTest.getCreatedAt());
-        Assertions.assertNotNull(goodsTest.getGoodsStatus());
+        assertNotNull(goodsTest);
+        assertThat(goodsTest.getName()).isEqualTo("bolt");
+        assertNotNull(goodsTest.getCreatedAt());
+        assertNotNull(goodsTest.getGoodsStatus());
         Assertions.assertEquals(1L, goodsTest.getGoodsStatus().getId());
     }
 
@@ -192,7 +172,7 @@ public class UserControllerTest {
     public void updateGoodsByModerator(){
         HttpEntity<?> entity = new HttpEntity<>(goodsTest, headersModerator);
         ResponseEntity<Goods> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.PUT, entity, Goods.class);
-        AssertionsForClassTypes.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -202,8 +182,8 @@ public class UserControllerTest {
         OffsetDateTime time = OffsetDateTime.now();
         ResponseEntity<Goods> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.PUT, entity, Goods.class);
         goodsTest = response.getBody();
-        Assertions.assertNotNull(goodsTest);
-        Assertions.assertNotNull(goodsTest.getLastModified());
+        assertNotNull(goodsTest);
+        assertNotNull(goodsTest.getLastModified());
         Assertions.assertTrue(goodsTest.getLastModified().isAfter(time));
     }
 
@@ -212,7 +192,7 @@ public class UserControllerTest {
     public void getAllUsersByModerator(){
         HttpEntity<?> entity = new HttpEntity<>("", headersModerator);
         ResponseEntity<String> response = template.exchange("http://localhost:" + port + "/users/", HttpMethod.GET, entity, String.class);
-        AssertionsForClassTypes.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -220,9 +200,9 @@ public class UserControllerTest {
     public void getAllUsersByAdmin(){
         HttpEntity<?> entity = new HttpEntity<>("", headersAdmin);
         ResponseEntity<Object> response= template.exchange("http://localhost:" + port + "/users/", HttpMethod.GET, entity,Object.class);
-        AssertionsForClassTypes.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         List<User> res = (List<User>)response.getBody();
-        Assertions.assertNotNull(res);
+        assertNotNull(res);
         Assertions.assertTrue(res.size()>=3);
     }
 
@@ -231,7 +211,7 @@ public class UserControllerTest {
     public void getUserByUserNameByModerator(){
         HttpEntity<?> entity = new HttpEntity<>("", headersModerator);
         ResponseEntity<User> response = template.exchange("http://localhost:" + port + "/users/userTest", HttpMethod.GET, entity, User.class);
-        AssertionsForClassTypes.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -239,9 +219,9 @@ public class UserControllerTest {
     public void getUserByUserNameByAdmin(){
         HttpEntity<?> entity = new HttpEntity<>(null, headersAdmin);
         ResponseEntity<User> response = template.exchange("http://localhost:" + port + "/users/userTest", HttpMethod.GET, entity, User.class);
-        Assertions.assertNotNull(response.getBody());
-        Assertions.assertNotNull(response.getBody().getUsername());
-        AssertionsForClassTypes.assertThat(response.getBody().getUsername()).isEqualTo("userTest");
+        assertNotNull(response.getBody());
+        assertNotNull(response.getBody().getUsername());
+        assertThat(response.getBody().getUsername()).isEqualTo("userTest");
     }
 
     @Test
@@ -249,7 +229,7 @@ public class UserControllerTest {
     public void deleteGoodsByModerator(){
         HttpEntity<?> entity = new HttpEntity<>(goodsTest, headersModerator);
         ResponseEntity<String> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.DELETE, entity, String.class);
-        AssertionsForClassTypes.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -257,7 +237,7 @@ public class UserControllerTest {
     public void deleteGoodsByUser(){
         HttpEntity<?> entity = new HttpEntity<>(goodsTest, headersUser);
         ResponseEntity<String> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.DELETE, entity, String.class);
-        AssertionsForClassTypes.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         Assertions.assertNull(response.getBody());
     }
 

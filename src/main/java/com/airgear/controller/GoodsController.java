@@ -7,11 +7,7 @@ import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.RentalAgreement;
 import com.airgear.model.User;
 import com.airgear.model.goods.Location;
-import com.airgear.repository.GoodsStatusRepository;
-import com.airgear.service.GoodsService;
-import com.airgear.service.GoodsStatusService;
-import com.airgear.service.UserService;
-import com.airgear.service.Utils;
+import com.airgear.service.*;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,7 +38,7 @@ public class GoodsController {
     @Autowired
     private GoodsService goodsService;
     @Autowired
-    private GoodsStatusRepository goodsStatusRepository;
+    private GoodsStatusService goodsStatusService;
     @Autowired
     private LocationService locationService;
 
@@ -78,7 +71,6 @@ public class GoodsController {
         }
         newGoods.setLocation(savedLocation);
 
-        GoodsStatus status = goodsStatusRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("GoodsStatus not found"));
         GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
         return goodsService.saveGoods(newGoods);
