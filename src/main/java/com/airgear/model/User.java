@@ -59,4 +59,7 @@ public class User {
     @JoinColumn(name = "account_status_id")
     private AccountStatus accountStatus;
 
+    @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<UserReview> userReviews;
+
 }

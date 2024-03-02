@@ -4,7 +4,7 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
     <!-- Create Goods Table -->
-    <changeSet id="1.0.0" author="ilya.deus">
+    <changeSet id="addGoodsTable" author="ilya.deus">
         <createTable tableName="goods">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -27,7 +27,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Add_weekends_price" author="Oleksandr Panchenko">
+    <changeSet id="addWeekendsPrice" author="Oleksandr Panchenko">
         <addColumn tableName="goods">
             <column name="weekends_price" type="DECIMAL(19, 2)">
                 <constraints nullable="true"/>
@@ -36,7 +36,7 @@
     </changeSet>
 
     <!-- Create Role Table -->
-    <changeSet id="1.0.1" author="ilya.deus">
+    <changeSet id="addRoleTable" author="ilya.deus">
         <createTable tableName="role">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -51,7 +51,7 @@
     </changeSet>
 
     <!-- Create User Table -->
-    <changeSet id="1.0.2" author="ilya.deus">
+    <changeSet id="addUserTable" author="ilya.deus">
         <createTable tableName="user">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -75,7 +75,7 @@
     </changeSet>
 
     <!-- Create User_Roles Join Table -->
-    <changeSet id="1.0.3" author="ilya.deus">
+    <changeSet id="addUserRolesJoinTable" author="ilya.deus">
         <createTable tableName="user_roles">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -87,7 +87,7 @@
     </changeSet>
 
     <!-- Add Foreign Key Constraint for Goods Table -->
-    <changeSet id="1.0.4" author="ilya.deus">
+    <changeSet id="addForeignKeyConstraintGoodsTable" author="ilya.deus">
         <addForeignKeyConstraint
                 baseTableName="goods"
                 baseColumnNames="user_id"
@@ -99,7 +99,7 @@
     </changeSet>
 
     <!-- Add Foreign Key Constraint for User_Roles Table -->
-    <changeSet id="1.0.5" author="ilya.deus">
+    <changeSet id="addForeignKeyConstraintUserRolesTable" author="ilya.deus">
         <addForeignKeyConstraint
                 baseTableName="user_roles"
                 baseColumnNames="user_id"
@@ -125,7 +125,7 @@
     </changeSet>
 
     <!-- Create Account_Status Table -->
-    <changeSet id="1.0.7" author="vladyslav.haivoronskyi">
+    <changeSet id="addAccountStatusTable" author="vladyslav.haivoronskyi">
         <createTable tableName="account_status">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -140,12 +140,14 @@
     </changeSet>
 
     <changeSet id="addDefaultStatus" author="vladyslav.haivoronskyi">
-        <sql>INSERT INTO account_status (status_name, description) VALUES ('ACTIVE', 'This is status for active users')</sql>
-        <sql>INSERT INTO account_status (status_name, description) VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
+        <sql>INSERT INTO account_status (status_name, description)
+             VALUES ('ACTIVE', 'This is status for active users')</sql>
+        <sql>INSERT INTO account_status (status_name, description)
+             VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
     </changeSet>
 
-      <!-- Add Phone to the Goods Table -->
-    <changeSet id="1.0.7" author="Oleksandr Tuleninov">
+    <!-- Add Phone to the Goods Table -->
+    <changeSet id="addPhoneGoodsTable " author="Oleksandr Tuleninov">
         <addColumn tableName="goods">
             <column name="phone" type="VARCHAR(255)">
                 <constraints nullable="true"/>
@@ -154,7 +156,7 @@
     </changeSet>
 
     <!-- Add created_at, deleted_at fields to the User Table -->
-    <changeSet id="1.0.9" author="Oleksandr Tuleninov">
+    <changeSet id="addCreatedAndDeletedFieldsUserTable" author="Oleksandr Tuleninov">
         <addColumn tableName="user">
             <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
@@ -253,7 +255,7 @@
         <sql>INSERT INTO regions (region) VALUES ('Чернігівська');</sql>
     </changeSet>
 
-    <changeSet id="createLocationTable" author="alex.ilchenko">
+    <changeSet id="addLocationTable" author="alex.ilchenko">
         <createTable tableName="location">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -293,7 +295,7 @@
     </changeSet>
 
     <!-- Create Category Table -->
-    <changeSet id="1.0.6" author="Oleksandr Tuleninov">
+    <changeSet id="addCategoryTable" author="Oleksandr Tuleninov">
         <createTable tableName="category">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -318,7 +320,7 @@
     </changeSet>
 
     <!-- Add Category to Goods Table -->
-    <changeSet id="1.0.10" author="Oleksandr Tuleninov">
+    <changeSet id="addCategoryGoodsTable" author="Oleksandr Tuleninov">
         <addColumn tableName="goods">
             <column name="category" type="VARCHAR(255)"/>
             <column name="category_id" type="BIGINT">
@@ -328,7 +330,7 @@
     </changeSet>
 
     <!-- Add Foreign Key Constraint for Goods Table -->
-    <changeSet id="1.0.11" author="Oleksandr Tuleninov">
+    <changeSet id="addForeignKeyConstraintGoodsTable" author="Oleksandr Tuleninov">
         <addForeignKeyConstraint
                 baseTableName="goods"
                 baseColumnNames="category_id"
@@ -338,5 +340,41 @@
                 onDelete="CASCADE"
                 onUpdate="CASCADE"/>
     </changeSet>
+
+    <!-- Creat the user_reviews table -->
+    <changeSet id="addUserReviewsTable" author="Opanasenko-Mykhailo">
+        <createTable tableName="user_reviews">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="reviewer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reviewed_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rating" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="user_reviews"
+                baseColumnNames="reviewer_id"
+                referencedTableName="user"
+                referencedColumnNames="id" constraintName="fk_reviewer_id"/>
+        <addForeignKeyConstraint
+                baseTableName="user_reviews"
+                baseColumnNames="reviewed_user_id"
+                referencedTableName="user"
+                referencedColumnNames="id" constraintName="fk_reviewed_user_id"/>
+    </changeSet>
+
 
 </databaseChangeLog>
