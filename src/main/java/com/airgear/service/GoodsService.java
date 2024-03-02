@@ -8,6 +8,7 @@ import com.airgear.model.goods.Goods;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 public interface GoodsService {
@@ -26,4 +27,7 @@ public interface GoodsService {
 
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
+    List<Goods> getAllGoods();
+
+    List<Goods> getRandomGoods(int goodsQuantity);
 }

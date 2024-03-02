@@ -2,7 +2,6 @@ package com.airgear.service.impl;
 
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
-import com.airgear.model.goods.Goods;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Service(value = "goodsService")
@@ -58,4 +58,13 @@ public class GoodsServiceImpl implements GoodsService {
         return 0;
     }
 
+    @Override
+    public List<Goods> getAllGoods() {
+        List<Goods> goodsList = goodsRepository.findAll();
+        return goodsList;
+    }
+    @Override
+    public List<Goods> getRandomGoods(int goodsQuantity) {
+        return goodsRepository.getRandomGoods(goodsQuantity);
+    }
 }

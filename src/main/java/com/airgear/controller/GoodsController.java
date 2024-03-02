@@ -25,6 +25,9 @@ import org.springframework.http.ResponseEntity;
 import javax.servlet.http.HttpServletResponse;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -148,4 +151,8 @@ public class GoodsController {
         return goodsService.getNewGoodsFromPeriod(fromDate, toDate);
     }
 
+    @GetMapping("/random-goods")
+    public List<Goods> getRandomGoods(@RequestParam(defaultValue = "9") int goodsQuantity) {
+        return goodsService.getRandomGoods(goodsQuantity);
+    }
 }
