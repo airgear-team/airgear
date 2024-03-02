@@ -2,6 +2,7 @@ package com.airgear.data.generator;
 import com.airgear.dto.UserDto;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
+import com.airgear.model.goods.Location;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.GoodsService;
@@ -13,22 +14,17 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Random;
 
-@Service
 public class GenerateDataService implements CommandLineRunner {
     private static final int MIN_NUMBER_OF_GOODS = 3;
     private static final int MAX_NUMBER_OF_GOODS = 6;
     private static final int NUMBER_OF_USERS = 10;
 
-    @Autowired
     private UserService userService;
 
-    @Autowired
     private GoodsService goodsService;
 
-    @Autowired
     private GoodsRepository goodsRepository;
 
-    @Autowired
     private UserRepository userRepository;
 
     private final Random random = new Random();
@@ -87,7 +83,7 @@ public class GenerateDataService implements CommandLineRunner {
             goods.setName("Goods" + user.getId() + "_" + i);
             goods.setDescription("Description for Goods " + user.getId() + "_" + i);
             goods.setPrice(new BigDecimal("100.00").multiply(new BigDecimal(i + 1)));
-            goods.setLocation("Location" + user.getId() + "_" + i);
+            goods.setLocation(new Location());
             goods.setUser(user);
             goodsService.saveGoods(goods);
         }
