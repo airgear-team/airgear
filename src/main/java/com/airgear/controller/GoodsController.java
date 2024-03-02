@@ -2,6 +2,7 @@ package com.airgear.controller;
 
 import com.airgear.dto.GoodsDto;
 import com.airgear.exception.ForbiddenException;
+import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.RentalAgreement;
@@ -13,6 +14,8 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.math.BigDecimal;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -148,4 +152,14 @@ public class GoodsController {
     public List<Goods> getRandomGoods(@RequestParam(defaultValue = "9") int goodsQuantity) {
         return goodsService.getRandomGoods(goodsQuantity);
     }
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/filter")
+    public Page<Goods> filterGoods(
+            @RequestParam(name = "category", required = false) Category category,
+            @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
+            @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
+            Pageable pageable) {
+        return goodsService.filterGoods(category, minPrice, maxPrice, pageable);
+    }
+
 }
