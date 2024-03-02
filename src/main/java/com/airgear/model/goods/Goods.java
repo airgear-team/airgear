@@ -1,7 +1,6 @@
 package com.airgear.model.goods;
 
 import com.airgear.model.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -76,17 +75,14 @@ public class Goods {
     private String phoneNumber;
 
     @Column(name = "created_at", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime createdAt;
 
     @Column(name = "last_modified")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime lastModified;
 
     @Column(name = "deleted_at")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime deletedAt;
 
 }

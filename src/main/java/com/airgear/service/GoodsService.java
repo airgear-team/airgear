@@ -15,7 +15,7 @@ public interface GoodsService {
 
     Goods getGoodsById(Long id);
 
-    void deleteGoodsById(Long id);
+    void deleteGoods(Goods goods);
 
     Goods saveGoods(Goods goods);
 

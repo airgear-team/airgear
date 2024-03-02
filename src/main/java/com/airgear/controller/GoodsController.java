@@ -9,7 +9,7 @@ import com.airgear.model.User;
 import com.airgear.model.goods.Location;
 import com.airgear.repository.GoodsStatusRepository;
 import com.airgear.service.GoodsService;
-import com.airgear.service.LocationService;
+import com.airgear.service.GoodsStatusService;
 import com.airgear.service.UserService;
 import com.airgear.service.Utils;
 import com.itextpdf.html2pdf.ConverterProperties;
@@ -79,6 +79,7 @@ public class GoodsController {
         newGoods.setLocation(savedLocation);
 
         GoodsStatus status = goodsStatusRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("GoodsStatus not found"));
+        GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
         return goodsService.saveGoods(newGoods);
     }
@@ -118,8 +119,8 @@ public class GoodsController {
         if(user.getId()!=goods.getUser().getId() && !user.getRoles().contains("ADMIN")){
             throw new ForbiddenException("It is not your goods");
         }
-        goods.setGoodsStatus(new GoodsStatus(2, ""));
-        goodsService.updateGoods(goods);
+        goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
+        goodsService.deleteGoods(goods);
         return ResponseEntity.noContent().build();
     }
 

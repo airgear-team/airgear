@@ -36,7 +36,7 @@ public class User {
     @Column
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "USER_ROLES",
             joinColumns = {
                     @JoinColumn(name = "USER_ID")
@@ -55,7 +55,7 @@ public class User {
     @Column(name = "deleted_at")
     private OffsetDateTime deleteAt;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "account_status_id")
     private AccountStatus accountStatus;
 
