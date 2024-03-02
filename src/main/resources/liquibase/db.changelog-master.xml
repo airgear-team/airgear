@@ -307,7 +307,7 @@
     </changeSet>
 
     <!-- Insert data to Category Table -->
-    <changeSet id="addCategoryTable" author="Oleksandr Tuleninov">
+    <changeSet id="insertDataCategoryTable" author="Oleksandr Tuleninov">
         <sql>INSERT INTO category (name) VALUES ('REAL_ESTATE')</sql>
         <sql>INSERT INTO category (name) VALUES ('TRANSPORT_AND_SPECIAL_EQUIPMENT')</sql>
         <sql>INSERT INTO category (name) VALUES ('TECH_AND_ELECTRONICS')</sql>
@@ -375,6 +375,5 @@
                 referencedTableName="user"
                 referencedColumnNames="id" constraintName="fk_reviewed_user_id"/>
     </changeSet>
-
 
 </databaseChangeLog>
