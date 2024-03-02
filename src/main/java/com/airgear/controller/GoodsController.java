@@ -5,6 +5,8 @@ import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.RentalAgreement;
+import com.airgear.model.Goods;
+import com.airgear.model.RentalAgreement;
 import com.airgear.model.User;
 import com.airgear.model.goods.Location;
 import com.airgear.repository.GoodsStatusRepository;
@@ -16,6 +18,7 @@ import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -23,8 +26,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -119,6 +124,26 @@ public class GoodsController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @PostMapping("/download/rental/{goodsId}")
+    @ResponseBody
+    public FileSystemResource download(Authentication auth, @PathVariable Long goodsId, @Valid @RequestBody
+            RentalAgreement rental, HttpServletResponse resp) {
+        Goods goods = goodsService.getGoodsById(goodsId);
+        rental.setGoods(goods);
+        try {
+            File fileTemplate = Utils.getAgreement(rental);
+            File pdfDest = new File("output.pdf");
+            ConverterProperties converterProperties = new ConverterProperties();
+            HtmlConverter.convertToPdf(new FileInputStream(fileTemplate),
+                    new FileOutputStream(pdfDest), converterProperties);
+            resp.setContentType("application/pdf");
+            resp.setHeader("Content-disposition", "attachment; filename=output.pdf");
+            return new FileSystemResource(pdfDest);
+        } catch (IOException e) {
+            throw new RuntimeException("Проблема з загрузкою договора оренди!");
+        }
+    }
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/getcountnewgoods")
     public Integer findCountNewGoodsFromPeriod(Authentication auth,
