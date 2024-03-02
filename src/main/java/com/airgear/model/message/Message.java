@@ -10,6 +10,15 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.util.UUID;
 
+/**
+ * Represents a message entity with associations to goods and users.
+ *
+ * This class is a JPA entity mapped to the "messages" table in the database.
+ * <p>
+ *
+ * @author Oleksandr Tuleninov
+ * @version 01
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
