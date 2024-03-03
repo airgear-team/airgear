@@ -58,7 +58,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate) {
-        return 0;
+        return goodsRepository.findCountNewGoodsFromPeriod(fromDate, toDate);
     }
 
     @Override

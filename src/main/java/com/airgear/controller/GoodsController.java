@@ -162,4 +162,6 @@ public class GoodsController {
         return goodsService.filterGoods(category, minPrice, maxPrice, pageable);
     }
 
+    
+
 }
