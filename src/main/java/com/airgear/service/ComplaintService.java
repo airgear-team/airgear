@@ -1,10 +1,9 @@
 package com.airgear.service;
 
+import com.airgear.dto.ComplaintDTO;
 import com.airgear.model.Complaint;
-import com.airgear.model.ComplaintCategory;
 
 public interface ComplaintService {
-    ComplaintCategory getComplaintCategoryById(Long id);
 
-    void save(Complaint complaint);
+    Complaint save(String userName, Long goodsId, ComplaintDTO complaint);
 }
