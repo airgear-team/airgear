@@ -62,4 +62,6 @@ public class User {
     @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserReview> userReviews;
 
+    @Column
+    private Float rating;
 }
