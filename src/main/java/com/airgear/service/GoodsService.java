@@ -21,4 +21,5 @@ public interface GoodsService {
 
     Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName);
 
+    Long getTotalNumberOfGoods();
 }

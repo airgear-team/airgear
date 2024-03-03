@@ -53,4 +53,9 @@ public class GoodsServiceImpl implements GoodsService {
                 .map(GoodsResponse::fromGoods);
     }
 
+    @Override
+    public Long getTotalNumberOfGoods() {
+        return goodsRepository.count();
+    }
+
 }

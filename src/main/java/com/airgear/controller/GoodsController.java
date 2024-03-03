@@ -88,4 +88,10 @@ public class GoodsController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/total")
+    public Long totalNumberOfGoods() {
+        return goodsService.getTotalNumberOfGoods();
+    }
+
 }
