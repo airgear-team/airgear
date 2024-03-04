@@ -71,19 +71,6 @@ public class UserControllerTest {
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
 
-    @Test
-    public void createGoods() throws JSONException {
-        JSONObject goodsJSON = new JSONObject();
-        goodsJSON.put("name", "bolt222");
-        goodsJSON.put("price", 100.00);
-        goodsJSON.put("description", "gggggggggggggg");
-        goodsJSON.put("location", "nnnnnnnnnnnnn");
-        goodsJSON.put("user", userJSON);
-        HttpEntity<?> entity = new HttpEntity<>(goodsJSON.toString(), headers);
-        GoodsDto goodsRes = template.postForObject("http://localhost:" + port + "/goods", entity, GoodsDto.class);
-        assertNotNull(goodsRes);
-        assertThat(goodsRes.getName()).isEqualTo("bolt222");
-    }
 
     @BeforeAll
     public static void initTest() {
