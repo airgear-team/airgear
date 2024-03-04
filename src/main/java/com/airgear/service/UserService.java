@@ -15,4 +15,8 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    User apponintModerator(String username);
+
+    User removeModerator(String username);
+
 }

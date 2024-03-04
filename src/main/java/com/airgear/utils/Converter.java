@@ -2,8 +2,10 @@ package com.airgear.utils;
 
 import com.airgear.dto.ComplaintCategoryDTO;
 import com.airgear.dto.ComplaintDTO;
+import com.airgear.dto.UserDto;
 import com.airgear.model.Complaint;
 import com.airgear.model.ComplaintCategory;
+import com.airgear.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
