@@ -119,9 +119,12 @@
     </changeSet>
 
     <changeSet id="addDefaultRoles" author="ilya.deus">
-        <sql>INSERT INTO role (name, description) VALUES ('USER', 'This is role for simple users')</sql>
-        <sql>INSERT INTO role (name, description) VALUES ('MODERATOR', 'This is role for moderator')</sql>
-        <sql>INSERT INTO role (name, description) VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('USER', 'This is role for simple users')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('MODERATOR', 'This is role for moderator')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
     </changeSet>
 
     <!-- Create Account_Status Table -->
@@ -197,9 +200,12 @@
     </changeSet>
 
     <changeSet id="addDefaultGoodsStatus" author="vladyslav.haivoronskyi">
-        <sql>INSERT INTO goods_status (name) VALUES ('ACTIVE')</sql>
-        <sql>INSERT INTO goods_status (name) VALUES ('INACTIVE')</sql>
-        <sql>INSERT INTO goods_status (name) VALUES ('DELETED')</sql>
+        <sql>INSERT INTO goods_status (name)
+             VALUES ('ACTIVE')</sql>
+        <sql>INSERT INTO goods_status (name)
+             VALUES ('INACTIVE')</sql>
+        <sql>INSERT INTO goods_status (name)
+             VALUES ('DELETED')</sql>
     </changeSet>
 
     <!-- Create User_Roles Join Table -->
@@ -226,33 +232,60 @@
     </changeSet>
 
     <changeSet id="insertRegionData" author="alex.ilchenko">
-        <sql>INSERT INTO regions (region) VALUES ('Вінницька');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Волинська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Дніпропетровська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Донецька');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Житомирська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Закарпатська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Запорізька');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Івано-Франківська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Київ');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Київська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Кіровоградська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Луганська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Львівська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Миколаївська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Одеська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Полтавська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Республіка Крим');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Рівненська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Севастополь');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Сумська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Тернопільська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Харківська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Херсонська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Хмельницька');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Черкаська');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Чернівецька');</sql>
-        <sql>INSERT INTO regions (region) VALUES ('Чернігівська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Вінницька');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Волинська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Дніпропетровська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Донецька');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Житомирська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Закарпатська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Запорізька');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Івано-Франківська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Київ');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Київська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Кіровоградська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Луганська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Львівська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Миколаївська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Одеська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Полтавська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Республіка Крим');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Рівненська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Севастополь');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Сумська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Тернопільська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Харківська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Херсонська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Хмельницька');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Черкаська');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Чернівецька');</sql>
+        <sql>INSERT INTO regions (region)
+             VALUES ('Чернігівська');</sql>
     </changeSet>
 
     <changeSet id="addLocationTable" author="alex.ilchenko">
@@ -308,15 +341,24 @@
 
     <!-- Insert data to Category Table -->
     <changeSet id="insertDataCategoryTable" author="Oleksandr Tuleninov">
-        <sql>INSERT INTO category (name) VALUES ('REAL_ESTATE')</sql>
-        <sql>INSERT INTO category (name) VALUES ('TRANSPORT_AND_SPECIAL_EQUIPMENT')</sql>
-        <sql>INSERT INTO category (name) VALUES ('TECH_AND_ELECTRONICS')</sql>
-        <sql>INSERT INTO category (name) VALUES ('CLOTHING_AND_ACCESSORIES')</sql>
-        <sql>INSERT INTO category (name) VALUES ('RECREATION_EQUIPMENT')</sql>
-        <sql>INSERT INTO category (name) VALUES ('TOOLS_AND_EQUIPMENT')</sql>
-        <sql>INSERT INTO category (name) VALUES ('SPORTS_EQUIPMENT')</sql>
-        <sql>INSERT INTO category (name) VALUES ('BEAUTY_AND_HEALTH')</sql>
-        <sql>INSERT INTO category (name) VALUES ('EVENT_GOODS')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('REAL_ESTATE')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('TRANSPORT_AND_SPECIAL_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('TECH_AND_ELECTRONICS')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('CLOTHING_AND_ACCESSORIES')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('RECREATION_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('TOOLS_AND_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('SPORTS_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('BEAUTY_AND_HEALTH')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('EVENT_GOODS')</sql>
     </changeSet>
 
     <!-- Add Category to Goods Table -->
@@ -374,6 +416,26 @@
                 baseColumnNames="reviewed_user_id"
                 referencedTableName="user"
                 referencedColumnNames="id" constraintName="fk_reviewed_user_id"/>
+    </changeSet>
+
+    <changeSet id="createFeedbackTable" author="Opanasenko-Mykhailo">
+        <createTable tableName="feedback">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>
