@@ -39,7 +39,15 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location addLocation(Location location) {
-        locationRepository.save(location);
-        return location;
+        String settlement = location.getSettlement();
+        Location existingLocation = getLocationBySettlement(settlement);
+        if (existingLocation != null) {
+            return existingLocation;
+        } else {
+            Location locationNew = new Location();
+            location.setSettlement(settlement);
+            location.setRegionId(location.getRegionId());
+            return locationRepository.save(locationNew);
+        }
     }
 }

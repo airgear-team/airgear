@@ -18,6 +18,8 @@ import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.RoleRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,20 +72,6 @@ public class UserControllerTest {
     private AccountStatusRepository accountStatusRepository;
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
-
-    @Test
-    public void createGoods() throws JSONException {
-        JSONObject goodsJSON = new JSONObject();
-        goodsJSON.put("name", "bolt222");
-        goodsJSON.put("price", 100.00);
-        goodsJSON.put("description", "gggggggggggggg");
-        goodsJSON.put("location", "nnnnnnnnnnnnn");
-        goodsJSON.put("user", userJSON);
-        HttpEntity<?> entity = new HttpEntity<>(goodsJSON.toString(), headers);
-        GoodsDto goodsRes = template.postForObject("http://localhost:" + port + "/goods", entity, GoodsDto.class);
-        assertNotNull(goodsRes);
-        assertThat(goodsRes.getName()).isEqualTo("bolt222");
-    }
 
     @BeforeAll
     public static void initTest() {
@@ -157,11 +145,18 @@ public class UserControllerTest {
     @Test
     @Order(2)
     public void createGoodsByUser(){
-        GoodsDto goods = new GoodsDto("bolt", "description", BigDecimal.valueOf(100.0D), null, new Location(), new Category(), "+380984757533", userTest);
+        Location location = new Location();
+        location.setRegionId(1L);
+        location.setSettlement("Konstantinivka");
+        Category category = new Category();
+        category.setName("TOOLS_AND_EQUIPMENT");
+        GoodsDto goods = new GoodsDto("bolt", "description", BigDecimal.valueOf(100.0D), null, location, category, "+380984757533", userTest);
         HttpEntity<?> entity = new HttpEntity<>(goods, headersUser);
         goodsTest = template.postForObject("http://localhost:" + port + "/goods", entity, Goods.class);
         assertNotNull(goodsTest);
         assertThat(goodsTest.getName()).isEqualTo("bolt");
+        assertThat(goodsTest.getLocation().getSettlement()).isEqualTo("Konstantinivka");
+        assertThat(goodsTest.getCategory().getName()).isEqualTo("TOOLS_AND_EQUIPMENT");
         assertNotNull(goodsTest.getCreatedAt());
         assertNotNull(goodsTest.getGoodsStatus());
         Assertions.assertEquals(1L, goodsTest.getGoodsStatus().getId());
@@ -177,7 +172,9 @@ public class UserControllerTest {
 
     @Test
     @Order(4)
-    public void updateGoodsByUser(){
+    public void updateGoodsByUser() throws JsonProcessingException {
+        ObjectMapper  mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(goodsTest);
         HttpEntity<?> entity = new HttpEntity<>(goodsTest, headersUser);
         OffsetDateTime time = OffsetDateTime.now();
         ResponseEntity<Goods> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.PUT, entity, Goods.class);
@@ -239,6 +236,16 @@ public class UserControllerTest {
         ResponseEntity<String> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.DELETE, entity, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         Assertions.assertNull(response.getBody());
+    }
+
+    @Test
+    @Order(11)
+    public void createLocation(){
+        String st ="settlement=Ivanivka&region_id=1";
+        HttpEntity<?> entityLocation = new HttpEntity<>(null, headersUser);
+        ResponseEntity<Location> locationResp= template.postForEntity("http://localhost:" + port + "/location/create"+"?"+st, entityLocation, Location.class);
+        assertNotNull(locationResp.getBody());
+        assertThat(locationResp.getBody().getSettlement()).isEqualTo("Ivanivka");
     }
 
 }

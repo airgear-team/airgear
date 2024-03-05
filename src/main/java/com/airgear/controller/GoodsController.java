@@ -59,22 +59,7 @@ public class GoodsController {
         User user = userService.findByUsername(auth.getName());
         Goods newGoods = goods.getGoodsFromDto();
         newGoods.setUser(user);
-
-        String settlement = newGoods.getLocation().getSettlement();
-
-        Location existingLocation = locationService.getLocationBySettlement(settlement);
-
-        Location savedLocation;
-        if (existingLocation != null) {
-            savedLocation = existingLocation;
-        } else {
-            Location location = new Location();
-            location.setSettlement(settlement);
-            location.setRegionId(newGoods.getLocation().getRegionId());
-            savedLocation = locationService.addLocation(location);
-        }
-        newGoods.setLocation(savedLocation);
-
+        newGoods.setLocation(locationService.addLocation(newGoods.getLocation()));
         GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
         return goodsService.saveGoods(newGoods);

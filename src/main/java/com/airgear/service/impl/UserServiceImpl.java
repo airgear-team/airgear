@@ -91,5 +91,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         newUser.setAccountStatus(accountStatusRepository.findByStatusName("ACTIVE"));
         return userRepository.save(newUser);
     }
+    @Override
+    public User update(User user) {
+        return userRepository.save(user);
+    }
 
 }

@@ -13,6 +13,8 @@ public interface UserService {
 
     User save(UserDto user);
 
+    User update(User user);
+
     List<User> findAll();
 
     User findByUsername(String username);

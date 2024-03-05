@@ -35,12 +35,14 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods saveGoods(@Valid Goods goods) {
+        checkCategory(goods);
         goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
 
     @Override
     public Goods updateGoods(Goods existingGoods) {
+        checkCategory(existingGoods);
         existingGoods.setLastModified(OffsetDateTime.now());
         return goodsRepository.save(existingGoods);
     }
@@ -89,6 +91,16 @@ public class GoodsServiceImpl implements GoodsService {
             return goodsRepository.findByCategory(category, pageable);
         } else {
             return goodsRepository.findAll(pageable);
+        }
+    }
+
+    private void checkCategory(Goods goods){
+        if (goods.getCategory()!=null){
+            Category category= goodsRepository.getCategoryByName(goods.getCategory().getName());
+            if (category!=null)
+                goods.setCategory(category);
+            else
+                throw new RuntimeException("not correct category for good with id: "+goods.getId());
         }
     }
 }
