@@ -20,4 +20,9 @@ public interface UserService {
     User findByUsername(String username);
 
     List<Map<String, Integer>> getUserGoodsCount(Pageable pageable);
+
+    User addRole(String username, String role);
+
+    User deleteRole(String username, String role);
+
 }

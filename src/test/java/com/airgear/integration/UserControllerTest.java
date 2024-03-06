@@ -17,12 +17,7 @@ import com.airgear.model.goods.Location;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.RoleRepository;
 import com.airgear.repository.UserRepository;
-import com.airgear.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,13 +44,7 @@ public class UserControllerTest {
     private int port;
 
     @Autowired
-    UserService userService;
-
-    private static JSONObject userJSON;
-
-    @Autowired
     private TestRestTemplate template;
-    private static HttpHeaders headers;
     private static User userTest;
     private static User adminTest;
     private static User moderatorTest;
@@ -172,9 +161,7 @@ public class UserControllerTest {
 
     @Test
     @Order(4)
-    public void updateGoodsByUser() throws JsonProcessingException {
-        ObjectMapper  mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(goodsTest);
+    public void updateGoodsByUser(){
         HttpEntity<?> entity = new HttpEntity<>(goodsTest, headersUser);
         OffsetDateTime time = OffsetDateTime.now();
         ResponseEntity<Goods> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.PUT, entity, Goods.class);
