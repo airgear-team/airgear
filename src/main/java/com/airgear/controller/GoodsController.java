@@ -140,6 +140,7 @@ public class GoodsController {
             throw new RuntimeException("Проблема з загрузкою договора оренди!");
         }
     }
+
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/getcountnewgoods")
     public Integer findCountNewGoodsFromPeriod(Authentication auth,
@@ -161,7 +162,5 @@ public class GoodsController {
             Pageable pageable) {
         return goodsService.filterGoods(category, minPrice, maxPrice, pageable);
     }
-
-    
 
 }
