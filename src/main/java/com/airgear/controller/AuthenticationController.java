@@ -13,10 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -45,6 +42,13 @@ public class AuthenticationController {
     @RequestMapping(value="/register", method = RequestMethod.POST)
     public User saveUser(@RequestBody UserDto user){
         return userService.save(user);
+    }
+
+    //TODO delete it after testing
+    @CrossOrigin(origins = "http://localhost:9000")
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String test(){
+        return "{\"test\":\"test\"}";
     }
 
 }
