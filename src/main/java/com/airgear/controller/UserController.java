@@ -76,4 +76,12 @@ public class UserController {
 
         return userService.getUserGoodsCount(pageable);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{username}/isExists")
+    public Boolean isUsernameExists(Authentication auth, @PathVariable String username) {
+        log.info("auth name : {}", auth.getName());
+        return userService.isUsernameExists(username);
+    }
+
 }

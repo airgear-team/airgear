@@ -16,6 +16,8 @@ import java.util.Map;
 public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
 
+    boolean existsByUsername(String username);
+
     @Modifying
     @Transactional
     @Query(value = "UPDATE user SET account_status_id = :accountStatusId WHERE id = :userId", nativeQuery = true)

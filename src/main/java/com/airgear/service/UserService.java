@@ -17,5 +17,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    boolean isUsernameExists(String username);
+
     List<Map<String, Integer>> getUserGoodsCount(Pageable pageable);
 }
