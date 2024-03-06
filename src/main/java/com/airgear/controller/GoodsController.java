@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -162,6 +163,11 @@ public class GoodsController {
         return goodsService.filterGoods(category, minPrice, maxPrice, pageable);
     }
 
-    
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/category/total")
+    public ResponseEntity<Map<Category, Long>> amountOfGoodsByCategory() {
+        Map<Category, Long> categoryAmounts = goodsService.getAmountOfGoodsByCategory();
+        return ResponseEntity.ok(categoryAmounts);
+    }
 
 }

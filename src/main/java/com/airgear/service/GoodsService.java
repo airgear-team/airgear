@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
 
 public interface GoodsService {
@@ -32,4 +33,6 @@ public interface GoodsService {
     List<Goods> getAllGoods();
 
     List<Goods> getRandomGoods(int goodsQuantity);
+
+    Map<Category, Long> getAmountOfGoodsByCategory();
 }

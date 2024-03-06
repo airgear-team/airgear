@@ -14,7 +14,9 @@ import javax.validation.Valid;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service(value = "goodsService")
 public class GoodsServiceImpl implements GoodsService {
@@ -35,6 +37,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods saveGoods(@Valid Goods goods) {
+        checkCategory(goods);
         goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
@@ -70,6 +73,16 @@ public class GoodsServiceImpl implements GoodsService {
     public List<Goods> getRandomGoods(int goodsQuantity) {
         return goodsRepository.getRandomGoods(goodsQuantity);
     }
+
+    @Override
+    public Map<Category, Long> getAmountOfGoodsByCategory() {
+        List<Goods> goodsList = goodsRepository.findAll();
+
+        // Grouping by category and quantity
+        return goodsList.stream()
+                .collect(Collectors.groupingBy(Goods::getCategory, Collectors.counting()));
+    }
+
     @Override
     public Page<Goods> getAllGoods(Pageable pageable) {
         return goodsRepository.findAll(pageable);
@@ -89,6 +102,16 @@ public class GoodsServiceImpl implements GoodsService {
             return goodsRepository.findByCategory(category, pageable);
         } else {
             return goodsRepository.findAll(pageable);
+        }
+    }
+
+    private void checkCategory(Goods goods){
+        if (goods.getCategory()!=null){
+            Category category= goodsRepository.getCategoryByName(goods.getCategory().getName());
+            if (category!=null)
+                goods.setCategory(category);
+            else
+                throw new RuntimeException("not correct category for good with id: "+goods.getId());
         }
     }
 }
