@@ -151,6 +151,7 @@ public class GoodsController {
         return goodsService.getNewGoodsFromPeriod(fromDate, toDate);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/random-goods")
     public List<Goods> getRandomGoods(@RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
         return goodsService.getRandomGoods(quantity);
