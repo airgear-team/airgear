@@ -1,5 +1,7 @@
 package com.airgear.model;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,7 @@ import javax.persistence.*;
 import java.time.OffsetDateTime;
 
 @Data
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

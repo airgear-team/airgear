@@ -3,22 +3,25 @@ package com.airgear.model;
 import com.airgear.model.goods.Goods;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column
     private String username;
@@ -43,11 +46,11 @@ public class User {
             },
             inverseJoinColumns = {
                     @JoinColumn(name = "ROLE_ID")})
-    private Set<Role> roles;
+    private List<Role> roles;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Goods> goods;
+    private List<Goods> goods;
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
@@ -60,6 +63,6 @@ public class User {
     private AccountStatus accountStatus;
 
     @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<UserReview> userReviews;
+    private List<UserReview> userReviews;
 
 }

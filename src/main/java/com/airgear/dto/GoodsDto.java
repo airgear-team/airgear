@@ -1,41 +1,70 @@
 package com.airgear.dto;
 
-import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
-import com.airgear.model.User;
-import com.airgear.model.goods.GoodsStatus;
-import com.airgear.model.goods.Location;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * GoodsDto class. Fields are similar to Goods entity.
+ * Contains methods for translating entity into DTO and vice versa.
+ *
+ * @author Oleksandr Panchenko
+ * @version 1.0
+ */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class GoodsDto {
-
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;
     private BigDecimal weekendsPrice;
-    private Location location;
-    private Category category;
+    private LocationDto location;
+    private CategoryDto category;
     private String phoneNumber;
-    private User user;
+    private UserDto user;
 
-    public Goods getGoodsFromDto(){
-        Goods goods = new Goods();
-        goods.setName(name);
-        goods.setDescription(description);
-        goods.setPrice(price);
-        goods.setWeekendsPrice(weekendsPrice);
-        goods.setLocation(location);
-        goods.setCategory(category);
-        goods.setPhoneNumber(phoneNumber);
-        goods.setUser(user);
-        return goods;
+    public Goods toGoods() {
+        return Goods.builder()
+                .id(id)
+                .name(name)
+                .description(description)
+                .price(price)
+                .weekendsPrice(weekendsPrice)
+                .location(location.toLocation())
+                .category(category.toCategory())
+                .phoneNumber(phoneNumber)
+                .user(user.toUser())
+                .build();
     }
 
+    public static List<Goods> toGoodsList(List<GoodsDto> goods) {
+        List<Goods> result = new ArrayList<>();
+        goods.forEach(goodsDto -> result.add(goodsDto.toGoods()));
+        return result;
+    }
+
+    public static GoodsDto fromGoods(Goods goods) {
+        return GoodsDto.builder()
+                .id(goods.getId())
+                .name(goods.getName())
+                .description(goods.getDescription())
+                .price(goods.getPrice())
+                .weekendsPrice(goods.getWeekendsPrice())
+                .location(LocationDto.fromLocation(goods.getLocation()))
+                .category(CategoryDto.fromCategory(goods.getCategory()))
+                .phoneNumber(goods.getPhoneNumber())
+                .user(UserDto.fromUser(goods.getUser()))
+                .build();
+    }
+
+    public static List<GoodsDto> fromGoodsList(List<Goods> goodsList) {
+        List<GoodsDto> result = new ArrayList<>();
+        goodsList.forEach(goods -> result.add(GoodsDto.fromGoods(goods)));
+        return null;
+    }
 }

@@ -3,6 +3,7 @@ package com.airgear.model.goods;
 import com.airgear.model.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Data
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

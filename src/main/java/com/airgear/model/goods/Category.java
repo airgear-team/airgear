@@ -1,11 +1,11 @@
 package com.airgear.model.goods;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 /**
  * The {@code Category} Represents a category entity in the database.
@@ -15,6 +15,7 @@ import java.util.Objects;
  * @version 01
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
