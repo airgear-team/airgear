@@ -1,6 +1,5 @@
 package com.airgear.service;
 
-import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import org.springframework.data.domain.Page;
@@ -27,11 +26,11 @@ public interface GoodsService {
 
     Page<Goods> getAllGoods(Pageable pageable);
 
-    Page<Goods> filterGoods(Category category, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+    Page<Goods> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
     Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName);
 
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
-    List<Goods> getRandomGoods(int quantity);
+    List<Goods> getRandomGoods(String categoryName, int quantity);
 }
