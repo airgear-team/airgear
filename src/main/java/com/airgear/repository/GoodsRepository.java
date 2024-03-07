@@ -22,8 +22,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     @Query("SELECT count(id) FROM Goods goods WHERE goods.createdAt >= :fromDate AND goods.createdAt <= :toDate")
     int  findCountNewGoodsFromPeriod(@Param("fromDate")OffsetDateTime fromDate, @Param("toDate") OffsetDateTime toDate);
 
-    @Query(value = "SELECT * FROM goods ORDER BY RAND() LIMIT :goodsQuantity", nativeQuery = true)
-    List<Goods> getRandomGoods(@Param("goodsQuantity") int goodsQuantity);
+    List<Goods> findAll();
 
     Page<Goods> findAll(Pageable pageable);
 

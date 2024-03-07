@@ -7,11 +7,14 @@ import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.math.BigDecimal;
 import java.util.Set;
@@ -67,9 +70,15 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsList;
     }
     @Override
-    public List<Goods> getRandomGoods(int goodsQuantity) {
-        return goodsRepository.getRandomGoods(goodsQuantity);
+    public List<Goods> getRandomGoods(int quantity) {
+        List<Goods> goods = goodsRepository.findAll();
+
+        Collections.shuffle(goods);
+        List<Goods> randomAndLimitedGoodsList = goods.subList(0, Math.min(goods.size(), quantity));
+
+        return randomAndLimitedGoodsList;
     }
+
     @Override
     public Page<Goods> getAllGoods(Pageable pageable) {
         return goodsRepository.findAll(pageable);

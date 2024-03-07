@@ -22,14 +22,16 @@ public interface GoodsService {
     Goods updateGoods(Goods goods);
 
     Set<Goods> getAllGoodsByUsername(String username);
+
+    List<Goods> getAllGoods();
+
     Page<Goods> getAllGoods(Pageable pageable);
+
     Page<Goods> filterGoods(Category category, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
     Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName);
 
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
-    List<Goods> getAllGoods();
-
-    List<Goods> getRandomGoods(int goodsQuantity);
+    List<Goods> getRandomGoods(int quantity);
 }

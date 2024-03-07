@@ -13,6 +13,7 @@ import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.io.File;
@@ -150,9 +152,10 @@ public class GoodsController {
     }
 
     @GetMapping("/random-goods")
-    public List<Goods> getRandomGoods(@RequestParam(defaultValue = "9") int goodsQuantity) {
-        return goodsService.getRandomGoods(goodsQuantity);
+    public List<Goods> getRandomGoods(@RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
+        return goodsService.getRandomGoods(quantity);
     }
+
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/filter")
     public Page<Goods> filterGoods(
