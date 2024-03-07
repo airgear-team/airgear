@@ -17,4 +17,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query(value = "UPDATE user SET account_status_id = :accountStatusId WHERE id = :userId", nativeQuery = true)
     int setAccountStatusId(@Param("accountStatusId") long accountStatusId, @Param("userId") long userId);
 
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.isPotentiallyScam = :isScam WHERE u.id = :userId")
+    void updateIsPotentiallyScamStatus(@Param("userId") Long userId, @Param("isScam") boolean isScam);
+
 }

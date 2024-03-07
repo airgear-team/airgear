@@ -15,4 +15,5 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    void markUserAsPotentiallyScam(Long userId, boolean isScam);
 }

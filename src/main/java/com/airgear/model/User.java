@@ -59,4 +59,7 @@ public class User {
     @JoinColumn(name = "account_status_id")
     private AccountStatus accountStatus;
 
+    @Column(name = "is_potentially_scam", nullable = false)
+    @JsonIgnore
+    private boolean isPotentiallyScam = false;
 }

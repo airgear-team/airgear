@@ -212,4 +212,13 @@
         </createTable>
     </changeSet>
 
+    <!-- Add is_potentially_scam column to user table -->
+    <changeSet id="addIsPotentiallyScamToUser" author="kyrylo.fursov">
+        <addColumn tableName="user">
+            <column name="is_potentially_scam" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
