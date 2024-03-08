@@ -1,4 +1,4 @@
-package com.airgear.service;
+package com.airgear.utils;
 
 import com.airgear.controller.GoodsController;
 import com.airgear.model.RentalAgreement;
@@ -12,6 +12,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Utils {
+
     public static File getAgreement(RentalAgreement agreement) throws IOException {
         ClassLoader classLoader = GoodsController.class.getClassLoader();
         File fileTemplate = new File(classLoader.getResource("forms/rentalAgreementTemplate.html").getFile());

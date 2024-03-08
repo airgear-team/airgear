@@ -11,16 +11,15 @@ import com.airgear.model.RentalAgreement;
 import com.airgear.model.User;
 import com.airgear.model.goods.Location;
 import com.airgear.service.*;
+import com.airgear.utils.Utils;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
-import com.airgear.repository.GoodsStatusRepository;
 import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import com.airgear.utils.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +30,6 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 import java.io.File;
