@@ -92,6 +92,30 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         newUser.setAccountStatus(accountStatusRepository.findByStatusName("ACTIVE"));
         return userRepository.save(newUser);
     }
+    @Override
+    public User update(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User addRole(String username, String role) {
+        User user =findByUsername(username);
+        Set<Role> roles = user.getRoles();
+        roles.add(roleService.findByName("ADMIN"));
+        user.setRoles(roles);
+        return update(user);
+    }
+    @Override
+    public User deleteRole(String username, String role) {
+        User user =findByUsername(username);
+        Set<Role> roles = user.getRoles();
+        roles.remove(roleService.findByName("ADMIN"));
+        if(roles.isEmpty()){
+            roles.add(roleService.findByName("USER"));
+        }
+        return  update(user);
+    }
+
 
     @Override
     public User apponintModerator(String username) {

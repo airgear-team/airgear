@@ -51,6 +51,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods updateGoods(Goods existingGoods) {
+        checkCategory(existingGoods);
         existingGoods.setLastModified(OffsetDateTime.now());
         return goodsRepository.save(existingGoods);
     }
@@ -132,4 +133,5 @@ public class GoodsServiceImpl implements GoodsService {
                 throw new RuntimeException("not correct category for good with id: "+goods.getId());
         }
     }
+
 }

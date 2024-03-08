@@ -61,6 +61,7 @@ public class User {
     private AccountStatus accountStatus;
 
     @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<UserReview> userReviews;
 
     @OneToMany(mappedBy = "user")

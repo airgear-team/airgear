@@ -16,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,8 +50,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
     @RequestMapping(value = "/{username}/goods", method = RequestMethod.GET)
     public Set<Goods> getAllGoodsBy(@PathVariable String username) {
-        Set<Goods> goodsSet = goodsService.getAllGoodsByUsername(username);
-        return goodsSet;
+        return goodsService.getAllGoodsByUsername(username);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
@@ -88,6 +86,18 @@ public class UserController {
             default -> throw new IllegalArgumentException("Status not found");
         }
         return ResponseEntity.ok(UserDto.getDtoFromUser(user));
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/{username}/role", method = RequestMethod.PATCH)
+    public User changeRoleAdmin(@PathVariable String username, @RequestParam String act) {
+        if (act.equals("add"))
+            return userService.addRole(username, "ADMIN");
+        else if (act.equals("delete"))
+            return userService.deleteRole(username,"ADMIN");
+        else
+            throw new RuntimeException("Don't correct field: act! Choose: add or delete!");
     }
 
 }

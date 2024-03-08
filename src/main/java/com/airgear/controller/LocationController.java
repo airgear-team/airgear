@@ -26,14 +26,15 @@ public class LocationController {
     }
 
     @PostMapping("/create")
-    public void createLocation(@RequestParam String settlement, @RequestParam Long region_id) {
+    public Location createLocation(@RequestParam String settlement, @RequestParam Long region_id) {
         Regions region = locationService.getRegionById(region_id);
         if (region != null) {
             Location location = new Location();
             location.setSettlement(settlement);
             location.setRegionId(region_id);
-            locationService.addLocation(location);
+            return locationService.addLocation(location);
         }
+        throw new RuntimeException("don't find region");
     }
 
 }

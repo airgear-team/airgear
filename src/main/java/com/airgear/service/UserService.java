@@ -13,6 +13,8 @@ public interface UserService {
 
     User save(UserDto user);
 
+    User update(User user);
+
     List<User> findAll();
 
     User findByUsername(String username);
@@ -22,5 +24,9 @@ public interface UserService {
     User apponintModerator(String username);
 
     User removeModerator(String username);
+
+    User addRole(String username, String role);
+
+    User deleteRole(String username, String role);
 
 }

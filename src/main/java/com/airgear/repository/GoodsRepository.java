@@ -24,6 +24,9 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     List<Goods> findAll();
 
+    @Query("FROM Category category WHERE category.name = :name")
+    Category  getCategoryByName(@Param("name")String name);
+
     Page<Goods> findAll(Pageable pageable);
 
     Page<Goods> findByCategory(Category category, Pageable pageable);
@@ -35,6 +38,5 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     Page<Goods> findByPriceLessThan(BigDecimal maxPrice, Pageable pageable);
 
     Page<Goods> findByCategoryAndPriceBetween(Category category, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
-
 
 }
