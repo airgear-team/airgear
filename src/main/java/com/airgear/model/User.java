@@ -66,4 +66,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Complaint> complaints;
 
+    @Column
+    private Float rating;
 }
