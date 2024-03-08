@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.config.security.ThirdPartyService;
+import com.airgear.security.ThirdPartyService;
 import com.airgear.dto.UserDto;
 import com.airgear.service.GoogleTokenHandler;
 import com.airgear.service.ThirdPartyTokenHandler;
@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.airgear.config.security.SecurityConstantsUI.THIRD_PARTY_SERVICE;
-import static com.airgear.config.security.ThirdPartyService.valueOf;
+import static com.airgear.security.SecurityConstantsUI.THIRD_PARTY_SERVICE;
+import static com.airgear.security.ThirdPartyService.valueOf;
 
 /**
  * Implementation of {@link ThirdPartyTokenHandler} that handles third-party tokens.

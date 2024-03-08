@@ -3,6 +3,8 @@ package com.airgear.service.impl;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
+import com.airgear.repository.CategoryRepository;
+import com.airgear.repository.ComplaintCategoryRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private GoodsRepository goodsRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public Goods getGoodsById(Long id) {
@@ -121,7 +125,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     private void checkCategory(Goods goods){
         if (goods.getCategory()!=null){
-            Category category= goodsRepository.getCategoryByName(goods.getCategory().getName());
+            Category category= categoryRepository.findByName(goods.getCategory().getName());
             if (category!=null)
                 goods.setCategory(category);
             else
