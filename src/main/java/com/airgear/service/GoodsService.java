@@ -34,4 +34,6 @@ public interface GoodsService {
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
     List<Goods> getRandomGoods(int quantity);
+
+    Long getTotalNumberOfGoods();
 }

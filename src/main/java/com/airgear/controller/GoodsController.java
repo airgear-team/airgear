@@ -184,4 +184,11 @@ public class GoodsController {
         Complaint newComplaint = complaintService.save(auth.getName(), goodsId, complaint);
         return ResponseEntity.ok(Converter.getDtoFromComplaint(newComplaint));
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/total")
+    public Long totalNumberOfGoods() {
+        return goodsService.getTotalNumberOfGoods();
+    }
+
 }

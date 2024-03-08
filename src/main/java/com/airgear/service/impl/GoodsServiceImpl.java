@@ -100,4 +100,9 @@ public class GoodsServiceImpl implements GoodsService {
             return goodsRepository.findAll(pageable);
         }
     }
+
+    @Override
+    public Long getTotalNumberOfGoods() {
+        return goodsRepository.count();
+    }
 }
