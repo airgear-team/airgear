@@ -59,9 +59,8 @@ public class GoogleTokenHandlerImpl implements GoogleTokenHandler {
                 tokenResponse.sub(),
                 defaultPassword,
                 tokenResponse.email(),
-                null,
-                null
-        );
+                "",
+                "");
     }
 
     private TokenResponse getTokenResponse(String validationUrl) {

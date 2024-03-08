@@ -27,14 +27,6 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="addWeekendsPrice" author="Oleksandr Panchenko">
-        <addColumn tableName="goods">
-            <column name="weekends_price" type="DECIMAL(19, 2)">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-    </changeSet>
-
     <!-- Create Role Table -->
     <changeSet id="addRoleTable" author="ilya.deus">
         <createTable tableName="role">
