@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepository.findByUsername(username);
     }
 
+
     @Override
     public List<Map<String, Integer>> getUserGoodsCount(Pageable pageable) {
         return userRepository.findUserGoodsCount(pageable);
@@ -90,6 +91,20 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         newUser.setCreatedAt(OffsetDateTime.now());
         newUser.setAccountStatus(accountStatusRepository.findByStatusName("ACTIVE"));
         return userRepository.save(newUser);
+    }
+
+    @Override
+    public User apponintModerator(String username) {
+        User user = userRepository.findByUsername(username);
+        user.getRoles().add(roleService.findByName("MODERATOR"));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User removeModerator(String username) {
+        User user = userRepository.findByUsername(username);
+        user.getRoles().remove(roleService.findByName("MODERATOR"));
+        return userRepository.save(user);
     }
 
 }

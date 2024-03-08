@@ -400,4 +400,86 @@
         </createTable>
     </changeSet>
 
+    <!-- Added weekends price to goods-->
+    <changeSet id="addWeekendsPrice" author="Oleksandr Panchenko">
+        <addColumn tableName="goods">
+            <column name="weekends_price" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Create complaint table-->
+    <changeSet id="createComplaintTable" author="Oleksandr Panchenko">
+        <createTable tableName="complaint">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="complaint_category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create complaint category table-->
+    <changeSet id="createComplaintCategoryTable" author="Oleksandr Panchenko">
+        <createTable tableName="complaint_category">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Add Foreign Keys Constraint for Complaint Table -->
+    <changeSet id="addForeignKeysComplaintTable" author="Oleksandr Panchenko">
+        <addForeignKeyConstraint
+                baseTableName="complaint"
+                baseColumnNames="complaint_category_id"
+                constraintName="fk_complaint_category"
+                referencedTableName="complaint_category"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="complaint"
+                baseColumnNames="user_id"
+                constraintName="fk_complaint_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="complaint"
+                baseColumnNames="goods_id"
+                constraintName="fk_complaint_goods"
+                referencedTableName="goods"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+    <!-- Add default complaint categories from Complaint_category table -->
+    <changeSet id="addDefaultComplaintCategories" author="Oleksandr Panchenko">
+        <sql>INSERT INTO complaint_category (name)
+             VALUES ('Fraud')</sql>
+        <sql>INSERT INTO complaint_category (name)
+             VALUES ('Violation of copyright')</sql>
+        <sql>INSERT INTO complaint_category (name)
+             VALUES ('Unacceptable content')</sql>
+    </changeSet>
 </databaseChangeLog>

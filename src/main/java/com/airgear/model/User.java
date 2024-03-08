@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -61,5 +62,8 @@ public class User {
 
     @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserReview> userReviews;
+
+    @OneToMany(mappedBy = "user")
+    private List<Complaint> complaints;
 
 }

@@ -18,4 +18,9 @@ public interface UserService {
     User findByUsername(String username);
 
     List<Map<String, Integer>> getUserGoodsCount(Pageable pageable);
+
+    User apponintModerator(String username);
+
+    User removeModerator(String username);
+
 }

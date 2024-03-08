@@ -1,5 +1,6 @@
 package com.airgear.controller;
 
+import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
@@ -76,4 +77,17 @@ public class UserController {
 
         return userService.getUserGoodsCount(pageable);
     }
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @PatchMapping(value = "/{username}/role")
+    public ResponseEntity<UserDto> changeRole(@PathVariable String username,
+                                              @RequestBody String status) {
+        User user;
+        switch (status.toLowerCase()) {
+            case "appoint" -> user = userService.apponintModerator(username);
+            case "remove" -> user = userService.removeModerator(username);
+            default -> throw new IllegalArgumentException("Status not found");
+        }
+        return ResponseEntity.ok(UserDto.getDtoFromUser(user));
+    }
+
 }

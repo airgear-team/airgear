@@ -1,8 +1,10 @@
 package com.airgear.controller;
 
+import com.airgear.dto.ComplaintDTO;
 import com.airgear.dto.GoodsDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Category;
+import com.airgear.model.Complaint;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.RentalAgreement;
@@ -11,6 +13,11 @@ import com.airgear.model.goods.Location;
 import com.airgear.service.*;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
+import com.airgear.repository.GoodsStatusRepository;
+import com.airgear.service.ComplaintService;
+import com.airgear.service.GoodsService;
+import com.airgear.service.UserService;
+import com.airgear.utils.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.PageRequest;
@@ -47,6 +54,8 @@ public class GoodsController {
     private GoodsStatusService goodsStatusService;
     @Autowired
     private LocationService locationService;
+    @Autowired
+    private ComplaintService complaintService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/featured")
@@ -111,10 +120,10 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{goodsId}")
-    public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId){
+    public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId) {
         User user = userService.findByUsername(auth.getName());
         Goods goods = goodsService.getGoodsById(goodsId);
-        if(user.getId()!=goods.getUser().getId() && !user.getRoles().contains("ADMIN")){
+        if (user.getId() != goods.getUser().getId() && !user.getRoles().contains("ADMIN")) {
             throw new ForbiddenException("It is not your goods");
         }
         goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
@@ -166,4 +175,13 @@ public class GoodsController {
         return goodsService.filterGoods(category, minPrice, maxPrice, pageable);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @PostMapping("/{goodsId}/complaint")
+    public ResponseEntity<ComplaintDTO> addComplaint
+            (Authentication auth,
+             @PathVariable Long goodsId,
+             @Valid @RequestBody ComplaintDTO complaint) {
+        Complaint newComplaint = complaintService.save(auth.getName(), goodsId, complaint);
+        return ResponseEntity.ok(Converter.getDtoFromComplaint(newComplaint));
+    }
 }
