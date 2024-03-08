@@ -34,10 +34,14 @@ public class UserReviewServiceImpl implements UserReviewService {
 
         userReview.setReviewer(reviewer);
         userReview.setReviewedUser(reviewedUser);
+        userReview = userReviewRepository.save(userReview);
 
-        return userReviewRepository.save(userReview);
+        Float averageRating = userReviewRepository.calculateAverageRatingForUser(reviewedUser.getId());
+        reviewedUser.setRating(averageRating);
+        userRepository.save(reviewedUser);
+
+        return userReview;
     }
-
     public void updateReview(UserReview userReview) {
         userReviewRepository.save(userReview);
     }
