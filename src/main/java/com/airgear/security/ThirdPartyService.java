@@ -1,4 +1,4 @@
-package com.airgear.config.security;
+package com.airgear.security;
 
 /**
  * Enum representing various third-party authentication services.

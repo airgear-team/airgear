@@ -1,4 +1,4 @@
-package com.airgear.config.security;
+package com.airgear.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

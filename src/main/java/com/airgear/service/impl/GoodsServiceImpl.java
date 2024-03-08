@@ -3,6 +3,8 @@ package com.airgear.service.impl;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
+import com.airgear.repository.CategoryRepository;
+import com.airgear.repository.ComplaintCategoryRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service(value = "goodsService")
 public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private GoodsRepository goodsRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public Goods getGoodsById(Long id) {
@@ -38,6 +44,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods saveGoods(@Valid Goods goods) {
+        checkCategory(goods);
         goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
@@ -79,6 +86,16 @@ public class GoodsServiceImpl implements GoodsService {
         return randomAndLimitedGoodsList;
     }
 
+
+    @Override
+    public Map<Category, Long> getAmountOfGoodsByCategory() {
+        List<Goods> goodsList = goodsRepository.findAll();
+
+        // Grouping by category and quantity
+        return goodsList.stream()
+                .collect(Collectors.groupingBy(Goods::getCategory, Collectors.counting()));
+    }
+
     @Override
     public Page<Goods> getAllGoods(Pageable pageable) {
         return goodsRepository.findAll(pageable);
@@ -104,5 +121,15 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Long getTotalNumberOfGoods() {
         return goodsRepository.count();
+    }
+
+    private void checkCategory(Goods goods){
+        if (goods.getCategory()!=null){
+            Category category= categoryRepository.findByName(goods.getCategory().getName());
+            if (category!=null)
+                goods.setCategory(category);
+            else
+                throw new RuntimeException("not correct category for good with id: "+goods.getId());
+        }
     }
 }

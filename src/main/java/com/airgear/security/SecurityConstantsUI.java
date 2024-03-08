@@ -1,4 +1,4 @@
-package com.airgear.config.security;
+package com.airgear.security;
 
 /**
  * The {@code GoodsResponse} class holds constants related to security for the UI module.
