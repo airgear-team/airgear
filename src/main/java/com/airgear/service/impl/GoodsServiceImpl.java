@@ -30,9 +30,6 @@ public class GoodsServiceImpl implements GoodsService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
-
     @Override
     public Goods getGoodsById(Long id) {
         return goodsRepository.getReferenceById(id);

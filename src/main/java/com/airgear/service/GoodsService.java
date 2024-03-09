@@ -1,5 +1,6 @@
 package com.airgear.service;
 
+import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import org.springframework.data.domain.Page;
@@ -34,8 +35,6 @@ public interface GoodsService {
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
     Long getTotalNumberOfGoods();
-
-    List<Goods> getRandomGoods(int goodsQuantity);
 
     Map<Category, Long> getAmountOfGoodsByCategory();
 
