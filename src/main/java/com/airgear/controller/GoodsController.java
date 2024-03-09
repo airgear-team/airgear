@@ -57,6 +57,8 @@ public class GoodsController {
     private LocationService locationService;
     @Autowired
     private ComplaintService complaintService;
+    @Autowired
+    RentalAgreementService rentalAgreementService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/featured")
@@ -120,20 +122,9 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/download/rental/{goodsId}")
-    @ResponseBody
-    public FileSystemResource download(Authentication auth, @PathVariable Long goodsId, @Valid @RequestBody
-            RentalAgreement rental, HttpServletResponse resp) {
-        Goods goods = goodsService.getGoodsById(goodsId);
-        rental.setGoods(goods);
+    public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId, @Valid @RequestBody RentalAgreement rental) {
         try {
-            File fileTemplate = Utils.getAgreement(rental);
-            File pdfDest = new File("output.pdf");
-            ConverterProperties converterProperties = new ConverterProperties();
-            HtmlConverter.convertToPdf(new FileInputStream(fileTemplate),
-                    new FileOutputStream(pdfDest), converterProperties);
-            resp.setContentType("application/pdf");
-            resp.setHeader("Content-disposition", "attachment; filename=output.pdf");
-            return new FileSystemResource(pdfDest);
+            return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
         } catch (IOException e) {
             throw new RuntimeException("Проблема з загрузкою договора оренди!");
         }
