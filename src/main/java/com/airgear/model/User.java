@@ -56,6 +56,9 @@ public class User {
     @Column(name = "deleted_at")
     private OffsetDateTime deleteAt;
 
+    @Column(name = "last_activity")
+    private OffsetDateTime lastActivity;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "account_status_id")
     private AccountStatus accountStatus;
@@ -73,4 +76,5 @@ public class User {
     @Column(name = "is_potentially_scam", nullable = false)
     @JsonIgnore
     private boolean isPotentiallyScam = false;
+
 }
