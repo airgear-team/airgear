@@ -3,7 +3,6 @@ package com.airgear.integration;
 import com.airgear.dto.GoodsDto;
 import com.airgear.model.AccountStatus;
 import com.airgear.model.AuthToken;
-import com.airgear.model.LoginUser;
 import com.airgear.model.User;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -17,10 +16,7 @@ import com.airgear.model.goods.Location;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.RoleRepository;
 import com.airgear.repository.UserRepository;
-import com.airgear.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,13 +43,7 @@ public class UserControllerTest {
     private int port;
 
     @Autowired
-    UserService userService;
-
-    private static JSONObject userJSON;
-
-    @Autowired
     private TestRestTemplate template;
-    private static HttpHeaders headers;
     private static User userTest;
     private static User adminTest;
     private static User moderatorTest;
@@ -70,7 +60,6 @@ public class UserControllerTest {
     private AccountStatusRepository accountStatusRepository;
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
-
 
     @BeforeAll
     public static void initTest() {
@@ -114,8 +103,9 @@ public class UserControllerTest {
     }
 
     private void userAuthenticate(User user, HttpHeaders currentHeaders, Boolean isRegister){
-        LoginUser loginUser = new LoginUser(user.getUsername(), user.getPassword());
-        HttpEntity<?> entity = new HttpEntity<>(loginUser, currentHeaders);
+        //LoginUser loginUser = new LoginUser(user.getUsername(), user.getPassword());
+        //HttpEntity<?> entity = new HttpEntity<>(loginUser, currentHeaders);
+        HttpEntity<?> entity = new HttpEntity<>(null, currentHeaders);
         ResponseEntity<AuthToken> response = this.template.exchange("http://localhost:" + port + "/auth/authenticate", HttpMethod.POST, entity, AuthToken.class);
         log.info("status response: " + response.getStatusCode());
         if (response.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
@@ -144,11 +134,18 @@ public class UserControllerTest {
     @Test
     @Order(2)
     public void createGoodsByUser(){
-        GoodsDto goods = new GoodsDto("bolt", "description", BigDecimal.valueOf(100.0D), null, new Location(), new Category(), "+380984757533", userTest);
+        Location location = new Location();
+        location.setRegionId(1L);
+        location.setSettlement("Konstantinivka");
+        Category category = new Category();
+        category.setName("TOOLS_AND_EQUIPMENT");
+        GoodsDto goods = new GoodsDto("bolt", "description", BigDecimal.valueOf(100.0D), null, location, category, "+380984757533", userTest);
         HttpEntity<?> entity = new HttpEntity<>(goods, headersUser);
         goodsTest = template.postForObject("http://localhost:" + port + "/goods", entity, Goods.class);
         assertNotNull(goodsTest);
         assertThat(goodsTest.getName()).isEqualTo("bolt");
+        assertThat(goodsTest.getLocation().getSettlement()).isEqualTo("Konstantinivka");
+        assertThat(goodsTest.getCategory().getName()).isEqualTo("TOOLS_AND_EQUIPMENT");
         assertNotNull(goodsTest.getCreatedAt());
         assertNotNull(goodsTest.getGoodsStatus());
         Assertions.assertEquals(1L, goodsTest.getGoodsStatus().getId());
@@ -226,6 +223,16 @@ public class UserControllerTest {
         ResponseEntity<String> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.DELETE, entity, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         Assertions.assertNull(response.getBody());
+    }
+
+    @Test
+    @Order(11)
+    public void createLocation(){
+        String st ="settlement=Ivanivka&region_id=1";
+        HttpEntity<?> entityLocation = new HttpEntity<>(null, headersUser);
+        ResponseEntity<Location> locationResp= template.postForEntity("http://localhost:" + port + "/location/create"+"?"+st, entityLocation, Location.class);
+        assertNotNull(locationResp.getBody());
+        assertThat(locationResp.getBody().getSettlement()).isEqualTo("Ivanivka");
     }
 
 }

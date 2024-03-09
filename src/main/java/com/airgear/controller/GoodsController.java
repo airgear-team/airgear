@@ -11,6 +11,8 @@ import com.airgear.model.RentalAgreement;
 import com.airgear.model.User;
 import com.airgear.model.goods.Location;
 import com.airgear.service.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.airgear.utils.Utils;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
@@ -65,28 +67,14 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
-    public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) {
+    public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) throws JsonProcessingException {
         User user = userService.findByUsername(auth.getName());
         Goods newGoods = goods.getGoodsFromDto();
         newGoods.setUser(user);
-
-        String settlement = newGoods.getLocation().getSettlement();
-
-        Location existingLocation = locationService.getLocationBySettlement(settlement);
-
-        Location savedLocation;
-        if (existingLocation != null) {
-            savedLocation = existingLocation;
-        } else {
-            Location location = new Location();
-            location.setSettlement(settlement);
-            location.setRegionId(newGoods.getLocation().getRegionId());
-            savedLocation = locationService.addLocation(location);
-        }
-        newGoods.setLocation(savedLocation);
-
+        newGoods.setLocation(locationService.addLocation(newGoods.getLocation()));
         GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
+        System.out.println(newGoods.getCategory());
         return goodsService.saveGoods(newGoods);
     }
 
