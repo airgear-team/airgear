@@ -4,8 +4,7 @@ import com.airgear.model.Role;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * RoleDto class. Fields are similar to Role entity.
@@ -29,8 +28,8 @@ public class RoleDto {
                 .build();
     }
 
-    public static List<Role> toRoles(List<RoleDto> roles) {
-        List<Role> result = new ArrayList<>();
+    public static Set<Role> toRoles(Set<RoleDto> roles) {
+        Set<Role> result = new HashSet<>();
         roles.forEach(roleDto -> result.add(roleDto.toRole()));
         return result;
     }
@@ -43,8 +42,8 @@ public class RoleDto {
                 .build();
     }
 
-    public static List<RoleDto> fromRoles(List<Role> roles) {
-        List<RoleDto> result = new ArrayList<>();
+    public static Set<RoleDto> fromRoles(Set<Role> roles) {
+        Set<RoleDto> result = new HashSet<>();
         roles.forEach(role -> result.add(RoleDto.fromRole(role)));
         return result;
     }

@@ -22,14 +22,14 @@ public class UserReviewServiceImpl implements UserReviewService {
 
     public UserReview createReview(UserReviewDto userReviewDto) {
         UserReview userReview = new UserReview();
-        userReview.setRating(userReviewDto.getStars());
+        userReview.setRating(userReviewDto.getRating());
         userReview.setComment(userReviewDto.getComment());
         userReview.setCreatedAt(userReviewDto.getCreatedAt());
 
-        User reviewer = userRepository.findById(userReviewDto.getReviewerUserId())
+        User reviewer = userRepository.findById(userReviewDto.getReviewer().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Reviewer not found"));
 
-        User reviewedUser = userRepository.findById(userReviewDto.getReviewedUserId())
+        User reviewedUser = userRepository.findById(userReviewDto.getReviewed().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Reviewed user not found"));
 
         userReview.setReviewer(reviewer);

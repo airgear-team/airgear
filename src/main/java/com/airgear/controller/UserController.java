@@ -88,7 +88,7 @@ public class UserController {
             case "remove" -> user = userService.removeModerator(username);
             default -> throw new IllegalArgumentException("Status not found");
         }
-        return ResponseEntity.ok(UserDto.getDtoFromUser(user));
+        return ResponseEntity.ok(UserDto.fromUser(user));
     }
 
 

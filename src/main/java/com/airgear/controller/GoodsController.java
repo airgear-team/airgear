@@ -24,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+
 import javax.validation.Valid;
 import java.util.List;
 import java.io.IOException;
@@ -60,9 +61,9 @@ public class GoodsController {
     @PostMapping
     public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) throws JsonProcessingException {
         User user = userService.findByUsername(auth.getName());
-        Goods newGoods = goods.getGoodsFromDto();
+        Goods newGoods = goods.toGoods();
         newGoods.setUser(user);
-        newGoods.setLocation(locationService.addLocation(newGoods.getLocation()));
+        newGoods.setLocation(locationService.addLocation(goods.getLocation().toLocation()));
         GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
         System.out.println(newGoods.getCategory());
@@ -122,8 +123,8 @@ public class GoodsController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/getcountnewgoods")
     public Integer findCountNewGoodsFromPeriod(Authentication auth,
-         @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
-         @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate) {
+                                               @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
+                                               @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate) {
         return goodsService.getNewGoodsFromPeriod(fromDate, toDate);
     }
 
@@ -159,6 +160,7 @@ public class GoodsController {
     public Long totalNumberOfGoods() {
         return goodsService.getTotalNumberOfGoods();
     }
+
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/category/total")
     public ResponseEntity<Map<Category, Long>> amountOfGoodsByCategory() {

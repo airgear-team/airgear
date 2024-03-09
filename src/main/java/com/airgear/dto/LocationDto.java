@@ -19,8 +19,8 @@ import java.util.List;
 @Builder
 public class LocationDto {
     private Long id;
-    private String settlement;
     private Long regionId;
+    private String settlement;
 
     public Location toLocation() {
         return Location.builder()

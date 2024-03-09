@@ -1,5 +1,6 @@
 package com.airgear.service;
 
+import com.airgear.dto.LoginUserDto;
 import com.airgear.dto.UserDto;
 
 /**
@@ -11,6 +12,6 @@ import com.airgear.dto.UserDto;
  */
 public interface GoogleTokenHandler {
 
-    UserDto execute(String token);
+    LoginUserDto execute(String token);
 
 }

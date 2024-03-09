@@ -7,6 +7,7 @@ import lombok.Data;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * UserDto class. Fields are similar to User entity.
@@ -21,29 +22,31 @@ public class UserDto {
 
     private Long id;
     private String username;
+    private String password;
     private String email;
     private String phone;
     private String name;
-    private List<RoleDto> roles;
-    private List<GoodsDto> goods;
+    private Set<RoleDto> roles;
+    private Set<GoodsDto> goods;
     private OffsetDateTime createdAt;
     private OffsetDateTime deleteAt;
     private AccountStatusDto accountStatus;
-    private List<UserReviewDto> userReviews;
+    private Set<UserReviewDto> userReviews;
 
     public User toUser() {
         return User.builder()
                 .id(id)
                 .username(username)
+                .password(password)
                 .email(email)
                 .phone(phone)
                 .name(name)
-                .roles(RoleDto.toRoles(roles))
-                .goods(GoodsDto.toGoodsList(goods))
+                .roles(roles == null ? null : RoleDto.toRoles(roles))
+                .goods(goods == null ? null : GoodsDto.toGoodsSet(goods))
                 .createdAt(createdAt)
                 .deleteAt(deleteAt)
-                .accountStatus(accountStatus.toAccountStatus())
-                .userReviews(UserReviewDto.toUserReviews(userReviews))
+                .accountStatus(accountStatus == null ? null : accountStatus.toAccountStatus())
+                .userReviews(userReviews == null ? null : UserReviewDto.toUserReviews(userReviews))
                 .build();
     }
 
@@ -61,7 +64,7 @@ public class UserDto {
                 .phone(user.getPhone())
                 .name(user.getName())
                 .roles(RoleDto.fromRoles(user.getRoles()))
-                .goods(GoodsDto.fromGoodsList(user.getGoods()))
+                .goods(GoodsDto.fromGoodsSet(user.getGoods()))
                 .createdAt(user.getCreatedAt())
                 .deleteAt(user.getDeleteAt())
                 .accountStatus(AccountStatusDto.fromAccountStatus(user.getAccountStatus()))

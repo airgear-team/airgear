@@ -5,8 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * GoodsDto class. Fields are similar to Goods entity.
@@ -48,6 +47,12 @@ public class GoodsDto {
         return result;
     }
 
+    public static Set<Goods> toGoodsSet(Set<GoodsDto> goods) {
+        Set<Goods> result = new HashSet<>();
+        goods.forEach(goodsDto -> result.add(goodsDto.toGoods()));
+        return result;
+    }
+
     public static GoodsDto fromGoods(Goods goods) {
         return GoodsDto.builder()
                 .id(goods.getId())
@@ -65,6 +70,12 @@ public class GoodsDto {
     public static List<GoodsDto> fromGoodsList(List<Goods> goodsList) {
         List<GoodsDto> result = new ArrayList<>();
         goodsList.forEach(goods -> result.add(GoodsDto.fromGoods(goods)));
-        return null;
+        return result;
+    }
+
+    public static Set<GoodsDto> fromGoodsSet(Set<Goods> goodsList) {
+        Set<GoodsDto> result = new HashSet<>();
+        goodsList.forEach(goods -> result.add(GoodsDto.fromGoods(goods)));
+        return result;
     }
 }

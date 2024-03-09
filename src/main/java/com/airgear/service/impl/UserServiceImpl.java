@@ -3,6 +3,7 @@ package com.airgear.service.impl;
 import java.time.OffsetDateTime;
 import java.util.*;
 
+import com.airgear.dto.RoleDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.UserRepository;
@@ -75,7 +76,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (user == null || user.getAccountStatus().getId() == accountStatusId) {
             throw new ForbiddenException("User not found or was already deleted");
         }
-        if (accountStatusId==2L) {
+        if (accountStatusId == 2L) {
             user.setDeleteAt(OffsetDateTime.now());
         }
         userRepository.setAccountStatusId(accountStatusId, user.getId());
@@ -83,16 +84,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User save(UserDto user) {
-        User newUser = user.getUserFromDto();
-        newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         Role role = roleService.findByName("USER");
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(role);
-        newUser.setRoles(roleSet);
+        user.setRoles(RoleDto.fromRoles(roleSet));
+        User newUser = user.toUser();
+        newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         newUser.setCreatedAt(OffsetDateTime.now());
         newUser.setAccountStatus(accountStatusRepository.findByStatusName("ACTIVE"));
         return userRepository.save(newUser);
     }
+
     @Override
     public User update(User user) {
         return userRepository.save(user);
@@ -100,21 +102,22 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User addRole(String username, String role) {
-        User user =findByUsername(username);
+        User user = findByUsername(username);
         Set<Role> roles = user.getRoles();
         roles.add(roleService.findByName("ADMIN"));
         user.setRoles(roles);
         return update(user);
     }
+
     @Override
     public User deleteRole(String username, String role) {
-        User user =findByUsername(username);
+        User user = findByUsername(username);
         Set<Role> roles = user.getRoles();
         roles.remove(roleService.findByName("ADMIN"));
-        if(roles.isEmpty()){
+        if (roles.isEmpty()) {
             roles.add(roleService.findByName("USER"));
         }
-        return  update(user);
+        return update(user);
     }
 
 
@@ -137,6 +140,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void markUserAsPotentiallyScam(Long userId, boolean isScam) {
         userRepository.updateIsPotentiallyScamStatus(userId, isScam);
     }
+
     @Override
     public int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
         return userRepository.countByCreatedAtBetween(start, end);

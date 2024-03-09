@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.LoginUserDto;
 import com.airgear.dto.TokenResponse;
 import com.airgear.dto.UserDto;
 import com.airgear.service.GoogleTokenHandler;
@@ -50,17 +51,14 @@ public class GoogleTokenHandlerImpl implements GoogleTokenHandler {
      * @return User information extracted from the token.
      */
     @Override
-    public UserDto execute(String token) {
+    public LoginUserDto execute(String token) {
         String tokenUrl = thirdPartyUrl + token;
 
         TokenResponse tokenResponse = getTokenResponse(tokenUrl);
 
-        return new UserDto(
+        return new LoginUserDto(
                 tokenResponse.sub(),
-                defaultPassword,
-                tokenResponse.email(),
-                "",
-                "");
+                defaultPassword);
     }
 
     private TokenResponse getTokenResponse(String validationUrl) {

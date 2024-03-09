@@ -5,8 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * UserReviewDto class. Fields are similar to UserReview entity.
@@ -20,7 +19,7 @@ import java.util.List;
 public class UserReviewDto {
     private Long id;
     private UserDto reviewer;
-    private UserDto reviewedUser;
+    private UserDto reviewed;
     private int rating;
     private String comment;
     private OffsetDateTime createdAt;
@@ -29,15 +28,15 @@ public class UserReviewDto {
         return UserReview.builder()
                 .id(id)
                 .reviewer(reviewer.toUser())
-                .reviewedUser(reviewedUser.toUser())
+                .reviewedUser(reviewed.toUser())
                 .rating(rating)
                 .comment(comment)
                 .createdAt(createdAt)
                 .build();
     }
 
-    public static List<UserReview> toUserReviews(List<UserReviewDto> userReviews) {
-        List<UserReview> result = new ArrayList<>();
+    public static Set<UserReview> toUserReviews(Set<UserReviewDto> userReviews) {
+        Set<UserReview> result = new HashSet<>();
         userReviews.forEach(userReviewDto -> result.add(userReviewDto.toUserReview()));
         return result;
     }
@@ -46,15 +45,15 @@ public class UserReviewDto {
         return UserReviewDto.builder()
                 .id(userReview.getId())
                 .reviewer(UserDto.fromUser(userReview.getReviewer()))
-                .reviewedUser(UserDto.fromUser(userReview.getReviewedUser()))
+                .reviewed(UserDto.fromUser(userReview.getReviewedUser()))
                 .rating(userReview.getRating())
                 .comment(userReview.getComment())
                 .createdAt(userReview.getCreatedAt())
                 .build();
     }
 
-    public static List<UserReviewDto> fromUserReviews(List<UserReview> userReviews) {
-        List<UserReviewDto> result = new ArrayList<>();
+    public static Set<UserReviewDto> fromUserReviews(Set<UserReview> userReviews) {
+        Set<UserReviewDto> result = new HashSet<>();
         userReviews.forEach(userReview -> result.add(UserReviewDto.fromUserReview(userReview)));
         return result;
     }
