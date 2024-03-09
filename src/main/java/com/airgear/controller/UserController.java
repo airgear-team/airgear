@@ -111,4 +111,12 @@ public class UserController {
         int count = userService.countNewUsersBetweenDates(startDate, endDate);
         return ResponseEntity.ok().body(Map.of("count", count));
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{username}/isExists")
+    public Boolean isUsernameExists(Authentication auth, @PathVariable String username) {
+        log.info("auth name : {}", auth.getName());
+        return userService.isUsernameExists(username);
+    }
+
 }

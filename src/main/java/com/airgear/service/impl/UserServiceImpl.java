@@ -66,6 +66,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 
     @Override
+    public boolean isUsernameExists(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+
+    @Override
     public List<Map<String, Integer>> getUserGoodsCount(Pageable pageable) {
         return userRepository.findUserGoodsCount(pageable);
     }
