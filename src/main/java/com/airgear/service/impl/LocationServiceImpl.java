@@ -47,7 +47,8 @@ public class LocationServiceImpl implements LocationService {
             Location locationNew = new Location();
             locationNew.setSettlement(settlement);
             locationNew.setRegionId(location.getRegionId());
-            return locationRepository.save(locationNew);
+            locationRepository.save(locationNew);
+            return locationNew;
         }
     }
 }
