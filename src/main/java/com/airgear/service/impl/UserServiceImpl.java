@@ -137,4 +137,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void markUserAsPotentiallyScam(Long userId, boolean isScam) {
         userRepository.updateIsPotentiallyScamStatus(userId, isScam);
     }
+    @Override
+    public int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
+        return userRepository.countByCreatedAtBetween(start, end);
+    }
 }

@@ -4,6 +4,7 @@ import com.airgear.model.User;
 import com.airgear.dto.UserDto;
 import org.springframework.data.domain.Pageable;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -30,4 +31,6 @@ public interface UserService {
     User deleteRole(String username, String role);
 
     void markUserAsPotentiallyScam(Long userId, boolean isScam);
+
+    int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
 }
