@@ -212,8 +212,8 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="createRegionsTable" author="alex.ilchenko">
-        <createTable tableName="regions">
+    <changeSet id="createRegionTable" author="alex.ilchenko">
+        <createTable tableName="region">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -224,59 +224,59 @@
     </changeSet>
 
     <changeSet id="insertRegionData" author="alex.ilchenko">
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Вінницька');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Волинська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Дніпропетровська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Донецька');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Житомирська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Закарпатська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Запорізька');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Івано-Франківська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Київ');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Київська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Кіровоградська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Луганська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Львівська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Миколаївська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Одеська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Полтавська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Республіка Крим');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Рівненська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Севастополь');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Сумська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Тернопільська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Харківська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Херсонська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Хмельницька');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Черкаська');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Чернівецька');</sql>
-        <sql>INSERT INTO regions (region)
+        <sql>INSERT INTO region (region)
              VALUES ('Чернігівська');</sql>
     </changeSet>
 
@@ -299,7 +299,7 @@
                 baseTableName="location"
                 baseColumnNames="region_id"
                 constraintName="fk_locations_region"
-                referencedTableName="regions"
+                referencedTableName="region"
                 referencedColumnNames="id"
                 onDelete="CASCADE"
                 onUpdate="CASCADE"/>
