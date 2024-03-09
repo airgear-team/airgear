@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,4 +103,12 @@ public class UserController {
             throw new RuntimeException("Don't correct field: act! Choose: add or delete!");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/count")
+    public ResponseEntity<?> countNewUsers(@RequestParam("start") String start, @RequestParam("end") String end) {
+        OffsetDateTime startDate = OffsetDateTime.parse(start);
+        OffsetDateTime endDate = OffsetDateTime.parse(end);
+        int count = userService.countNewUsersBetweenDates(startDate, endDate);
+        return ResponseEntity.ok().body(Map.of("count", count));
+    }
 }

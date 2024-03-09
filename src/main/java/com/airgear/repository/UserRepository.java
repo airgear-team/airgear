@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
+import java.time.OffsetDateTime;
+
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
@@ -31,5 +33,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query("UPDATE User u SET u.isPotentiallyScam = :isScam WHERE u.id = :userId")
     void updateIsPotentiallyScamStatus(@Param("userId") Long userId, @Param("isScam") boolean isScam);
 
+    int countByCreatedAtBetween(OffsetDateTime start, OffsetDateTime end);
 }
-
