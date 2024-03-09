@@ -2,6 +2,7 @@ package com.airgear.controller;
 
 import com.airgear.dto.ComplaintDTO;
 import com.airgear.dto.GoodsDto;
+import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Category;
 import com.airgear.model.Complaint;
@@ -109,6 +110,7 @@ public class GoodsController {
         goodsService.deleteGoods(goods);
         return ResponseEntity.noContent().build();
     }
+
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("addToFavorites/{goodsId}")
     public ResponseEntity<Goods> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
@@ -123,7 +125,7 @@ public class GoodsController {
             throw new ForbiddenException("Goods have already been added to favorites");
         }
         user.getFavoriteGoods().add(goods);
-        userService.save(user);
+        userService.save(UserDto.fromUser(user));
         return ResponseEntity.ok(goods);
     }
 
