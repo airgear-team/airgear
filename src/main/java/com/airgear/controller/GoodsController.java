@@ -109,6 +109,23 @@ public class GoodsController {
         goodsService.deleteGoods(goods);
         return ResponseEntity.noContent().build();
     }
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @PostMapping("addToFavorites/{goodsId}")
+    public ResponseEntity<Goods> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
+        User user = userService.findByUsername(auth.getName());
+        Goods goods = goodsService.getGoodsById(goodsId);
+
+        if (goods == null) {
+            throw new ForbiddenException("Goods not found");
+        }
+
+        if (user.getFavoriteGoods().contains(goods)) {
+            throw new ForbiddenException("Goods have already been added to favorites");
+        }
+        user.getFavoriteGoods().add(goods);
+        userService.save(user);
+        return ResponseEntity.ok(goods);
+    }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/download/rental/{goodsId}")

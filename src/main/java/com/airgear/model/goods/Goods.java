@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.*;
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,12 +19,16 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"user", "usersAddedToFavorite"})
+@ToString(exclude = {"user", "usersAddedToFavorite"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Goods {
 
     @Id
@@ -95,4 +102,13 @@ public class Goods {
     @OneToMany(mappedBy = "goods")
     private List<Complaint> complaints;
 
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_FAVORITE_GOODS",
+            joinColumns = {
+                    @JoinColumn(name = "GOODS_ID")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "USER_ID")})
+    private Set<User> usersAddedToFavorite;
 }

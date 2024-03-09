@@ -558,4 +558,36 @@
     </changeSet>
 
 
+    <!-- Create Favorite_Goods Join Table -->
+    <changeSet id="addFavoriteGoodsTable" author="vladyslav.haivoronskyi">
+        <createTable tableName="user_favorite_goods">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Add Foreign Key Constraint for User_Favorite_Goods Table -->
+    <changeSet id="addUserFavoriteGoodsTable" author="vladyslav.haivoronskyi">
+        <addForeignKeyConstraint
+                baseTableName="user_favorite_goods"
+                baseColumnNames="user_id"
+                constraintName="fk_user_favorite_goods_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="user_favorite_goods"
+                baseColumnNames="goods_id"
+                constraintName="fk_user_favorite_goods_goods"
+                referencedTableName="goods"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
 </databaseChangeLog>
