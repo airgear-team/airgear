@@ -2,6 +2,12 @@ package com.airgear.service.impl;
 
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import com.airgear.dto.RoleDto;
 import com.airgear.exception.ForbiddenException;
@@ -57,6 +63,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         List<User> list = new ArrayList<>();
         userRepository.findAll().iterator().forEachRemaining(list::add);
         return list;
+    }
+
+    public List<User> findActiveUsers() {
+        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                .filter(user -> user.getAccountStatus() != null && user.getAccountStatus().getStatusName().equals("ACTIVE"))
+                .collect(Collectors.toList());
     }
 
     @Override

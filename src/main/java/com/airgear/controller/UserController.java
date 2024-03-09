@@ -119,4 +119,11 @@ public class UserController {
         return userService.isUsernameExists(username);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/activeUsers", method = RequestMethod.GET)
+    public List<User> getAllActiveUsers(Authentication auth) {
+        log.info("auth name : {}", auth.getName());
+        return userService.findActiveUsers();
+    }
+
 }
