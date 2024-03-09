@@ -25,5 +25,11 @@ public interface UserRepository extends CrudRepository<User, Long> {
             "FROM User u JOIN u.goods g " +
             "GROUP BY u.username")
     List<Map<String, Integer>> findUserGoodsCount(Pageable pageable);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.isPotentiallyScam = :isScam WHERE u.id = :userId")
+    void updateIsPotentiallyScamStatus(@Param("userId") Long userId, @Param("isScam") boolean isScam);
+
 }
 

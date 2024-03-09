@@ -29,4 +29,5 @@ public interface UserService {
 
     User deleteRole(String username, String role);
 
+    void markUserAsPotentiallyScam(Long userId, boolean isScam);
 }

@@ -69,4 +69,8 @@ public class User {
 
     @Column
     private Float rating;
+
+    @Column(name = "is_potentially_scam", nullable = false)
+    @JsonIgnore
+    private boolean isPotentiallyScam = false;
 }
