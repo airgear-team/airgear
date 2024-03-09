@@ -75,6 +75,8 @@ public class UserController {
 
         return userService.getUserGoodsCount(pageable);
     }
+
+    //TODO розібратись з цими двома методами
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     @PatchMapping(value = "/{username}/role")
     public ResponseEntity<UserDto> changeRole(@PathVariable String username,
@@ -90,7 +92,7 @@ public class UserController {
 
 
     @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "/{username}/role", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/{username}/role1", method = RequestMethod.PATCH)
     public User changeRoleAdmin(@PathVariable String username, @RequestParam String act) {
         if (act.equals("add"))
             return userService.addRole(username, "ADMIN");

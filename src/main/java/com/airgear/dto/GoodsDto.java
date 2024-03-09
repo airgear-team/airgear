@@ -35,6 +35,7 @@ public class GoodsDto {
         goods.setCategory(category);
         goods.setPhoneNumber(phoneNumber);
         goods.setUser(user);
+        goods.setLocation(location);
         return goods;
     }
 

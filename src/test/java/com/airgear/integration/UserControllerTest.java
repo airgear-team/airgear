@@ -3,7 +3,6 @@ package com.airgear.integration;
 import com.airgear.dto.GoodsDto;
 import com.airgear.model.AccountStatus;
 import com.airgear.model.AuthToken;
-import com.airgear.model.LoginUser;
 import com.airgear.model.User;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -104,8 +103,9 @@ public class UserControllerTest {
     }
 
     private void userAuthenticate(User user, HttpHeaders currentHeaders, Boolean isRegister){
-        LoginUser loginUser = new LoginUser(user.getUsername(), user.getPassword());
-        HttpEntity<?> entity = new HttpEntity<>(loginUser, currentHeaders);
+        //LoginUser loginUser = new LoginUser(user.getUsername(), user.getPassword());
+        //HttpEntity<?> entity = new HttpEntity<>(loginUser, currentHeaders);
+        HttpEntity<?> entity = new HttpEntity<>(null, currentHeaders);
         ResponseEntity<AuthToken> response = this.template.exchange("http://localhost:" + port + "/auth/authenticate", HttpMethod.POST, entity, AuthToken.class);
         log.info("status response: " + response.getStatusCode());
         if (response.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
