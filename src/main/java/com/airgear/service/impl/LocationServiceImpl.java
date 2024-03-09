@@ -1,7 +1,7 @@
 package com.airgear.service.impl;
 
 import com.airgear.model.goods.Location;
-import com.airgear.model.goods.Regions;
+import com.airgear.model.goods.Region;
 import com.airgear.repository.LocationRepository;
 import com.airgear.repository.RegionsRepository;
 import com.airgear.service.LocationService;
@@ -23,7 +23,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<Regions> getAllRegions() {
+    public List<Region> getAllRegions() {
         return regionsRepository.findAll();
     }
 
@@ -33,7 +33,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Regions getRegionById(Long id) {
+    public Region getRegionById(Long id) {
         return regionsRepository.getReferenceById(id);
     }
 
