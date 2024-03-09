@@ -4,7 +4,7 @@ import com.airgear.model.RentalAgreement;
 import com.airgear.model.goods.Goods;
 import com.airgear.service.GoodsService;
 import com.airgear.service.RentalAgreementService;
-import com.airgear.service.Utils;
+import com.airgear.utils.Utils;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import org.springframework.beans.factory.annotation.Autowired;
