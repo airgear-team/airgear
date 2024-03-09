@@ -11,7 +11,7 @@ public interface FeedbackService {
 
     Feedback getFeedbackById(Long id);
 
-    public Feedback createFeedback(@Valid FeedbackDTO feedbackDTO);
+    Feedback createFeedback(@Valid FeedbackDTO feedbackDTO);
 
-    public void deleteFeedback(Long id);
+    void deleteFeedback(Long id);
 }

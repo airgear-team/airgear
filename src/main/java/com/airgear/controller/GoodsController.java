@@ -9,13 +9,8 @@ import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.RentalAgreement;
 import com.airgear.model.User;
-import com.airgear.model.goods.Location;
 import com.airgear.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.airgear.utils.Utils;
-import com.itextpdf.html2pdf.ConverterProperties;
-import com.itextpdf.html2pdf.HtmlConverter;
 import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
@@ -29,14 +24,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.math.BigDecimal;

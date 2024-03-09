@@ -3,7 +3,6 @@ package com.airgear.dto;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
-import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.goods.Location;
 import lombok.AllArgsConstructor;
 import lombok.Data;

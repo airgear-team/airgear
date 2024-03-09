@@ -1,7 +1,6 @@
 package com.airgear.controller;
 
 import com.airgear.dto.FeedbackDTO;
-import com.airgear.model.Feedback;
 import com.airgear.service.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

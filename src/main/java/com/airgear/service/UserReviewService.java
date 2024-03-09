@@ -1,6 +1,5 @@
 package com.airgear.service;
 
-import com.airgear.dto.UserDto;
 import com.airgear.dto.UserReviewDto;
 import com.airgear.model.User;
 import com.airgear.model.UserReview;

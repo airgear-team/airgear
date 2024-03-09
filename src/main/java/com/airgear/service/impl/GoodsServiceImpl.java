@@ -4,8 +4,6 @@ import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import com.airgear.repository.CategoryRepository;
-import com.airgear.repository.ComplaintCategoryRepository;
-import com.airgear.repository.CategoryRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;

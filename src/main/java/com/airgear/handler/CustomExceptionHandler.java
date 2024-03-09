@@ -14,7 +14,6 @@ import java.util.Date;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
-
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception ex, HttpServletRequest request) {

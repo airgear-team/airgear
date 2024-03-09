@@ -11,13 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class Converter {
 
-
     public static ComplaintCategoryDTO getDtoFromComplaintCategory(ComplaintCategory complaintCategory) {
         return ComplaintCategoryDTO.builder()
                 .name(complaintCategory.getName())
                 .build();
     }
-
 
     public static ComplaintDTO getDtoFromComplaint(Complaint complaint) {
         return ComplaintDTO.builder()

@@ -1,6 +1,5 @@
 package com.airgear.dto;
 
-import com.airgear.model.Complaint;
 import com.airgear.model.ComplaintCategory;
 import lombok.Data;
 import lombok.NoArgsConstructor;

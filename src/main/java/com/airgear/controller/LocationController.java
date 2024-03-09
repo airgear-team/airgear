@@ -1,13 +1,11 @@
 package com.airgear.controller;
 
-import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.Location;
 import com.airgear.model.goods.Regions;
 import com.airgear.service.impl.GoodsServiceImpl;
 import com.airgear.service.impl.LocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
