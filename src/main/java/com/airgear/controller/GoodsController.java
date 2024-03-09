@@ -16,6 +16,7 @@ import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import com.airgear.utils.Converter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,6 +34,7 @@ import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 import java.util.Map;
 
+@Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/goods")
@@ -69,6 +71,21 @@ public class GoodsController {
         newGoods.setGoodsStatus(status);
         System.out.println(newGoods.getCategory());
         return goodsService.saveGoods(newGoods);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/{goodsId}")
+    public ResponseEntity<Goods> getGoodsById(Authentication auth, @PathVariable Long goodsId) {
+        log.info("auth name : {}", auth.getName());
+        Goods goods = goodsService.getGoodsById(goodsId);
+        if (goods == null) {
+            throw new ForbiddenException("Goods not found");
+        }
+        if (!goods.getGoodsStatus().getName().equals("ACTIVE")) {
+            throw new ForbiddenException("Goods was deleted");
+        }
+
+        return ResponseEntity.ok(goods);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")

@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,8 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods getGoodsById(Long id) {
-        return goodsRepository.getReferenceById(id);
+        Optional<Goods> goodsOptional = goodsRepository.findById(id);
+        return goodsOptional.orElse(null);
     }
 
     @Override
