@@ -1,10 +1,12 @@
 package com.airgear.service.impl;
 
 import com.airgear.model.goods.Category;
+import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import com.airgear.repository.CategoryRepository;
 import com.airgear.repository.GoodsRepository;
+import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,8 @@ public class GoodsServiceImpl implements GoodsService {
     private GoodsRepository goodsRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private GoodsViewRepository goodsViewRepository;
 
     @Override
     public Goods getGoodsById(Long id) {
@@ -152,4 +156,15 @@ public class GoodsServiceImpl implements GoodsService {
         Collections.shuffle(goods);
         return goods.subList(0, Math.min(goods.size(), limit));
     }
+    @Override
+    public void saveGoodsView(String ip, Long userId, Goods goods) {
+        if (goodsViewRepository.existsByIpAndGoods(ip, goods)) {
+            if (userId != null && !goodsViewRepository.existsByUserIdAndGoods(userId, goods)) {
+                goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
+            }
+            return;
+        }
+        goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
+    }
+
 }

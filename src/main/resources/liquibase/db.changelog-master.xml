@@ -557,7 +557,6 @@
         </addColumn>
     </changeSet>
 
-
     <!-- Create Favorite_Goods Join Table -->
     <changeSet id="addFavoriteGoodsTable" author="vladyslav.haivoronskyi">
         <createTable tableName="user_favorite_goods">
@@ -589,5 +588,4 @@
                 onDelete="CASCADE"
                 onUpdate="CASCADE"/>
     </changeSet>
-
 </databaseChangeLog>

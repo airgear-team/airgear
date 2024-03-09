@@ -6,6 +6,7 @@ import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Category;
 import com.airgear.model.Complaint;
+import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.RentalAgreement;
@@ -13,6 +14,8 @@ import com.airgear.model.User;
 import com.airgear.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.airgear.service.ComplaintService;
+import com.airgear.repository.GoodsStatusRepository;
+import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import com.airgear.utils.Converter;
@@ -27,6 +30,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.io.IOException;
@@ -75,8 +80,8 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
-    public ResponseEntity<Goods> getGoodsById(Authentication auth, @PathVariable Long goodsId) {
-        log.info("auth name : {}", auth.getName());
+    public ResponseEntity<Goods> getGoodsById(HttpServletRequest request, Authentication auth, @PathVariable Long goodsId) {
+        User user = userService.findByUsername(auth.getName());
         Goods goods = goodsService.getGoodsById(goodsId);
         if (goods == null) {
             throw new ForbiddenException("Goods not found");
@@ -84,7 +89,7 @@ public class GoodsController {
         if (!goods.getGoodsStatus().getName().equals("ACTIVE")) {
             throw new ForbiddenException("Goods was deleted");
         }
-
+        goodsService.saveGoodsView(request.getRemoteAddr(), user.getId(), goods);
         return ResponseEntity.ok(goods);
     }
 

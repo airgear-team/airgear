@@ -1,6 +1,7 @@
 package com.airgear.model.goods;
 
 import com.airgear.model.Complaint;
+import com.airgear.model.GoodsView;
 import com.airgear.model.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,8 +27,8 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"user", "usersAddedToFavorite"})
-@ToString(exclude = {"user", "usersAddedToFavorite"})
+@EqualsAndHashCode(exclude = {"user", "usersAddedToFavorite", "goodsViews"})
+@ToString(exclude = {"user", "usersAddedToFavorite", "goodsViews"})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Goods {
 
@@ -111,4 +112,8 @@ public class Goods {
             inverseJoinColumns = {
                     @JoinColumn(name = "USER_ID")})
     private Set<User> usersAddedToFavorite;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<GoodsView> goodsViews;
 }

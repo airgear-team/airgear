@@ -39,4 +39,7 @@ public interface GoodsService {
     Map<Category, Long> getAmountOfGoodsByCategory();
 
     List<Goods> getRandomGoods(String categoryName, int quantity);
+
+    void saveGoodsView(String ip, Long userId, Goods goods);
+
 }
