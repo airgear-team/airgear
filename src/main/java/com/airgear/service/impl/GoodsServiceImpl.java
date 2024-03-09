@@ -5,17 +5,16 @@ import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import com.airgear.repository.CategoryRepository;
 import com.airgear.repository.ComplaintCategoryRepository;
+import com.airgear.repository.CategoryRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.math.BigDecimal;
@@ -28,6 +27,9 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private GoodsRepository goodsRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -51,7 +53,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods updateGoods(Goods existingGoods) {
-        checkCategory(existingGoods);
+        //checkCategory(existingGoods);
         existingGoods.setLastModified(OffsetDateTime.now());
         return goodsRepository.save(existingGoods);
     }
@@ -77,14 +79,19 @@ public class GoodsServiceImpl implements GoodsService {
         List<Goods> goodsList = goodsRepository.findAll();
         return goodsList;
     }
+
     @Override
-    public List<Goods> getRandomGoods(int quantity) {
-        List<Goods> goods = goodsRepository.findAll();
+    public List<Goods> getRandomGoods(String categoryName, int quantity) {
+        List<Goods> goods;
+        Category category = convertStringToCategory(categoryName);
 
-        Collections.shuffle(goods);
-        List<Goods> randomAndLimitedGoodsList = goods.subList(0, Math.min(goods.size(), quantity));
+        if (category != null) {
+            goods = goodsRepository.findAllByCategory(category);
+        } else {
+            goods = goodsRepository.findAll();
+        }
 
-        return randomAndLimitedGoodsList;
+        return randomizeAndLimit(goods, quantity);
     }
 
 
@@ -103,7 +110,9 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<Goods> filterGoods(Category category, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
+    public Page<Goods> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
+        Category category = convertStringToCategory(categoryName);
+
         if (category != null && minPrice != null && maxPrice != null) {
             return goodsRepository.findByCategoryAndPriceBetween(category, minPrice, maxPrice, pageable);
         } else if (minPrice != null && maxPrice != null) {
@@ -134,4 +143,16 @@ public class GoodsServiceImpl implements GoodsService {
         }
     }
 
+
+    private Category convertStringToCategory(String categoryName) {
+        if (categoryName != null) {
+            return categoryRepository.findCategoryByName(categoryName);
+        }
+        return null;
+    }
+
+    private static List<Goods> randomizeAndLimit(List<Goods> goods, int limit) {
+        Collections.shuffle(goods);
+        return goods.subList(0, Math.min(goods.size(), limit));
+    }
 }

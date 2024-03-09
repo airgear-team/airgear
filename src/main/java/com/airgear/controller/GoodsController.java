@@ -139,18 +139,20 @@ public class GoodsController {
     }
 
     @GetMapping("/random-goods")
-    public List<Goods> getRandomGoods(@RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
-        return goodsService.getRandomGoods(quantity);
+    public List<Goods> getRandomGoods(
+            @RequestParam(required = false, name = "category") String categoryName,
+            @RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
+        return goodsService.getRandomGoods(categoryName, quantity);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/filter")
     public Page<Goods> filterGoods(
-            @RequestParam(name = "category", required = false) Category category,
+            @RequestParam(name = "category", required = false) String categoryName,
             @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
             @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
             Pageable pageable) {
-        return goodsService.filterGoods(category, minPrice, maxPrice, pageable);
+        return goodsService.filterGoods(categoryName, minPrice, maxPrice, pageable);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")

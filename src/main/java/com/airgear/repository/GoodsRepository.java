@@ -29,6 +29,8 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     Page<Goods> findAll(Pageable pageable);
 
+    List<Goods> findAllByCategory(Category category);
+
     Page<Goods> findByCategory(Category category, Pageable pageable);
 
     Page<Goods> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
