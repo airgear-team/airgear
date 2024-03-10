@@ -45,6 +45,16 @@ import java.util.Map;
 @RequestMapping("/goods")
 public class GoodsController {
 
+    //
+    //TODO
+    // 1. Інжектити змінні за допомогою контролера
+    //
+    //
+    //
+    //
+    //
+
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -56,25 +66,17 @@ public class GoodsController {
     @Autowired
     private ComplaintService complaintService;
     @Autowired
-    RentalAgreementService rentalAgreementService;
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/featured")
-    public String user() {
-        //TODO add return some random goods for home page
-        return "Goods for home page";
-    }
+    private RentalAgreementService rentalAgreementService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
-    public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) throws JsonProcessingException {
+    public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) {
         User user = userService.findByUsername(auth.getName());
         Goods newGoods = goods.toGoods();
         newGoods.setUser(user);
         newGoods.setLocation(locationService.addLocation(goods.getLocation().toLocation()));
         GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
-        System.out.println(newGoods.getCategory());
         return goodsService.saveGoods(newGoods);
     }
 
@@ -163,8 +165,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/getcountnewgoods")
-    public Integer findCountNewGoodsFromPeriod(Authentication auth,
-                                               @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
+    public Integer findCountNewGoodsFromPeriod(@RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
                                                @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate) {
         return goodsService.getNewGoodsFromPeriod(fromDate, toDate);
     }

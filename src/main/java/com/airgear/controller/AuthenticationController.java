@@ -42,13 +42,6 @@ public class AuthenticationController {
         return userService.save(user);
     }
 
-    //TODO delete it after testing
-    @CrossOrigin(origins = "http://localhost:9000")
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public String test() {
-        return "{\"test\":\"test\"}";
-    }
-
     @RequestMapping(value = "/service/authenticate", method = RequestMethod.GET)
     public ResponseEntity<?> generateTokenFromThirdPartyService(HttpServletRequest request) {
         LoginUserDto user = tokenHandler.execute(request);
