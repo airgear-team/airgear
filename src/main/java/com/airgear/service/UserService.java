@@ -37,4 +37,8 @@ public interface UserService {
     void markUserAsPotentiallyScam(Long userId, boolean isScam);
 
     int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
+
+    User blockUser(String username);
+
+    User unblockUser(String username);
 }

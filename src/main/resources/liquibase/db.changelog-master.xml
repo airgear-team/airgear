@@ -588,4 +588,9 @@
                 onDelete="CASCADE"
                 onUpdate="CASCADE"/>
     </changeSet>
+
+    <changeSet id="addBlockedRole" author="shkaraputa.vitalii">
+        <sql>INSERT INTO role (name, description)
+             VALUES ('BLOCKED', 'This is role for blocked user without any rights')</sql>
+    </changeSet>
 </databaseChangeLog>

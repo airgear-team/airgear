@@ -126,4 +126,15 @@ public class UserController {
         return userService.findActiveUsers();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @PatchMapping(value = "/{username}/block")
+    public ResponseEntity<User> blockUser (@PathVariable String username) {
+        return ResponseEntity.ok(userService.blockUser(username));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PatchMapping(value = "/{username}/unblock")
+    public ResponseEntity<User> unblockUser (@PathVariable String username) {
+        return ResponseEntity.ok(userService.unblockUser(username));
+    }
 }

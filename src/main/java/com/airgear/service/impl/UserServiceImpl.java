@@ -163,4 +163,24 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
         return userRepository.countByCreatedAtBetween(start, end);
     }
+
+    @Override
+    public User blockUser(String username) {
+        User user = userRepository.findByUsername(username);
+        Set<Role> roles = user.getRoles();
+        roles.clear();
+        roles.add(roleService.findByName("BLOCKED"));
+        user.setRoles(roles);
+        return update(user);
+    }
+
+    @Override
+    public User unblockUser(String username) {
+        User user = userRepository.findByUsername(username);
+        user.getRoles().remove(roleService.findByName("BLOCKED"));
+        user.getRoles().add(roleService.findByName("USER"));
+        return update(user);
+    }
+
+
 }
