@@ -4,6 +4,7 @@ import com.airgear.dto.LoginUserDto;
 import com.airgear.model.AuthToken;
 import com.airgear.model.User;
 import com.airgear.security.TokenProvider;
+import com.airgear.service.EmailService;
 import com.airgear.service.ThirdPartyTokenHandler;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class AuthenticationController {
     private UserService userService;
     @Autowired
     private ThirdPartyTokenHandler tokenHandler;
+    @Autowired
+    private EmailService emailService;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> generateToken(@RequestBody LoginUserDto userDto) throws AuthenticationException {
@@ -39,7 +42,9 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public User saveUser(@RequestBody com.airgear.dto.UserDto user) {
-        return userService.save(user);
+        User savedUser = userService.save(user);
+        emailService.sendWelcomeEmail(savedUser);
+        return savedUser;
     }
 
     //TODO delete it after testing
