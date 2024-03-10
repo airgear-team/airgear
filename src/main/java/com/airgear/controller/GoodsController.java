@@ -45,14 +45,11 @@ import java.util.Map;
 @RequestMapping("/goods")
 public class GoodsController {
 
-    //
     //TODO
     // 1. Інжектити змінні за допомогою контролера
-    //
-    //
-    //
-    //
-    //
+    // 2. Внести всю логіку в сервіси
+    // 3. Зробити власні ексепшений
+    // 4. Закрити всі тудушки в класі
 
 
     @Autowired
@@ -80,6 +77,7 @@ public class GoodsController {
         return goodsService.saveGoods(newGoods);
     }
 
+    // TODO створити власні ексепшени для всіх проблем які можуть бути в цьому конроллері
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
     public ResponseEntity<Goods> getGoodsById(HttpServletRequest request, Authentication auth, @PathVariable Long goodsId) {
@@ -95,6 +93,7 @@ public class GoodsController {
         return ResponseEntity.ok(goods);
     }
 
+    // TODO створити власні ексепшени для всіх проблем які можуть бути в цьому конроллері
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PutMapping("/{goodsId}")
     public ResponseEntity<Goods> updateGoods(
@@ -122,6 +121,7 @@ public class GoodsController {
         return ResponseEntity.ok(updatedGoodsEntity);
     }
 
+    // TODO створити власні ексепшени для всіх проблем які можуть бути в цьому конроллері
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{goodsId}")
     public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId) {
@@ -135,6 +135,10 @@ public class GoodsController {
         return ResponseEntity.noContent().build();
     }
 
+    // TODO створити власні ексепшени для всіх проблем які можуть бути в цьому конроллері
+    // Приклад назв для двох кейсів нижче :
+    // GoodsNotFoundException
+    // GoodsAlreadyAddedException
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("addToFavorites/{goodsId}")
     public ResponseEntity<Goods> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
@@ -153,6 +157,7 @@ public class GoodsController {
         return ResponseEntity.ok(goods);
     }
 
+    // TODO створити власне виключення й кидати йогоу випадку винекниння проблем з загрузкою договора, а не RuntimeException
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/download/rental/{goodsId}")
     public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId, @Valid @RequestBody RentalAgreement rental) {
@@ -197,12 +202,15 @@ public class GoodsController {
         return ResponseEntity.ok(Converter.getDtoFromComplaint(newComplaint));
     }
 
+    //TODO повертати не Long а створити модель й повертати її
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/total")
     public Long totalNumberOfGoods() {
         return goodsService.getTotalNumberOfGoods();
     }
 
+
+    // TODO повертати не мапу а створити модель й повертати її
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/category/total")
     public ResponseEntity<Map<Category, Long>> amountOfGoodsByCategory() {
