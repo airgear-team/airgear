@@ -1,6 +1,7 @@
 package com.airgear.controller;
 
 import com.airgear.dto.UserReviewDto;
+import com.airgear.model.UserReview;
 import com.airgear.service.UserReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +21,9 @@ public class UserReviewController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createReview(@Valid @RequestBody UserReviewDto userReviewDto) {
-        userReviewService.createReview(userReviewDto);
-        return ResponseEntity.ok("Review created successfully.");
+    public ResponseEntity<UserReview> createReview(@Valid @RequestBody UserReviewDto userReviewDto) {
+        UserReview createdReview = userReviewService.createReview(userReviewDto);
+        return ResponseEntity.ok(createdReview);
     }
 }
+
