@@ -1,6 +1,6 @@
 package com.airgear.integration;
 
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.*;
 import com.airgear.model.AccountStatus;
 import com.airgear.model.AuthToken;
 import com.airgear.model.User;
@@ -93,6 +93,8 @@ public class UserControllerTest {
     @Order(1)
     public void testAuthenticate() {
         AccountStatus acStatus = accountStatusRepository.findByStatusName("ACTIVE");
+        userTest.setAccountStatus(acStatus);
+        userTest.setRoles(Stream.of(roleRepository.findRoleByName("USER")).collect(Collectors.toSet()));
         adminTest.setAccountStatus(acStatus);
         adminTest.setRoles(Stream.of(roleRepository.findRoleByName("ADMIN")).collect(Collectors.toSet()));
         moderatorTest.setRoles(Stream.of(roleRepository.findRoleByName("MODERATOR")).collect(Collectors.toSet()));
@@ -103,9 +105,9 @@ public class UserControllerTest {
     }
 
     private void userAuthenticate(User user, HttpHeaders currentHeaders, Boolean isRegister){
-        //LoginUser loginUser = new LoginUser(user.getUsername(), user.getPassword());
-        //HttpEntity<?> entity = new HttpEntity<>(loginUser, currentHeaders);
-        HttpEntity<?> entity = new HttpEntity<>(null, currentHeaders);
+        LoginUserDto loginUser = new LoginUserDto(user.getUsername(), user.getPassword());
+        HttpEntity<?> entity = new HttpEntity<>(loginUser, currentHeaders);
+        //HttpEntity<?> entity = new HttpEntity<>(null, currentHeaders);
         ResponseEntity<AuthToken> response = this.template.exchange("http://localhost:" + port + "/auth/authenticate", HttpMethod.POST, entity, AuthToken.class);
         log.info("status response: " + response.getStatusCode());
         if (response.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
@@ -139,7 +141,14 @@ public class UserControllerTest {
         location.setSettlement("Konstantinivka");
         Category category = new Category();
         category.setName("TOOLS_AND_EQUIPMENT");
-        GoodsDto goods = new GoodsDto("bolt", "description", BigDecimal.valueOf(100.0D), null, location, category, "+380984757533", userTest);
+        GoodsDto goods = GoodsDto.builder()
+                .name("bolt")
+                .description("description")
+                .price(BigDecimal.valueOf(100.0D))
+                .location(LocationDto.fromLocation(location))
+                .category(CategoryDto.fromCategory(category))
+                .phoneNumber("+380984757533")
+                .user(UserDto.fromUser(userTest)).build();
         HttpEntity<?> entity = new HttpEntity<>(goods, headersUser);
         goodsTest = template.postForObject("http://localhost:" + port + "/goods", entity, Goods.class);
         assertNotNull(goodsTest);

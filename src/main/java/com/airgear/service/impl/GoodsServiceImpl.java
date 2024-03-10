@@ -47,14 +47,14 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods saveGoods(@Valid Goods goods) {
-        //checkCategory(goods);
+        checkCategory(goods);
         goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
 
     @Override
     public Goods updateGoods(Goods existingGoods) {
-        //checkCategory(existingGoods);
+        checkCategory(existingGoods);
         existingGoods.setLastModified(OffsetDateTime.now());
         return goodsRepository.save(existingGoods);
     }
