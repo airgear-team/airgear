@@ -19,6 +19,7 @@ public class UserReviewController {
         this.userReviewService = userReviewService;
     }
 
+    //TODO Створити модель а не повертати просто рядок
     @PostMapping("/create")
     public ResponseEntity<String> createReview(@Valid @RequestBody UserReviewDto userReviewDto) {
         userReviewService.createReview(userReviewDto);

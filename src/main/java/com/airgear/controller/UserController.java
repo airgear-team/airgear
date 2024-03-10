@@ -27,6 +27,12 @@ import java.util.Set;
 @RequestMapping("/users")
 public class UserController {
 
+    //TODO
+    // 1. Винести всю логіку в сервіси. Лишити тільки викликання одного методу сервісу
+    // 2. Перенести залежностів в конструктор
+    // 3. Винисти константи в клас utils.Constants та дати їх більш конкретну назву
+    // 4. Зробити власні ексепшени
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -54,6 +60,7 @@ public class UserController {
         return goodsService.getAllGoodsByUsername(username);
     }
 
+    // TODO Зробити власні ексепшени
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<String> deleteAccount(Authentication auth, @PathVariable String username) {
@@ -65,6 +72,7 @@ public class UserController {
         throw new ForbiddenException("Insufficient privileges");
     }
 
+    // TODO Зробити власні ексепшени
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/goods-count")
     public List<Map<String, Integer>> getTopUserGoodsCount(@RequestParam(required = false, defaultValue = "30") int limit) {
@@ -77,7 +85,9 @@ public class UserController {
         return userService.getUserGoodsCount(pageable);
     }
 
-    //TODO розібратись з цими двома методами
+    //TODO розібратись з цими двома методами.
+    // Скоріш зав все просто поєднати логіку щоб був тільки один ендпоїнт
+    // За допомогою якого ми можемо авати ролі
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     @PatchMapping(value = "/{username}/role")
     public ResponseEntity<UserDto> changeRole(@PathVariable String username,
@@ -91,7 +101,7 @@ public class UserController {
         return ResponseEntity.ok(UserDto.fromUser(user));
     }
 
-
+    // TODO Зробити власні ексепшени
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/{username}/role1", method = RequestMethod.PATCH)
     public User changeRoleAdmin(@PathVariable String username, @RequestParam String act) {
@@ -112,6 +122,7 @@ public class UserController {
         return ResponseEntity.ok().body(Map.of("count", count));
     }
 
+    // TODO Створити власну модель а не повертати просто true
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{username}/isExists")
     public Boolean isUsernameExists(Authentication auth, @PathVariable String username) {
