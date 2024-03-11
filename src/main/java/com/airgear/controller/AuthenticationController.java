@@ -1,12 +1,14 @@
 package com.airgear.controller;
 
 import com.airgear.dto.LoginUserDto;
+import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.AuthToken;
 import com.airgear.model.User;
 import com.airgear.security.TokenProvider;
 import com.airgear.service.ThirdPartyTokenHandler;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,8 +40,14 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public User saveUser(@RequestBody com.airgear.dto.UserDto user) {
-        return userService.save(user);
+    public ResponseEntity<?> saveUser(@RequestBody com.airgear.dto.UserDto userDto) {
+        try {
+            userService.checkForUserUniqueness(userDto);
+            User user = userService.save(userDto);
+            return ResponseEntity.ok(user);
+        } catch (UserUniquenessViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @RequestMapping(value = "/service/authenticate", method = RequestMethod.GET)
