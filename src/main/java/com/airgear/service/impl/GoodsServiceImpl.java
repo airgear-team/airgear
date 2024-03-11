@@ -1,5 +1,12 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.AmountOfGoodsByCategoryResponse;
+import com.airgear.dto.GoodsDto;
+import com.airgear.dto.TotalNumberOfGoodsResponse;
+import com.airgear.dto.UserDto;
+import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.GoodsNotFoundException;
+import com.airgear.model.User;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
@@ -7,7 +14,9 @@ import com.airgear.model.goods.response.GoodsResponse;
 import com.airgear.repository.CategoryRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.GoodsViewRepository;
+import com.airgear.repository.UserRepository;
 import com.airgear.service.GoodsService;
+import com.airgear.service.GoodsStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,12 +35,22 @@ import java.util.stream.Collectors;
 @Service(value = "goodsService")
 public class GoodsServiceImpl implements GoodsService {
 
-    @Autowired
+    private UserRepository userRepository;
     private GoodsRepository goodsRepository;
-    @Autowired
     private CategoryRepository categoryRepository;
-    @Autowired
     private GoodsViewRepository goodsViewRepository;
+    private GoodsStatusService goodsStatusService;
+
+    @Autowired
+    public GoodsServiceImpl(UserRepository userRepository, GoodsRepository goodsRepository, CategoryRepository categoryRepository,
+                            GoodsViewRepository goodsViewRepository, GoodsStatusService goodsStatusService) {
+        this.userRepository = userRepository;
+        this.goodsRepository = goodsRepository;
+        this.categoryRepository = categoryRepository;
+        this.goodsViewRepository = goodsViewRepository;
+        this.goodsStatusService = goodsStatusService;
+    }
+
 
     @Override
     public Goods getGoodsById(Long id) {
@@ -40,9 +59,35 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public GoodsDto getGoodsById(String ipAddress, String username, Long goodsId) {
+        User user = userRepository.findByUsername(username);
+        Goods goods = getGoodsById(goodsId);
+        if (goods == null) {
+            throw new GoodsNotFoundException("Goods not found");
+        }
+        if (!goods.getGoodsStatus().getName().equals("ACTIVE")) {
+            throw new GoodsNotFoundException("Goods was deleted");
+        }
+        saveGoodsView(ipAddress, user.getId(), goods);
+        return GoodsDto.fromGoods(goods);
+    }
+
+    @Override
     public void deleteGoods(Goods goods) {
         goods.setDeletedAt(OffsetDateTime.now());
         goodsRepository.save(goods);
+    }
+
+    @Override
+    public void deleteGoods(String username, Long goodsId) {
+        User user = userRepository.findByUsername(username);
+        Goods goods = getGoodsById(goodsId);
+
+        if (!user.getId().equals(goods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
+            throw new ForbiddenException("It is not your goods");
+        }
+        goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
+        deleteGoods(goods);
     }
 
     @Override
@@ -57,6 +102,28 @@ public class GoodsServiceImpl implements GoodsService {
         //checkCategory(existingGoods);
         existingGoods.setLastModified(OffsetDateTime.now());
         return goodsRepository.save(existingGoods);
+    }
+
+    @Override
+    public GoodsDto updateGoods(String username, Long goodsId, Goods updatedGoods) {
+        User user = userRepository.findByUsername(username);
+        Goods existingGoods = getGoodsById(goodsId);
+        if (user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
+            throw new ForbiddenException("It is not your goods");
+        }
+        if (updatedGoods.getName() != null) {
+            existingGoods.setName(updatedGoods.getName());
+        }
+        if (updatedGoods.getDescription() != null) {
+            existingGoods.setDescription(updatedGoods.getDescription());
+        }
+        if (updatedGoods.getPrice() != null) {
+            existingGoods.setPrice(updatedGoods.getPrice());
+        }
+        if (updatedGoods.getLocation() != null) {
+            existingGoods.setLocation(updatedGoods.getLocation());
+        }
+        return GoodsDto.fromGoods(updateGoods(existingGoods));
     }
 
     @Override
@@ -97,12 +164,12 @@ public class GoodsServiceImpl implements GoodsService {
 
 
     @Override
-    public Map<Category, Long> getAmountOfGoodsByCategory() {
+    public AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory() {
         List<Goods> goodsList = goodsRepository.findAll();
-
+        return new AmountOfGoodsByCategoryResponse(goodsList.stream()
+                .collect(Collectors.groupingBy(Goods::getCategory, Collectors.counting())));
         // Grouping by category and quantity
-        return goodsList.stream()
-                .collect(Collectors.groupingBy(Goods::getCategory, Collectors.counting()));
+
     }
 
     @Override
@@ -130,17 +197,17 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Long getTotalNumberOfGoods() {
-        return goodsRepository.count();
+    public TotalNumberOfGoodsResponse getTotalNumberOfGoodsResponse() {
+        return new TotalNumberOfGoodsResponse(goodsRepository.count());
     }
 
-    private void checkCategory(Goods goods){
-        if (goods.getCategory()!=null){
-            Category category= categoryRepository.findByName(goods.getCategory().getName());
-            if (category!=null)
+    private void checkCategory(Goods goods) {
+        if (goods.getCategory() != null) {
+            Category category = categoryRepository.findByName(goods.getCategory().getName());
+            if (category != null)
                 goods.setCategory(category);
             else
-                throw new RuntimeException("not correct category for good with id: "+goods.getId());
+                throw new RuntimeException("not correct category for good with id: " + goods.getId());
         }
     }
 
@@ -156,6 +223,7 @@ public class GoodsServiceImpl implements GoodsService {
         Collections.shuffle(goods);
         return goods.subList(0, Math.min(goods.size(), limit));
     }
+
     @Override
     public void saveGoodsView(String ip, Long userId, Goods goods) {
         if (goodsViewRepository.existsByIpAndGoods(ip, goods)) {
@@ -165,6 +233,32 @@ public class GoodsServiceImpl implements GoodsService {
             return;
         }
         goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
+    }
+
+    @Override
+    public GoodsDto createGoods(String username, GoodsDto goodsDto) {
+        User user = userRepository.findByUsername(username);
+        goodsDto.setUser(UserDto.fromUser(user));
+        Goods goods = goodsDto.toGoods();
+        goods.setCreatedAt(OffsetDateTime.now());
+        return GoodsDto.fromGoods(goodsRepository.save(goods));
+    }
+
+    @Override
+    public GoodsDto addToFavorites(String username, Long goodsId) {
+        User user = userRepository.findByUsername(username);
+        Goods goods = getGoodsById(goodsId);
+        if (goods == null) {
+            throw new GoodsNotFoundException("Goods not found");
+        }
+
+        if (user.getFavoriteGoods().contains(goods)) {
+            user.getFavoriteGoods().remove(goods);
+        } else {
+            user.getFavoriteGoods().add(goods);
+        }
+        userRepository.save(user);
+        return GoodsDto.fromGoods(goods);
     }
 
 }

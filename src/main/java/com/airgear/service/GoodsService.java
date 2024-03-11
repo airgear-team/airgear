@@ -1,5 +1,8 @@
 package com.airgear.service;
 
+import com.airgear.dto.AmountOfGoodsByCategoryResponse;
+import com.airgear.dto.GoodsDto;
+import com.airgear.dto.TotalNumberOfGoodsResponse;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
@@ -16,11 +19,17 @@ public interface GoodsService {
 
     Goods getGoodsById(Long id);
 
+    GoodsDto getGoodsById(String ipAddress, String username, Long goodsId);
+
     void deleteGoods(Goods goods);
+
+    void deleteGoods(String username, Long goodsId);
 
     Goods saveGoods(Goods goods);
 
     Goods updateGoods(Goods goods);
+
+    GoodsDto updateGoods(String username, Long goodsId, Goods updatedGoods);
 
     Set<Goods> getAllGoodsByUsername(String username);
 
@@ -34,12 +43,15 @@ public interface GoodsService {
 
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
-    Long getTotalNumberOfGoods();
+    TotalNumberOfGoodsResponse getTotalNumberOfGoodsResponse();
 
-    Map<Category, Long> getAmountOfGoodsByCategory();
+    AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory();
 
     List<Goods> getRandomGoods(String categoryName, int quantity);
 
     void saveGoodsView(String ip, Long userId, Goods goods);
 
+    GoodsDto createGoods(String username, GoodsDto goodsDto);
+
+    GoodsDto addToFavorites(String username, Long goodsId);
 }
