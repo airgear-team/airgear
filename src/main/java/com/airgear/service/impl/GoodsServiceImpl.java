@@ -10,6 +10,7 @@ import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -95,6 +96,14 @@ public class GoodsServiceImpl implements GoodsService {
         return randomizeAndLimit(goods, quantity);
     }
 
+    //will return 12 similar goods (same category and price +- 15%)
+    @Override
+    public Page<Goods> getSimilarGoods(String categoryName, BigDecimal price) {
+        BigDecimal lowerBound = price.multiply(new BigDecimal("0.85"));
+        BigDecimal upperBound = price.multiply(new BigDecimal("1.15"));
+
+        return filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0,12));
+    }
 
     @Override
     public Map<Category, Long> getAmountOfGoodsByCategory() {

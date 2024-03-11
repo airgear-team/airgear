@@ -40,6 +40,9 @@ public interface GoodsService {
 
     List<Goods> getRandomGoods(String categoryName, int quantity);
 
+    //will return 12 similar goods (same category and similar price)
+    Page<Goods> getSimilarGoods(String categoryName, BigDecimal price);
+
     void saveGoodsView(String ip, Long userId, Goods goods);
 
 }
