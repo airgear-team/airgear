@@ -3,6 +3,8 @@ package com.airgear.dto;
 import com.airgear.model.goods.Goods;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -25,7 +27,6 @@ public class GoodsDto {
     private LocationDto location;
     private CategoryDto category;
     private String phoneNumber;
-    private UserDto user;
 
     public Goods toGoods() {
         return Goods.builder()
@@ -37,7 +38,6 @@ public class GoodsDto {
                 .location(location.toLocation())
                 .category(category.toCategory())
                 .phoneNumber(phoneNumber)
-                .user(user.toUser())
                 .build();
     }
 
@@ -63,7 +63,6 @@ public class GoodsDto {
                 .location(LocationDto.fromLocation(goods.getLocation()))
                 .category(CategoryDto.fromCategory(goods.getCategory()))
                 .phoneNumber(goods.getPhoneNumber())
-                .user(UserDto.fromUser(goods.getUser()))
                 .build();
     }
 

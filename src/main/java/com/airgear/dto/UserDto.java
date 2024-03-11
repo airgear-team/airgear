@@ -3,6 +3,8 @@ package com.airgear.dto;
 import com.airgear.model.User;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
