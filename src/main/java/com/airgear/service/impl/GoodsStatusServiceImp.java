@@ -14,6 +14,6 @@ public class GoodsStatusServiceImp implements GoodsStatusService {
     private GoodsStatusRepository goodsStatusRepository;
     @Override
     public GoodsStatus getGoodsById(Long id) {
-        return goodsStatusRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("GoodsStatus not found"));
+        return goodsStatusRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("GoodsStatus not found"));
     }
 }

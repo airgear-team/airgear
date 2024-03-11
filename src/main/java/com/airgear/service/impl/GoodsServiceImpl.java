@@ -27,10 +27,11 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.airgear.exception.UserExceptions.userNotFound;
 
 @Service(value = "goodsService")
 public class GoodsServiceImpl implements GoodsService {
@@ -74,6 +75,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public void deleteGoods(Goods goods) {
+        goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
         goods.setDeletedAt(OffsetDateTime.now());
         goodsRepository.save(goods);
     }
@@ -86,7 +88,6 @@ public class GoodsServiceImpl implements GoodsService {
         if (!user.getId().equals(goods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
             throw new ForbiddenException("It is not your goods");
         }
-        goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
         deleteGoods(goods);
     }
 
@@ -98,17 +99,18 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Goods updateGoods(Goods existingGoods) {
+    public Goods updateGoods(@Valid Goods existingGoods) {
         //checkCategory(existingGoods);
         existingGoods.setLastModified(OffsetDateTime.now());
         return goodsRepository.save(existingGoods);
     }
 
     @Override
-    public GoodsDto updateGoods(String username, Long goodsId, Goods updatedGoods) {
+    public GoodsDto updateGoods(String username, Long goodsId, GoodsDto updatedGoodsDto) {
         User user = userRepository.findByUsername(username);
         Goods existingGoods = getGoodsById(goodsId);
-        if (user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
+        Goods updatedGoods = updatedGoodsDto.toGoods();
+        if (!user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
             throw new ForbiddenException("It is not your goods");
         }
         if (updatedGoods.getName() != null) {
@@ -128,8 +130,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Set<Goods> getAllGoodsByUsername(String username) {
-        Set<Goods> goodsSet = goodsRepository.getGoodsByUserName(username);
-        return goodsSet;
+        return goodsRepository.getGoodsByUserName(username);
     }
 
     @Override
@@ -144,8 +145,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public List<Goods> getAllGoods() {
-        List<Goods> goodsList = goodsRepository.findAll();
-        return goodsList;
+        return goodsRepository.findAll();
     }
 
     @Override
@@ -238,8 +238,12 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsDto createGoods(String username, GoodsDto goodsDto) {
         User user = userRepository.findByUsername(username);
-        goodsDto.setUser(UserDto.fromUser(user));
+        if (user == null) {
+            throw userNotFound(username);
+        }
         Goods goods = goodsDto.toGoods();
+        goods.setUser(user);
+        goods.setGoodsStatus(goodsStatusService.getGoodsById(1L));
         goods.setCreatedAt(OffsetDateTime.now());
         return GoodsDto.fromGoods(goodsRepository.save(goods));
     }

@@ -64,7 +64,7 @@ public class GoodsController {
     public ResponseEntity<GoodsDto> updateGoods(
             Authentication auth,
             @PathVariable Long goodsId,
-            @Valid @RequestBody Goods updatedGoods) {
+            @Valid @RequestBody GoodsDto updatedGoods) {
         return ResponseEntity.ok(goodsService.updateGoods(auth.getName(), goodsId, updatedGoods));
     }
 

@@ -29,7 +29,7 @@ public interface GoodsService {
 
     Goods updateGoods(Goods goods);
 
-    GoodsDto updateGoods(String username, Long goodsId, Goods updatedGoods);
+    GoodsDto updateGoods(String username, Long goodsId, GoodsDto updatedGoods);
 
     Set<Goods> getAllGoodsByUsername(String username);
 
