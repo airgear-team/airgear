@@ -588,4 +588,72 @@
                 onDelete="CASCADE"
                 onUpdate="CASCADE"/>
     </changeSet>
+    <!-- Create Rental Card Table -->
+    <changeSet id="addRentalCardTable" author="Olena.Sinkevych">
+        <createTable tableName="rental_card">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lessor_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="renter_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_date" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="duration" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="quantity" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rental_price" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="fine" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="deleted_at" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="rental_card"
+                baseColumnNames="lessor_id"
+                constraintName="fk_lessor_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="rental_card"
+                baseColumnNames="renter_id"
+                constraintName="fk_renter_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="rental_card"
+                baseColumnNames="goods_id"
+                constraintName="fk_card_goods"
+                referencedTableName="goods"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
 </databaseChangeLog>
