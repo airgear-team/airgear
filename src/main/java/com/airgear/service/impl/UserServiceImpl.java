@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.airgear.dto.RoleDto;
+import com.airgear.dto.UserExistDto;
+import com.airgear.exception.ChangeRoleException;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.UserRepository;
@@ -20,6 +22,8 @@ import com.airgear.service.RoleService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,20 +32,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.airgear.utils.Constants.ROLE_ADMIN_NAME;
+
 @Service(value = "userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
 
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
+    private final UserRepository userRepository;
+    private final AccountStatusRepository accountStatusRepository;
+    private final BCryptPasswordEncoder bcryptEncoder;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private AccountStatusRepository accountStatusRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder bcryptEncoder;
+    public UserServiceImpl(RoleService roleService, UserRepository userRepository, AccountStatusRepository accountStatusRepository, BCryptPasswordEncoder bcryptEncoder) {
+        this.roleService = roleService;
+        this.userRepository = userRepository;
+        this.accountStatusRepository = accountStatusRepository;
+        this.bcryptEncoder = bcryptEncoder;
+    }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
@@ -59,27 +66,30 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return authorities;
     }
 
-    public List<User> findAll() {
-        List<User> list = new ArrayList<>();
-        userRepository.findAll().iterator().forEachRemaining(list::add);
-        return list;
+    public List<UserDto> findAll() {
+        List<User> users = new ArrayList<>();
+        userRepository.findAll().iterator().forEachRemaining(users::add);
+        return UserDto.fromUsers(users);
     }
 
-    public List<User> findActiveUsers() {
-        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(user -> user.getAccountStatus() != null && user.getAccountStatus().getStatusName().equals("ACTIVE"))
-                .collect(Collectors.toList());
+    public List<UserDto> findActiveUsers() {
+        List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                .filter(user -> user.getAccountStatus() != null && user.getAccountStatus().getStatusName().equals("ACTIVE")).toList();
+        return UserDto.fromUsers(users);
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserDto findByUsername(String username) {
+        return UserDto.fromUser(userRepository.findByUsername(username));
     }
 
 
     @Override
-    public boolean isUsernameExists(String username) {
-        return userRepository.existsByUsername(username);
+    public UserExistDto isUsernameExists(String username) {
+        return UserExistDto.builder()
+                .username(username)
+                .exist(userRepository.existsByUsername(username))
+                .build();
     }
 
 
@@ -120,7 +130,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User addRole(String username, String role) {
-        User user = findByUsername(username);
+        User user = userRepository.findByUsername(username);
         Set<Role> roles = user.getRoles();
         roles.add(roleService.findByName("ADMIN"));
         user.setRoles(roles);
@@ -129,7 +139,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User deleteRole(String username, String role) {
-        User user = findByUsername(username);
+        User user = userRepository.findByUsername(username);
         Set<Role> roles = user.getRoles();
         roles.remove(roleService.findByName("ADMIN"));
         if (roles.isEmpty()) {
@@ -138,19 +148,20 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return update(user);
     }
 
-
     @Override
-    public User apponintModerator(String username) {
+    public UserDto appointRole(String username, RoleDto role) {
         User user = userRepository.findByUsername(username);
-        user.getRoles().add(roleService.findByName("MODERATOR"));
-        return userRepository.save(user);
+        user.getRoles().add(role.toRole());
+        User updatedUser = userRepository.save(user);
+        return UserDto.fromUser(updatedUser);
     }
 
     @Override
-    public User removeModerator(String username) {
+    public UserDto removeRole(String username, RoleDto role) {
         User user = userRepository.findByUsername(username);
-        user.getRoles().remove(roleService.findByName("MODERATOR"));
-        return userRepository.save(user);
+        user.getRoles().remove(role.toRole());
+        User updatedUser = userRepository.save(user);
+        return UserDto.fromUser(updatedUser);
     }
 
     @Transactional
@@ -160,7 +171,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
-        return userRepository.countByCreatedAtBetween(start, end);
+    public int countNewUsersBetweenDates(String start, String end) {
+        OffsetDateTime startDate = OffsetDateTime.parse(start);
+        OffsetDateTime endDate = OffsetDateTime.parse(end);
+        return userRepository.countByCreatedAtBetween(startDate, endDate);
+    }
+
+    @Override
+    public void deleteAccount(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> "ADMIN".equals(role.getName()))) {
+            setAccountStatus(username, 2);
+        } else throw new ForbiddenException("Insufficient privileges");
+    }
+
+    @Override
+    public void accessToRoleChange(String executor, RoleDto role) {
+        UserDto executorUser = findByUsername(executor);
+        if (!executorUser.getRoles().stream().map(RoleDto::getName).toList().contains(ROLE_ADMIN_NAME)
+                && role.getName().equalsIgnoreCase(ROLE_ADMIN_NAME))
+            throw new ChangeRoleException("Access denied");
     }
 }

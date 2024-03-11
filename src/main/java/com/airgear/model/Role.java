@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 @Data
 @Builder
@@ -19,6 +20,7 @@ public class Role {
     private long id;
 
     @Column
+    @Pattern(regexp = "ADMIN|MODERATOR|USER")
     private String name;
 
     @Column

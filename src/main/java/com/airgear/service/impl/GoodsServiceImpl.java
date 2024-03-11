@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.GoodsDto;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
@@ -60,9 +61,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Set<Goods> getAllGoodsByUsername(String username) {
-        Set<Goods> goodsSet = goodsRepository.getGoodsByUserName(username);
-        return goodsSet;
+    public Set<GoodsDto> getAllGoodsByUsername(String username) {
+        return GoodsDto.fromGoodsSet(goodsRepository.getGoodsByUserName(username));
     }
 
     @Override
@@ -134,13 +134,13 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsRepository.count();
     }
 
-    private void checkCategory(Goods goods){
-        if (goods.getCategory()!=null){
-            Category category= categoryRepository.findByName(goods.getCategory().getName());
-            if (category!=null)
+    private void checkCategory(Goods goods) {
+        if (goods.getCategory() != null) {
+            Category category = categoryRepository.findByName(goods.getCategory().getName());
+            if (category != null)
                 goods.setCategory(category);
             else
-                throw new RuntimeException("not correct category for good with id: "+goods.getId());
+                throw new RuntimeException("not correct category for good with id: " + goods.getId());
         }
     }
 
@@ -156,6 +156,7 @@ public class GoodsServiceImpl implements GoodsService {
         Collections.shuffle(goods);
         return goods.subList(0, Math.min(goods.size(), limit));
     }
+
     @Override
     public void saveGoodsView(String ip, Long userId, Goods goods) {
         if (goodsViewRepository.existsByIpAndGoods(ip, goods)) {

@@ -11,6 +11,7 @@ import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.RentalAgreement;
 import com.airgear.model.User;
+import com.airgear.repository.UserRepository;
 import com.airgear.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.airgear.service.ComplaintService;
@@ -65,11 +66,13 @@ public class GoodsController {
     private ComplaintService complaintService;
     @Autowired
     private RentalAgreementService rentalAgreementService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
     public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) {
-        User user = userService.findByUsername(auth.getName());
+        User user = userRepository.findByUsername(auth.getName());
         Goods newGoods = goods.toGoods();
         newGoods.setUser(user);
         newGoods.setLocation(locationService.addLocation(goods.getLocation().toLocation()));
@@ -82,7 +85,7 @@ public class GoodsController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
     public ResponseEntity<Goods> getGoodsById(HttpServletRequest request, Authentication auth, @PathVariable Long goodsId) {
-        User user = userService.findByUsername(auth.getName());
+        User user = userRepository.findByUsername(auth.getName());
         Goods goods = goodsService.getGoodsById(goodsId);
         if (goods == null) {
             throw new ForbiddenException("Goods not found");
@@ -101,7 +104,7 @@ public class GoodsController {
             Authentication auth,
             @PathVariable Long goodsId,
             @Valid @RequestBody Goods updatedGoods) {
-        User user = userService.findByUsername(auth.getName());
+        User user = userRepository.findByUsername(auth.getName());
         Goods existingGoods = goodsService.getGoodsById(goodsId);
         if (user.getId() != existingGoods.getUser().getId() && !user.getRoles().contains("ADMIN")) {
             throw new ForbiddenException("It is not your goods");
@@ -126,7 +129,7 @@ public class GoodsController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{goodsId}")
     public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId) {
-        User user = userService.findByUsername(auth.getName());
+        User user = userRepository.findByUsername(auth.getName());
         Goods goods = goodsService.getGoodsById(goodsId);
         if (user.getId() != goods.getUser().getId() && !user.getRoles().contains("ADMIN")) {
             throw new ForbiddenException("It is not your goods");
@@ -143,7 +146,7 @@ public class GoodsController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("addToFavorites/{goodsId}")
     public ResponseEntity<Goods> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
-        User user = userService.findByUsername(auth.getName());
+        User user = userRepository.findByUsername(auth.getName());
         Goods goods = goodsService.getGoodsById(goodsId);
 
         if (goods == null) {

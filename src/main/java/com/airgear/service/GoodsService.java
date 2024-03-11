@@ -1,5 +1,6 @@
 package com.airgear.service;
 
+import com.airgear.dto.GoodsDto;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
@@ -22,7 +23,7 @@ public interface GoodsService {
 
     Goods updateGoods(Goods goods);
 
-    Set<Goods> getAllGoodsByUsername(String username);
+    Set<GoodsDto> getAllGoodsByUsername(String username);
 
     List<Goods> getAllGoods();
 
