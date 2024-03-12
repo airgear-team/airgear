@@ -27,12 +27,16 @@ import java.util.stream.Collectors;
 @Service(value = "goodsService")
 public class GoodsServiceImpl implements GoodsService {
 
+    private final GoodsRepository goodsRepository;
+    private final CategoryRepository categoryRepository;
+    private final GoodsViewRepository goodsViewRepository;
+
     @Autowired
-    private GoodsRepository goodsRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private GoodsViewRepository goodsViewRepository;
+    public GoodsServiceImpl(GoodsRepository goodsRepository, CategoryRepository categoryRepository, GoodsViewRepository goodsViewRepository) {
+        this.goodsRepository = goodsRepository;
+        this.categoryRepository = categoryRepository;
+        this.goodsViewRepository = goodsViewRepository;
+    }
 
     @Override
     public Goods getGoodsById(Long id) {
@@ -62,7 +66,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Set<GoodsDto> getAllGoodsByUsername(String username) {
-        return GoodsDto.fromGoodsSet(goodsRepository.getGoodsByUserName(username));
+        return GoodsDto.fromGoodsSet(goodsRepository.getGoodsByUserUsername(username));
     }
 
     @Override

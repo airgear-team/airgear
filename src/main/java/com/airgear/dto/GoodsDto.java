@@ -63,7 +63,7 @@ public class GoodsDto {
                 .location(LocationDto.fromLocation(goods.getLocation()))
                 .category(CategoryDto.fromCategory(goods.getCategory()))
                 .phoneNumber(goods.getPhoneNumber())
-                .user(UserDto.fromUser(goods.getUser()))
+//                .user(UserDto.fromUser(goods.getUser()))
                 .build();
     }
 

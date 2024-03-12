@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.airgear.dto.RoleDto;
@@ -22,8 +21,6 @@ import com.airgear.service.RoleService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -188,8 +185,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public void accessToRoleChange(String executor, RoleDto role) {
         UserDto executorUser = findByUsername(executor);
-        if (!executorUser.getRoles().stream().map(RoleDto::getName).toList().contains(ROLE_ADMIN_NAME)
-                && role.getName().equalsIgnoreCase(ROLE_ADMIN_NAME))
+        if (!executorUser.getRoles().contains(role) && role.getName().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
             throw new ChangeRoleException("Access denied");
+        }
     }
 }

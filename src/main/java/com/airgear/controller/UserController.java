@@ -28,12 +28,6 @@ import static com.airgear.utils.Constants.*;
 @RequestMapping("/users")
 public class UserController {
 
-    //TODO
-    // 1. Винести всю логіку в сервіси. Лишити тільки викликання одного методу сервісу
-    // 2. Перенести залежностів в конструктор
-    // 3. Винисти константи в клас utils.Constants та дати їх більш конкретну назву
-    // 4. Зробити власні ексепшени
-
     private final UserService userService;
     private final GoodsService goodsService;
 
@@ -61,7 +55,6 @@ public class UserController {
         return ResponseEntity.ok(goodsService.getAllGoodsByUsername(username));
     }
 
-    // TODO Зробити власні ексепшени
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<String> deleteAccount(@PathVariable String username) {
@@ -69,7 +62,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // TODO Зробити власні ексепшени
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/goods-count")
     public ResponseEntity<List<Map<String, Integer>>> getTopUserGoodsCount(@RequestParam(required = false, defaultValue = "30") int limit) {
@@ -77,9 +69,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserGoodsCount(pageable));
     }
 
-    //TODO розібратись з цими двома методами.
-    // Скоріш зав все просто поєднати логіку щоб був тільки один ендпоїнт
-    // За допомогою якого ми можемо авати ролі
     @PostMapping(value = "/{username}/roles")
     @Validated
     public ResponseEntity<UserDto> appointRole(Authentication auth,
@@ -101,15 +90,16 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/count")
-    public ResponseEntity<?> countNewUsers(@RequestParam("start") String start, @RequestParam("end") String end) {
+    public ResponseEntity<?> countNewUsers(@RequestParam("start") String start,
+                                           @RequestParam("end") String end) {
         int count = userService.countNewUsersBetweenDates(start, end);
         return ResponseEntity.ok().body(Map.of("count", count));
     }
 
-    // TODO Створити власну модель а не повертати просто true
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{username}/isExists")
-    public ResponseEntity<UserExistDto> isUsernameExists(Authentication auth, @PathVariable String username) {
+    public ResponseEntity<UserExistDto> isUsernameExists(Authentication auth,
+                                                         @PathVariable String username) {
         log.info("auth name : {}", auth.getName());
         return ResponseEntity.ok(userService.isUsernameExists(username));
     }
