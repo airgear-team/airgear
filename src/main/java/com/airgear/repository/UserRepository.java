@@ -20,6 +20,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     boolean existsByUsername(String username);
 
+    boolean existsByPhone(String phone);
+
     @Modifying
     @Transactional
     @Query(value = "UPDATE user SET account_status_id = :accountStatusId WHERE id = :userId", nativeQuery = true)
