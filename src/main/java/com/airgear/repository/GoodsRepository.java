@@ -15,17 +15,17 @@ import java.util.Set;
 
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
-    Set<Goods> getGoodsByUserName(String username);
+    Set<Goods> getGoodsByUserUsername(String userUsername);
 
     Page<Goods> findAllByNameLikeIgnoreCase(Pageable pageable, String goodsName);
 
     @Query("SELECT count(id) FROM Goods goods WHERE goods.createdAt >= :fromDate AND goods.createdAt <= :toDate")
-    int  findCountNewGoodsFromPeriod(@Param("fromDate")OffsetDateTime fromDate, @Param("toDate") OffsetDateTime toDate);
+    int findCountNewGoodsFromPeriod(@Param("fromDate") OffsetDateTime fromDate, @Param("toDate") OffsetDateTime toDate);
 
     List<Goods> findAll();
 
     @Query("FROM Category category WHERE category.name = :name")
-    Category  getCategoryByName(@Param("name")String name);
+    Category getCategoryByName(@Param("name") String name);
 
     Page<Goods> findAll(Pageable pageable);
 
