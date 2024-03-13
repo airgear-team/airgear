@@ -1,12 +1,15 @@
 package com.airgear.controller;
 
 import com.airgear.dto.LoginUserDto;
+import com.airgear.exception.UserExceptions;
 import com.airgear.model.AuthToken;
+import com.airgear.model.ErrorResponse;
 import com.airgear.model.User;
 import com.airgear.security.TokenProvider;
 import com.airgear.service.ThirdPartyTokenHandler;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +20,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,6 +40,10 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> generateToken(@RequestBody LoginUserDto userDto) throws AuthenticationException {
+
+        if (userService.findByUsername(userDto.getUsername()) == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login or password is incorrect!");
+
         final String token = getToken(userDto);
         return ResponseEntity.ok(new AuthToken(token));
     }
