@@ -42,4 +42,6 @@ public interface GoodsService {
 
     void saveGoodsView(String ip, Long userId, Goods goods);
 
+    Map<Category, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate);
+
 }
