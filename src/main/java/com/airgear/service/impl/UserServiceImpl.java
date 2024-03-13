@@ -163,4 +163,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
         return userRepository.countByCreatedAtBetween(start, end);
     }
+    @Override
+    public int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
+        return userRepository.countByDeleteAtBetween(start, end);
+    }
 }
