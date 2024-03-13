@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.FeedbackDTO;
+import com.airgear.dto.FeedbackDto;
 import com.airgear.model.Feedback;
 import com.airgear.model.User;
 import com.airgear.repository.FeedbackRepository;
@@ -30,7 +30,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackRepository.findById(id).orElse(null);
     }
 
-    public Feedback createFeedback(FeedbackDTO feedbackDTO) {
+    public Feedback createFeedback(FeedbackDto feedbackDTO) {
         User user = userRepository.findById(feedbackDTO.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException("User with given ID not found"));
 

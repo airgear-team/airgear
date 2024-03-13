@@ -1,6 +1,6 @@
 package com.airgear.service;
 
-import com.airgear.dto.FeedbackDTO;
+import com.airgear.dto.FeedbackDto;
 import com.airgear.model.Feedback;
 
 import javax.validation.Valid;
@@ -11,7 +11,7 @@ public interface FeedbackService {
 
     Feedback getFeedbackById(Long id);
 
-    Feedback createFeedback(@Valid FeedbackDTO feedbackDTO);
+    Feedback createFeedback(@Valid FeedbackDto feedbackDTO);
 
     void deleteFeedback(Long id);
 }

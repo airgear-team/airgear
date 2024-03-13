@@ -1,25 +1,23 @@
 package com.airgear.controller;
 
-import com.airgear.dto.ComplaintDTO;
+import com.airgear.dto.ComplaintDto;
 import com.airgear.dto.GoodsDto;
-import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
+import com.airgear.mapper.ComplaintMapper;
+import com.airgear.mapper.GoodsMapper;
+import com.airgear.mapper.LocationMapper;
+import com.airgear.mapper.UserMapper;
 import com.airgear.model.goods.Category;
 import com.airgear.model.Complaint;
-import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.RentalAgreement;
 import com.airgear.model.User;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.airgear.service.ComplaintService;
-import com.airgear.repository.GoodsStatusRepository;
-import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
-import com.airgear.utils.Converter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -31,7 +29,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
@@ -68,14 +65,22 @@ public class GoodsController {
     private RentalAgreementService rentalAgreementService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GoodsMapper goodsMapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private LocationMapper locationMapper;
+    @Autowired
+    private ComplaintMapper complaintMapper;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
     public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) {
         User user = userRepository.findByUsername(auth.getName());
-        Goods newGoods = goods.toGoods();
+        Goods newGoods = goodsMapper.toGoods(goods);
         newGoods.setUser(user);
-        newGoods.setLocation(locationService.addLocation(goods.getLocation().toLocation()));
+        newGoods.setLocation(locationService.addLocation(locationMapper.toLocation(goods.getLocation())));
         GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
         return goodsService.saveGoods(newGoods);
@@ -157,7 +162,7 @@ public class GoodsController {
             throw new ForbiddenException("Goods have already been added to favorites");
         }
         user.getFavoriteGoods().add(goods);
-        userService.save(UserDto.fromUser(user));
+        userService.save(userMapper.toDto(user));
         return ResponseEntity.ok(goods);
     }
 
@@ -198,12 +203,12 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/{goodsId}/complaint")
-    public ResponseEntity<ComplaintDTO> addComplaint
+    public ResponseEntity<ComplaintDto> addComplaint
             (Authentication auth,
              @PathVariable Long goodsId,
-             @Valid @RequestBody ComplaintDTO complaint) {
+             @Valid @RequestBody ComplaintDto complaint) {
         Complaint newComplaint = complaintService.save(auth.getName(), goodsId, complaint);
-        return ResponseEntity.ok(Converter.getDtoFromComplaint(newComplaint));
+        return ResponseEntity.ok(complaintMapper.toDto(newComplaint));
     }
 
     //TODO повертати не Long а створити модель й повертати її

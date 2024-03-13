@@ -1,6 +1,7 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.ComplaintDTO;
+import com.airgear.dto.ComplaintDto;
+import com.airgear.mapper.ComplaintMapper;
 import com.airgear.model.Complaint;
 import com.airgear.model.ComplaintCategory;
 import com.airgear.model.User;
@@ -23,6 +24,8 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintCategoryRepository complaintCategoryRepository;
     private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
+    @Autowired
+    private ComplaintMapper complaintMapper;
 
     @Autowired
     public ComplaintServiceImpl(ComplaintRepository complaintRepository, ComplaintCategoryRepository complaintCategoryRepository, UserRepository userRepository, GoodsRepository goodsRepository) {
@@ -34,8 +37,8 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     @Transactional
-    public Complaint save(String userName, Long goodsId, ComplaintDTO complaintDTO) {
-        Complaint newComplaint = complaintDTO.getComplaintFromDto();
+    public Complaint save(String userName, Long goodsId, ComplaintDto complaintDTO) {
+        Complaint newComplaint = complaintMapper.toComplaint(complaintDTO);
         User user = userRepository.findByUsername(userName);
         Goods goods = goodsRepository.getReferenceById(goodsId);
         ComplaintCategory complaintCategory = complaintCategoryRepository.findByName(complaintDTO.getComplaintCategoryDTO().getName());
