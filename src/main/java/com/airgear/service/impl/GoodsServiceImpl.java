@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service(value = "goodsService")
 public class GoodsServiceImpl implements GoodsService {
-
+    private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
     @Autowired
     private GoodsRepository goodsRepository;
     @Autowired
@@ -48,6 +48,10 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Goods saveGoods(@Valid Goods goods) {
         //checkCategory(goods);
+        int productCount = goodsRepository.countByUserIdAndCategoryId(goods.getUser().getId(), goods.getCategory().getId());
+        if (productCount >= MAX_GOODS_IN_CATEGORY_COUNT) {
+            throw new RuntimeException("Product limit exceeded for this category");
+        }
         goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
@@ -134,13 +138,13 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsRepository.count();
     }
 
-    private void checkCategory(Goods goods){
-        if (goods.getCategory()!=null){
-            Category category= categoryRepository.findByName(goods.getCategory().getName());
-            if (category!=null)
+    private void checkCategory(Goods goods) {
+        if (goods.getCategory() != null) {
+            Category category = categoryRepository.findByName(goods.getCategory().getName());
+            if (category != null)
                 goods.setCategory(category);
             else
-                throw new RuntimeException("not correct category for good with id: "+goods.getId());
+                throw new RuntimeException("not correct category for good with id: " + goods.getId());
         }
     }
 
@@ -156,6 +160,7 @@ public class GoodsServiceImpl implements GoodsService {
         Collections.shuffle(goods);
         return goods.subList(0, Math.min(goods.size(), limit));
     }
+
     @Override
     public void saveGoodsView(String ip, Long userId, Goods goods) {
         if (goodsViewRepository.existsByIpAndGoods(ip, goods)) {

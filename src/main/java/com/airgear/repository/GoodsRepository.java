@@ -41,4 +41,5 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     Page<Goods> findByCategoryAndPriceBetween(Category category, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
+    int countByUserIdAndCategoryId(Long userId, Integer categoryId);
 }
