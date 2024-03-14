@@ -3,18 +3,15 @@ package com.airgear.service.impl;
 import com.airgear.dto.AmountOfGoodsByCategoryResponse;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
-import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.GoodsNotFoundException;
 import com.airgear.model.User;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
+import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.model.goods.response.GoodsResponse;
-import com.airgear.repository.CategoryRepository;
-import com.airgear.repository.GoodsRepository;
-import com.airgear.repository.GoodsViewRepository;
-import com.airgear.repository.UserRepository;
+import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
 import com.airgear.service.GoodsStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +21,8 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.airgear.exception.UserExceptions.userNotFound;
@@ -41,15 +35,17 @@ public class GoodsServiceImpl implements GoodsService {
     private CategoryRepository categoryRepository;
     private GoodsViewRepository goodsViewRepository;
     private GoodsStatusService goodsStatusService;
+    private TopGoodsPlacementRepository topGoodsPlacementRepository;
 
     @Autowired
     public GoodsServiceImpl(UserRepository userRepository, GoodsRepository goodsRepository, CategoryRepository categoryRepository,
-                            GoodsViewRepository goodsViewRepository, GoodsStatusService goodsStatusService) {
+                            GoodsViewRepository goodsViewRepository, GoodsStatusService goodsStatusService, TopGoodsPlacementRepository topGoodsPlacementRepository) {
         this.userRepository = userRepository;
         this.goodsRepository = goodsRepository;
         this.categoryRepository = categoryRepository;
         this.goodsViewRepository = goodsViewRepository;
         this.goodsStatusService = goodsStatusService;
+        this.topGoodsPlacementRepository = topGoodsPlacementRepository;
     }
 
 
@@ -149,17 +145,16 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public List<Goods> getRandomGoods(String categoryName, int quantity) {
+    public List<GoodsDto> getRandomGoods(String categoryName, int quantity) {
         List<Goods> goods;
         Category category = convertStringToCategory(categoryName);
-
         if (category != null) {
             goods = goodsRepository.findAllByCategory(category);
         } else {
             goods = goodsRepository.findAll();
         }
 
-        return randomizeAndLimit(goods, quantity);
+        return GoodsDto.fromGoodsList(randomizeAndLimit(goods, quantity));
     }
 
 
@@ -263,6 +258,22 @@ public class GoodsServiceImpl implements GoodsService {
         }
         userRepository.save(user);
         return GoodsDto.fromGoods(goods);
+    }
+
+    @Override
+    public List<Goods> getTopGoodsPlacements() {
+        List<Goods> result = new ArrayList<>();
+        topGoodsPlacementRepository.findAllActivePlacements().forEach(goods -> result.add(goods.getGoods()));
+        return result;
+    }
+
+    @Override
+    public void addTopGoodsPlacements(Long goodsId, Long userId, OffsetDateTime startAt, OffsetDateTime endAt) {
+        topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
+                .userId(userId)
+                .goods(getGoodsById(goodsId))
+                .startAt(startAt)
+                .endAt(endAt).build());
     }
 
 }

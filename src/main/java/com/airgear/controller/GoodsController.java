@@ -99,7 +99,7 @@ public class GoodsController {
     }
 
     @GetMapping("/random-goods")
-    public List<Goods> getRandomGoods(
+    public List<GoodsDto> getRandomGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
         return goodsService.getRandomGoods(categoryName, quantity);

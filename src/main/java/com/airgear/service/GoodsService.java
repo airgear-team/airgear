@@ -47,11 +47,17 @@ public interface GoodsService {
 
     AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory();
 
-    List<Goods> getRandomGoods(String categoryName, int quantity);
+    List<GoodsDto> getRandomGoods(String categoryName, int quantity);
 
     void saveGoodsView(String ip, Long userId, Goods goods);
 
     GoodsDto createGoods(String username, GoodsDto goodsDto);
 
     GoodsDto addToFavorites(String username, Long goodsId);
+
+    List<Goods> getTopGoodsPlacements();
+
+    void addTopGoodsPlacements(Long goodsId, Long userId, OffsetDateTime startAt, OffsetDateTime endAt);
+
+
 }
