@@ -116,4 +116,8 @@ public class Goods {
     @JsonIgnore
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<GoodsView> goodsViews;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<TopGoodsPlacement> topGoodsPlacements;
 }
