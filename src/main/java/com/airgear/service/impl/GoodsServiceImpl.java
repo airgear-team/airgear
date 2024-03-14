@@ -34,6 +34,9 @@ public class GoodsServiceImpl implements GoodsService {
     @Autowired
     private GoodsViewRepository goodsViewRepository;
 
+    private static final int SIMILAR_GOODS_LIMIT = 12;
+    private static final BigDecimal PRICE_VARIATION_PERCENTAGE = new BigDecimal("0.15");
+
     @Override
     public Goods getGoodsById(Long id) {
         Optional<Goods> goodsOptional = goodsRepository.findById(id);
@@ -96,13 +99,13 @@ public class GoodsServiceImpl implements GoodsService {
         return randomizeAndLimit(goods, quantity);
     }
 
-    //will return 12 similar goods (same category and price +- 15%)
+    //will return number of similar goods (same category and price within limit)
     @Override
     public Page<Goods> getSimilarGoods(String categoryName, BigDecimal price) {
-        BigDecimal lowerBound = price.multiply(new BigDecimal("0.85"));
-        BigDecimal upperBound = price.multiply(new BigDecimal("1.15"));
+        BigDecimal lowerBound = price.multiply(BigDecimal.ONE.subtract(PRICE_VARIATION_PERCENTAGE));
+        BigDecimal upperBound = price.multiply(BigDecimal.ONE.add(PRICE_VARIATION_PERCENTAGE));
 
-        return filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0,12));
+        return filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0, SIMILAR_GOODS_LIMIT));
     }
 
     @Override
