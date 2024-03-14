@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.CountDeletedGoodsDTO;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
@@ -75,10 +76,12 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsRepository.findCountNewGoodsFromPeriod(fromDate, toDate);
     }
 
-    public Long countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String categoryName) {
-        return categoryName != null ?
-                goodsRepository.countByDeletedAtBetweenAndCategory(startDate, endDate, categoryName) :
+    @Override
+    public CountDeletedGoodsDTO countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String category) {
+        Long count = category != null ?
+                goodsRepository.countByDeletedAtBetweenAndCategory(startDate, endDate, category) :
                 goodsRepository.countByDeletedAtBetween(startDate, endDate);
+        return new CountDeletedGoodsDTO(category, startDate, endDate, count);
     }
 
     @Override

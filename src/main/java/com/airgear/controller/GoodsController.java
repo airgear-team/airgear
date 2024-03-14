@@ -1,6 +1,7 @@
 package com.airgear.controller;
 
 import com.airgear.dto.ComplaintDTO;
+import com.airgear.dto.CountDeletedGoodsDTO;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
@@ -178,12 +179,11 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     @GetMapping("/getCountDeletedGoods")
-    public ResponseEntity<Long> countDeletedGoods(
-            @RequestParam(required = false) String categoryName,
+    public ResponseEntity<CountDeletedGoodsDTO> countDeletedGoods(
+            @RequestParam(required = false) String category,
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate) {
-        Long count = goodsService.countDeletedGoods(startDate, endDate, categoryName);
-        return ResponseEntity.ok(count);
+        return ResponseEntity.ok(goodsService.countDeletedGoods(startDate, endDate, category));
     }
 
     @GetMapping("/random-goods")
