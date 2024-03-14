@@ -1,6 +1,5 @@
 package com.airgear.aspects;
 
-import com.airgear.model.User;
 import com.airgear.model.goods.Goods;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
@@ -9,7 +8,6 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -30,10 +28,19 @@ public class GoodsViewAspect {
 
     @Before("execution(* com.airgear.controller.GoodsController.getGoodsById(..)) && args(goodsId)")
     public void saveGoodsView(@PathVariable Long goodsId) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        goodsService.saveGoodsView(getRemoteAddr(), getUserId(), getGoods(goodsId));
+    }
+
+    private Goods getGoods(Long goodsId) {
+        return goodsService.getGoodsById(goodsId);
+    }
+
+    private Long getUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-        Goods goods = goodsService.getGoodsById(goodsId);
-        goodsService.saveGoodsView(request.getRemoteAddr(), user.getId(), goods);
+        return userService.findByUsername(auth.getName()).getId();
+    }
+
+    private String getRemoteAddr() {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getRemoteAddr();
     }
 }
