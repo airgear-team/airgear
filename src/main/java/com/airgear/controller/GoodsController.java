@@ -81,8 +81,7 @@ public class GoodsController {
     // TODO створити власні ексепшени для всіх проблем які можуть бути в цьому конроллері
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
-    public ResponseEntity<Goods> getGoodsById(HttpServletRequest request, Authentication auth, @PathVariable Long goodsId) {
-        User user = userService.findByUsername(auth.getName());
+    public ResponseEntity<Goods> getGoodsById(@PathVariable Long goodsId) {
         Goods goods = goodsService.getGoodsById(goodsId);
         if (goods == null) {
             throw new ForbiddenException("Goods not found");
