@@ -26,21 +26,19 @@ public class LocationDto {
         return Location.builder()
                 .id(id)
                 .settlement(settlement)
-                .regionId(regionId)
                 .build();
     }
 
     public static LocationDto fromLocation(Location location) {
-        return LocationDto.builder()
+        return com.airgear.dto.LocationDto.builder()
                 .id(location.getId())
                 .settlement(location.getSettlement())
-                .regionId(location.getRegionId())
                 .build();
     }
 
     public static List<LocationDto> fromLocations(List<Location> locations) {
         List<LocationDto> result = new ArrayList<>();
-        locations.forEach(location -> result.add(LocationDto.fromLocation(location)));
+        locations.forEach(location -> result.add(com.airgear.dto.LocationDto.fromLocation(location)));
         return result;
     }
 }

@@ -50,7 +50,7 @@ public class Goods {
     private BigDecimal weekendsPrice;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
 
     @Embedded

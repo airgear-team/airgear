@@ -1,5 +1,7 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.LocationDto;
+import com.airgear.dto.RegionDto;
 import com.airgear.model.goods.Location;
 import com.airgear.model.goods.Region;
 import com.airgear.repository.LocationRepository;
@@ -23,8 +25,8 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<Region> getAllRegions() {
-        return regionsRepository.findAll();
+    public List<RegionDto> getAllRegions() {
+        return RegionDto.fromRegions(regionsRepository.findAll());
     }
 
     @Override
@@ -38,17 +40,9 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Location addLocation(Location location) {
-        String settlement = location.getSettlement();
-        Location existingLocation = getLocationBySettlement(settlement);
-        if (existingLocation != null) {
-            return existingLocation;
-        } else {
-            Location locationNew = new Location();
-            locationNew.setSettlement(settlement);
-            locationNew.setRegionId(location.getRegionId());
-            locationRepository.save(locationNew);
-            return locationNew;
-        }
+    public LocationDto addLocation(LocationDto locationDto) {
+        Location newLocation = locationRepository.save(locationDto.toLocation());
+        return LocationDto.fromLocation(newLocation);
+
     }
 }

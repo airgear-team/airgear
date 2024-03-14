@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity
@@ -21,7 +22,10 @@ public class Location {
     @Column(name = "settlement", nullable = false)
     private String settlement;
 
-    @Column(name = "region_id", nullable = false)
-    private Long regionId;
+    @ManyToOne
+    @JoinColumn(name = "region_id", referencedColumnName = "id")
+    private Region region;
 
+    @OneToMany(mappedBy = "location")
+    private Set<Goods> goods;
 }

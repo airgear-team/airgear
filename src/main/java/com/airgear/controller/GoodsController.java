@@ -72,7 +72,7 @@ public class GoodsController {
         User user = userService.findByUsername(auth.getName());
         Goods newGoods = goods.toGoods();
         newGoods.setUser(user);
-        newGoods.setLocation(locationService.addLocation(goods.getLocation().toLocation()));
+//        newGoods.setLocation(locationService.addLocation(goods.getLocation().toLocation()));
         GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
         return goodsService.saveGoods(newGoods);

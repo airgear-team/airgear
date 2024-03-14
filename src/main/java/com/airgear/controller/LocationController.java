@@ -1,10 +1,13 @@
 package com.airgear.controller;
 
-import com.airgear.model.goods.Location;
+import com.airgear.dto.LocationDto;
+import com.airgear.dto.RegionDto;
 import com.airgear.model.goods.Region;
 import com.airgear.service.impl.GoodsServiceImpl;
 import com.airgear.service.impl.LocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,33 +15,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/location")
 public class LocationController {
-
-    //TODO
-    // 1. Винести залежності в конструктор
-    // 2. Винести зайвк логіку в сервіс (в контролері ми повинні викликати тільки один метод сервісу)
-    // 3. Створити власні виключення й кидати їх
+    private final LocationServiceImpl locationService;
 
     @Autowired
-    private LocationServiceImpl locationService;
+    public LocationController(LocationServiceImpl locationService, GoodsServiceImpl goodsService) {
+        this.locationService = locationService;
+    }
 
-    @Autowired
-    private GoodsServiceImpl goodsService;
-
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/regions")
-    public List<Region> getAllRegions() {
-        return locationService.getAllRegions();
+    public ResponseEntity<List<RegionDto>> getAllRegions() {
+        return ResponseEntity.ok(locationService.getAllRegions());
     }
 
-    @PostMapping("/create")
-    public Location createLocation(@RequestParam String settlement, @RequestParam Long region_id) {
-        Region region = locationService.getRegionById(region_id);
-        if (region != null) {
-            Location location = new Location();
-            location.setSettlement(settlement);
-            location.setRegionId(region_id);
-            return locationService.addLocation(location);
-        }
-        throw new RuntimeException("don't find region");
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @PostMapping
+    public ResponseEntity<LocationDto> createLocation(@RequestBody com.airgear.dto.LocationDto locationDto) {
+        return ResponseEntity.ok(locationService.addLocation(locationDto));
     }
-
 }
