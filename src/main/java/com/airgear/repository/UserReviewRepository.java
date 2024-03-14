@@ -15,4 +15,9 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Long> {
 
     @Query(value = "SELECT AVG(rating) FROM user_reviews WHERE reviewed_user_id = :userId", nativeQuery = true)
     Float calculateAverageRatingForUser(@Param("userId") Long userId);
+
+    @Query("SELECT count(id)  FROM UserReview userReview  WHERE userReview.reviewer = :reviewer AND userReview.reviewedUser = :reviewedUser")
+    Long countByReviewedAndByReviewer(User reviewedUser, User reviewer);
+
+
 }
