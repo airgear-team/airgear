@@ -90,7 +90,6 @@ public class GoodsController {
         if (!goods.getGoodsStatus().getName().equals("ACTIVE")) {
             throw new ForbiddenException("Goods was deleted");
         }
-        goodsService.saveGoodsView(request.getRemoteAddr(), user.getId(), goods);
         return ResponseEntity.ok(goods);
     }
 
