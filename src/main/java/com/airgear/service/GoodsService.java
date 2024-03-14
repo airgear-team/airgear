@@ -34,6 +34,8 @@ public interface GoodsService {
 
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
+    Long countDeletedGoods(OffsetDateTime fromDate, OffsetDateTime toDate);
+
     Long getTotalNumberOfGoods();
 
     Map<Category, Long> getAmountOfGoodsByCategory();
@@ -41,5 +43,4 @@ public interface GoodsService {
     List<Goods> getRandomGoods(String categoryName, int quantity);
 
     void saveGoodsView(String ip, Long userId, Goods goods);
-
 }

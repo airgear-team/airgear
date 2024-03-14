@@ -22,6 +22,8 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     @Query("SELECT count(id) FROM Goods goods WHERE goods.createdAt >= :fromDate AND goods.createdAt <= :toDate")
     int  findCountNewGoodsFromPeriod(@Param("fromDate")OffsetDateTime fromDate, @Param("toDate") OffsetDateTime toDate);
 
+    Long countByDeletedAtBetween(OffsetDateTime fromDate, OffsetDateTime toDate);
+
     List<Goods> findAll();
 
     @Query("FROM Category category WHERE category.name = :name")
@@ -40,5 +42,4 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     Page<Goods> findByPriceLessThan(BigDecimal maxPrice, Pageable pageable);
 
     Page<Goods> findByCategoryAndPriceBetween(Category category, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
-
 }

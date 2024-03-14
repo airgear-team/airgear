@@ -75,6 +75,10 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsRepository.findCountNewGoodsFromPeriod(fromDate, toDate);
     }
 
+    public Long countDeletedGoods(OffsetDateTime fromDate, OffsetDateTime toDate) {
+        return goodsRepository.countByDeletedAtBetween(fromDate, toDate);
+    }
+
     @Override
     public List<Goods> getAllGoods() {
         List<Goods> goodsList = goodsRepository.findAll();

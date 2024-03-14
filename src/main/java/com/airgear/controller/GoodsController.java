@@ -176,6 +176,15 @@ public class GoodsController {
         return goodsService.getNewGoodsFromPeriod(fromDate, toDate);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @GetMapping("/getCountDeletedGoods")
+    public ResponseEntity<Long> countDeletedGoods(
+            @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
+            @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate) {
+        Long count = goodsService.countDeletedGoods(fromDate, toDate);
+        return ResponseEntity.ok(count);
+    }
+
     @GetMapping("/random-goods")
     public List<Goods> getRandomGoods(
             @RequestParam(required = false, name = "category") String categoryName,
