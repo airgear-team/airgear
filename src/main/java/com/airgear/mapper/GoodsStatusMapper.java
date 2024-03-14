@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 public interface GoodsStatusMapper {
     GoodsStatusDto toDto(GoodsStatus goodsStatus);
 
-    GoodsStatus toGoodsStatus(GoodsStatusDto dto);
+    GoodsStatus toModel(GoodsStatusDto dto);
 }

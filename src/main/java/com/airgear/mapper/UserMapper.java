@@ -5,8 +5,10 @@ import com.airgear.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring",
-        uses = {GoodsSetMapper.class, RoleSetMapper.class, UserReviewSetMapper.class, AccountStatusMapper.class})
+        uses = {GoodsMapper.class, RoleMapper.class, UserReviewMapper.class, AccountStatusMapper.class})
 public interface UserMapper {
 
     @Mapping(target = "password", ignore = true)
@@ -14,5 +16,9 @@ public interface UserMapper {
     UserDto toDto(User user);
 
     @Mapping(target = "goods", ignore = true)
-    User toUser(UserDto dto);
+    User toModel(UserDto dto);
+
+    List<UserDto> toDtoList(List<User> users);
+
+    List<User> toModelList(List<UserDto> dtos);
 }

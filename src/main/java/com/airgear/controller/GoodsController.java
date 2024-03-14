@@ -78,9 +78,9 @@ public class GoodsController {
     @PostMapping
     public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) {
         User user = userRepository.findByUsername(auth.getName());
-        Goods newGoods = goodsMapper.toGoods(goods);
+        Goods newGoods = goodsMapper.toModel(goods);
         newGoods.setUser(user);
-        newGoods.setLocation(locationService.addLocation(locationMapper.toLocation(goods.getLocation())));
+        newGoods.setLocation(locationService.addLocation(locationMapper.toModel(goods.getLocation())));
         GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
         return goodsService.saveGoods(newGoods);

@@ -38,7 +38,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Override
     @Transactional
     public Complaint save(String userName, Long goodsId, ComplaintDto complaintDTO) {
-        Complaint newComplaint = complaintMapper.toComplaint(complaintDTO);
+        Complaint newComplaint = complaintMapper.toModel(complaintDTO);
         User user = userRepository.findByUsername(userName);
         Goods goods = goodsRepository.getReferenceById(goodsId);
         ComplaintCategory complaintCategory = complaintCategoryRepository.findByName(complaintDTO.getComplaintCategoryDTO().getName());

@@ -13,8 +13,6 @@ import com.airgear.dto.UserExistDto;
 import com.airgear.exception.ChangeRoleException;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.mapper.RoleMapper;
-import com.airgear.mapper.RoleSetMapper;
-import com.airgear.mapper.UserListMapper;
 import com.airgear.mapper.UserMapper;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.UserRepository;
@@ -42,21 +40,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final AccountStatusRepository accountStatusRepository;
     private final BCryptPasswordEncoder bcryptEncoder;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private UserListMapper userListMapper;
-    @Autowired
-    private RoleSetMapper roleSetMapper;
-    @Autowired
-    private RoleMapper roleMapper;
+    private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
 
     @Autowired
-    public UserServiceImpl(RoleService roleService, UserRepository userRepository, AccountStatusRepository accountStatusRepository, BCryptPasswordEncoder bcryptEncoder) {
+    public UserServiceImpl(RoleService roleService, UserRepository userRepository, AccountStatusRepository accountStatusRepository, BCryptPasswordEncoder bcryptEncoder, UserMapper userMapper, RoleMapper roleMapper) {
         this.roleService = roleService;
         this.userRepository = userRepository;
         this.accountStatusRepository = accountStatusRepository;
         this.bcryptEncoder = bcryptEncoder;
+        this.userMapper = userMapper;
+        this.roleMapper = roleMapper;
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -78,13 +72,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public List<UserDto> findAll() {
         List<User> users = new ArrayList<>();
         userRepository.findAll().iterator().forEachRemaining(users::add);
-        return userListMapper.toDtoList(users);
+        return userMapper.toDtoList(users);
     }
 
     public List<UserDto> findActiveUsers() {
         List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
                 .filter(user -> user.getAccountStatus() != null && user.getAccountStatus().getStatusName().equals("ACTIVE")).toList();
-        return userListMapper.toDtoList(users);
+        return userMapper.toDtoList(users);
     }
 
     @Override
@@ -124,8 +118,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         Role role = roleService.findByName("USER");
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(role);
-        user.setRoles(roleSetMapper.toDtoSet(roleSet));
-        User newUser = userMapper.toUser(user);
+        user.setRoles(roleMapper.toDtoSet(roleSet));
+        User newUser = userMapper.toModel(user);
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         newUser.setCreatedAt(OffsetDateTime.now());
         newUser.setAccountStatus(accountStatusRepository.findByStatusName("ACTIVE"));
@@ -160,7 +154,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UserDto appointRole(String username, RoleDto role) {
         User user = userRepository.findByUsername(username);
-        user.getRoles().add(roleMapper.toRole(role));
+        user.getRoles().add(roleMapper.toModel(role));
         User updatedUser = userRepository.save(user);
         return userMapper.toDto(updatedUser);
     }
@@ -168,7 +162,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UserDto removeRole(String username, RoleDto role) {
         User user = userRepository.findByUsername(username);
-        user.getRoles().remove(roleMapper.toRole(role));
+        user.getRoles().remove(roleMapper.toModel(role));
         User updatedUser = userRepository.save(user);
         return userMapper.toDto(updatedUser);
     }

@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 public interface RentalAgreementMapper {
     RentalAgreementDto toDto(RentalAgreement rentalAgreement);
 
-    RentalAgreement toRentalAgreement(RentalAgreementDto dto);
+    RentalAgreement toModel(RentalAgreementDto dto);
 }

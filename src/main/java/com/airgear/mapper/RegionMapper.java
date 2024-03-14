@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 public interface RegionMapper {
     RegionDto toDto(Region region);
 
-    Region toRegion(RegionDto dto);
+    Region toModel(RegionDto dto);
 }

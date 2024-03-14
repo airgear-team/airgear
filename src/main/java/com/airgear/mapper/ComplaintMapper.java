@@ -9,5 +9,5 @@ import org.mapstruct.Mapper;
 public interface ComplaintMapper {
     ComplaintDto toDto(Complaint complaint);
 
-    Complaint toComplaint(ComplaintDto dto);
+    Complaint toModel(ComplaintDto dto);
 }

@@ -2,7 +2,6 @@ package com.airgear.service.impl;
 
 import com.airgear.dto.GoodsDto;
 import com.airgear.mapper.GoodsMapper;
-import com.airgear.mapper.GoodsSetMapper;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
@@ -32,14 +31,14 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     private final CategoryRepository categoryRepository;
     private final GoodsViewRepository goodsViewRepository;
-    @Autowired
-    private GoodsSetMapper goodsSetMapper;
+    private final GoodsMapper goodsMapper;
 
     @Autowired
-    public GoodsServiceImpl(GoodsRepository goodsRepository, CategoryRepository categoryRepository, GoodsViewRepository goodsViewRepository) {
+    public GoodsServiceImpl(GoodsRepository goodsRepository, CategoryRepository categoryRepository, GoodsViewRepository goodsViewRepository, GoodsMapper goodsMapper) {
         this.goodsRepository = goodsRepository;
         this.categoryRepository = categoryRepository;
         this.goodsViewRepository = goodsViewRepository;
+        this.goodsMapper = goodsMapper;
     }
 
     @Override
@@ -70,7 +69,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Set<GoodsDto> getAllGoodsByUsername(String username) {
-        return goodsSetMapper.toDtoSet(goodsRepository.getGoodsByUserUsername(username));
+        return goodsMapper.toDtoSet(goodsRepository.getGoodsByUserUsername(username));
     }
 
     @Override

@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 public interface AccountStatusMapper {
     AccountStatusDto toDto(AccountStatus accountStatus);
 
-    AccountStatus toAccountStatus(AccountStatusDto dto);
+    AccountStatus toModel(AccountStatusDto dto);
 }

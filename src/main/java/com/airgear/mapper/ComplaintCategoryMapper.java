@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 public interface ComplaintCategoryMapper {
     ComplaintCategoryDto toDto(ComplaintCategory complaintCategory);
 
-    ComplaintCategory toComplaintCategory(ComplaintCategoryDto dto);
+    ComplaintCategory toModel(ComplaintCategoryDto dto);
 }

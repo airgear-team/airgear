@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 public interface FeedbackMapper {
     FeedbackDto toDto(Feedback feedback);
 
-    Feedback toFeedback(FeedbackDto dto);
+    Feedback toModel(FeedbackDto dto);
 }
