@@ -24,6 +24,8 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     Long countByDeletedAtBetween(OffsetDateTime startDate, OffsetDateTime endDate);
 
+    Long countByDeletedAtBetweenAndCategory(OffsetDateTime startDate, OffsetDateTime endDate, String categoryName);
+
     List<Goods> findAll();
 
     @Query("FROM Category category WHERE category.name = :name")

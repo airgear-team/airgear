@@ -179,9 +179,10 @@ public class GoodsController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     @GetMapping("/getCountDeletedGoods")
     public ResponseEntity<Long> countDeletedGoods(
+            @RequestParam(required = false) String categoryName,
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate) {
-        Long count = goodsService.countDeletedGoods(startDate, endDate);
+        Long count = goodsService.countDeletedGoods(startDate, endDate, categoryName);
         return ResponseEntity.ok(count);
     }
 
