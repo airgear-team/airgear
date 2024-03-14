@@ -34,7 +34,7 @@ public interface GoodsService {
 
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
-    Long countDeletedGoods(OffsetDateTime fromDate, OffsetDateTime toDate);
+    Long countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate);
 
     Long getTotalNumberOfGoods();
 
