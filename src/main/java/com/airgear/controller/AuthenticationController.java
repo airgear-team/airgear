@@ -20,9 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth") // TODO використати класс шляхів Routes.AUTH
 public class AuthenticationController {
 
+    // TODO інжектити поля через конструктор
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -65,6 +66,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthToken(token));
     }
 
+     // TODO зробити SecurityContextHolder.getContext().setAuthentication(authentication); у фільтрі 
     private String getToken(LoginUserDto user) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
