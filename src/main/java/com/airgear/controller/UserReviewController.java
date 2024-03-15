@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/reviews") // TODO use Routes.REVIEWS
 public class UserReviewController {
     private final UserReviewService userReviewService;
 
@@ -21,7 +21,7 @@ public class UserReviewController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<UserReview> createReview(@Valid @RequestBody UserReviewDto userReviewDto) {
+    public ResponseEntity<UserReview> createReview(@Valid @RequestBody UserReviewDto userReviewDto) { // TODO use UserReview DTO
         UserReview createdReview = userReviewService.createReview(userReviewDto);
         return ResponseEntity.ok(createdReview);
     }
