@@ -25,6 +25,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Value("${spring.mail.username}")
     private String fromMail;
+    // TODO to use constructor with arguments
+    // TODO custom Exceptions
+    // TODO refactoring the void sendWelcomeEmail(User user) method
     @Autowired
     private JavaMailSender mailSender;
 
