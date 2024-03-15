@@ -36,4 +36,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
     void updateIsPotentiallyScamStatus(@Param("userId") Long userId, @Param("isScam") boolean isScam);
 
     int countByCreatedAtBetween(OffsetDateTime start, OffsetDateTime end);
+    int countByDeleteAtBetween(OffsetDateTime start, OffsetDateTime end);
 }

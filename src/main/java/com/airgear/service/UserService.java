@@ -37,4 +37,5 @@ public interface UserService {
     void markUserAsPotentiallyScam(Long userId, boolean isScam);
 
     int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
+    int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
 }
