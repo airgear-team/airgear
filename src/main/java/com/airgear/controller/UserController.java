@@ -74,8 +74,8 @@ public class UserController {
 
     // TODO Зробити власні ексепшени
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @GetMapping("/goods-count")
-    public List<Map<String, Integer>> getTopUserGoodsCount(@RequestParam(required = false, defaultValue = "30") int limit) {
+    @GetMapping("/user-goods-count")
+    public List<Map<String, Integer>> getUserGoodsCount(@RequestParam(required = false, defaultValue = "30") int limit) {
         if (limit > MAX_LIMIT) {
             throw new IllegalArgumentException("Limit exceeds maximum value of 500");
         }
