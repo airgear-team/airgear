@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @Service(value = "goodsService")
 public class GoodsServiceImpl implements GoodsService {
     private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
+    // TODO to add constructor with parameters
     @Autowired
     private GoodsRepository goodsRepository;
     @Autowired
@@ -38,17 +39,17 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Goods getGoodsById(Long id) {
         Optional<Goods> goodsOptional = goodsRepository.findById(id);
-        return goodsOptional.orElse(null);
+        return goodsOptional.orElse(null); // TODO to change on GoodsExceptions.goodsNotFound()
     }
 
     @Override
     public void deleteGoods(Goods goods) {
         goods.setDeletedAt(OffsetDateTime.now());
-        goodsRepository.save(goods);
+        goodsRepository.save(goods); // TODO to delete this line (dirty checking)
     }
 
     @Override
-    public Goods saveGoods(@Valid Goods goods) {
+    public Goods saveGoods(@Valid Goods goods) {  // TODO to refactor this code
         //checkCategory(goods);
         Long userId = goods.getUser().getId();
         int categoryId = goods.getCategory().getId();
