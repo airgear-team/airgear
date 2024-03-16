@@ -56,14 +56,6 @@ public class Goods {
     @Embedded
     private Deposit deposit;
 
-    @Embeddable
-    class Deposit {
-        private BigDecimal amount;
-        private Currency currency;
-
-        enum Currency {UAH, EUR, USD}
-    }
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

@@ -184,6 +184,14 @@ public class GoodsController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/similar-goods")
+    public Page<Goods> getSimilarGoods(
+            @RequestParam(required = false, name = "category") String categoryName,
+            @RequestParam(name = "price") BigDecimal price) {
+        return goodsService.getSimilarGoods(categoryName, price);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/filter")
     public Page<Goods> filterGoods(
             @RequestParam(name = "category", required = false) String categoryName,

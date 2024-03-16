@@ -40,4 +40,6 @@ public interface UserService {
     int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
 
     void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException;
+
+    int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
 }

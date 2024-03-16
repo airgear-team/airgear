@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -74,8 +75,8 @@ public class UserController {
 
     // TODO Зробити власні ексепшени
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @GetMapping("/goods-count")
-    public List<Map<String, Integer>> getTopUserGoodsCount(@RequestParam(required = false, defaultValue = "30") int limit) {
+    @GetMapping("/user-goods-count")
+    public List<Map<String, Integer>> getUserGoodsCount(@RequestParam(required = false, defaultValue = "30") int limit) {
         if (limit > MAX_LIMIT) {
             throw new IllegalArgumentException("Limit exceeds maximum value of 500");
         }
@@ -108,7 +109,7 @@ public class UserController {
         if (act.equals("add"))
             return userService.addRole(username, "ADMIN");
         else if (act.equals("delete"))
-            return userService.deleteRole(username,"ADMIN");
+            return userService.deleteRole(username, "ADMIN");
         else
             throw new RuntimeException("Don't correct field: act! Choose: add or delete!");
     }
@@ -135,6 +136,14 @@ public class UserController {
     public List<User> getAllActiveUsers(Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return userService.findActiveUsers();
+    }
+    //@PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/deleted-users-for-period")
+    public ResponseEntity<?> getDeletedUsersCountForPeriod(@RequestParam("start") String start, @RequestParam("end") String end) {
+        OffsetDateTime startDate = OffsetDateTime.parse(start);
+        OffsetDateTime endDate = OffsetDateTime.parse(end);
+        int count = userService.countDeletedUsersBetweenDates(startDate, endDate);
+        return ResponseEntity.ok().body(Map.of("count", count));
     }
 
 }

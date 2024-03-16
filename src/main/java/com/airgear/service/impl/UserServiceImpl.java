@@ -181,4 +181,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             throw new UserUniquenessViolationException("Phone number already exists.");
         }
     }
+
+    @Override
+    public int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
+        return userRepository.countByDeleteAtBetween(start, end);
+    }
 }
+
