@@ -618,4 +618,12 @@
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
     </changeSet>
+    <changeSet id="add_is_new_column_to_goods_table" author="Opanasenko-Mykhailo">
+        <addColumn tableName="goods">
+            <column name="is_new" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
