@@ -33,7 +33,7 @@ import java.util.Set;
 public class Goods {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
@@ -55,14 +55,6 @@ public class Goods {
 
     @Embedded
     private Deposit deposit;
-
-    @Embeddable
-    class Deposit {
-        private BigDecimal amount;
-        private Currency currency;
-
-        enum Currency {UAH, EUR, USD}
-    }
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -113,4 +105,6 @@ public class Goods {
     @JsonIgnore
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<GoodsView> goodsViews;
+
+    private boolean isNew;
 }

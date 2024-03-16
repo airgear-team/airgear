@@ -34,12 +34,16 @@ public interface GoodsService {
 
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
+    Long countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String categoryName);
+
     Long getTotalNumberOfGoods();
 
     Map<Category, Long> getAmountOfGoodsByCategory();
 
     List<Goods> getRandomGoods(String categoryName, int quantity);
 
-    void saveGoodsView(String ip, Long userId, Goods goods);
+    //will return 12 similar goods (same category and similar price)
+    Page<Goods> getSimilarGoods(String categoryName, BigDecimal price);
 
+    void saveGoodsView(String ip, Long userId, Goods goods);
 }

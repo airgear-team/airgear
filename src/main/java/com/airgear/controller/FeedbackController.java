@@ -16,8 +16,12 @@ import javax.validation.Valid;
 @RequestMapping("/feedback")
 public class FeedbackController {
 
-    @Autowired
     private FeedbackService feedbackService;
+
+    @Autowired
+    public FeedbackController(FeedbackService feedbackService){
+        this.feedbackService=feedbackService;
+    }
 
     @PostMapping("/submit")
     public ResponseEntity<Void> submitFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO) {
