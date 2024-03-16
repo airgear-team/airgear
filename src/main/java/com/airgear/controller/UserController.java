@@ -137,4 +137,11 @@ public class UserController {
         return userService.findActiveUsers();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
+    @GetMapping("/favorites")
+    public Set<Goods> getFavoriteGoods (Authentication auth) {
+        log.info("auth name : {}", auth.getName());
+        return userService.getFavoriteGoods(auth);
+    }
+
 }
