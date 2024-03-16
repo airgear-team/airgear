@@ -11,6 +11,7 @@ import java.util.stream.StreamSupport;
 
 import com.airgear.dto.RoleDto;
 import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.model.Role;
@@ -163,4 +164,27 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
         return userRepository.countByCreatedAtBetween(start, end);
     }
+
+    // TODO to use this method inside the "public User save(UserDto user)" method for better performance
+    public void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException {
+        boolean usernameExists = userRepository.existsByUsername(userDto.getUsername());
+        boolean emailExists = userRepository.existsByEmail(userDto.getEmail());
+        boolean phoneExists = userRepository.existsByPhone(userDto.getPhone());
+
+        if (usernameExists) {
+            throw new UserUniquenessViolationException("Username already exists.");
+        }
+        if (emailExists) {
+            throw new UserUniquenessViolationException("Email already exists.");
+        }
+        if (phoneExists) {
+            throw new UserUniquenessViolationException("Phone number already exists.");
+        }
+    }
+
+    @Override
+    public int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
+        return userRepository.countByDeleteAtBetween(start, end);
+    }
 }
+

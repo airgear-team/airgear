@@ -45,6 +45,14 @@ import java.util.Map;
 @RequestMapping("/goods")
 public class GoodsController {
 
+    //TODO
+    // 1. Інжектити змінні за допомогою контролера
+    // 2. Внести всю логіку в сервіси
+    // 3. Зробити власні ексепшений
+    // 4. Закрити всі тудушки в класі
+    // 5. Протестувати всі ендпоїнити на працездатність
+
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -56,28 +64,21 @@ public class GoodsController {
     @Autowired
     private ComplaintService complaintService;
     @Autowired
-    RentalAgreementService rentalAgreementService;
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/featured")
-    public String user() {
-        //TODO add return some random goods for home page
-        return "Goods for home page";
-    }
+    private RentalAgreementService rentalAgreementService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
-    public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) throws JsonProcessingException {
+    public Goods createGoods(Authentication auth, @RequestBody GoodsDto goods) {
         User user = userService.findByUsername(auth.getName());
         Goods newGoods = goods.toGoods();
         newGoods.setUser(user);
         newGoods.setLocation(locationService.addLocation(goods.getLocation().toLocation()));
         GoodsStatus status = goodsStatusService.getGoodsById(1L);
         newGoods.setGoodsStatus(status);
-        System.out.println(newGoods.getCategory());
         return goodsService.saveGoods(newGoods);
     }
 
+    // TODO створити власні ексепшени для всіх проблем які можуть бути в цьому конроллері
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
     public ResponseEntity<Goods> getGoodsById(HttpServletRequest request, Authentication auth, @PathVariable Long goodsId) {
@@ -93,6 +94,7 @@ public class GoodsController {
         return ResponseEntity.ok(goods);
     }
 
+    // TODO створити власні ексепшени для всіх проблем які можуть бути в цьому конроллері
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PutMapping("/{goodsId}")
     public ResponseEntity<Goods> updateGoods(
@@ -120,6 +122,7 @@ public class GoodsController {
         return ResponseEntity.ok(updatedGoodsEntity);
     }
 
+    // TODO створити власні ексепшени для всіх проблем які можуть бути в цьому конроллері
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{goodsId}")
     public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId) {
@@ -133,6 +136,10 @@ public class GoodsController {
         return ResponseEntity.noContent().build();
     }
 
+    // TODO створити власні ексепшени для всіх проблем які можуть бути в цьому конроллері
+    // Приклад назв для двох кейсів нижче :
+    // GoodsNotFoundException
+    // GoodsAlreadyAddedException
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("addToFavorites/{goodsId}")
     public ResponseEntity<Goods> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
@@ -151,6 +158,7 @@ public class GoodsController {
         return ResponseEntity.ok(goods);
     }
 
+    // TODO створити власне виключення й кидати йогоу випадку винекниння проблем з загрузкою договора, а не RuntimeException
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/download/rental/{goodsId}")
     public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId, @Valid @RequestBody RentalAgreement rental) {
@@ -163,10 +171,19 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/getcountnewgoods")
-    public Integer findCountNewGoodsFromPeriod(Authentication auth,
-                                               @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
+    public Integer findCountNewGoodsFromPeriod(@RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
                                                @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate) {
         return goodsService.getNewGoodsFromPeriod(fromDate, toDate);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @GetMapping("/getCountDeletedGoods")
+    public ResponseEntity<Long> countDeletedGoods( // TODO return special DTO
+            @RequestParam(required = false) String categoryName,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate) {
+        Long count = goodsService.countDeletedGoods(startDate, endDate, categoryName);
+        return ResponseEntity.ok(count);
     }
 
     @GetMapping("/random-goods")
@@ -174,6 +191,14 @@ public class GoodsController {
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
         return goodsService.getRandomGoods(categoryName, quantity);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/similar-goods")
+    public Page<Goods> getSimilarGoods(
+            @RequestParam(required = false, name = "category") String categoryName,
+            @RequestParam(name = "price") BigDecimal price) {
+        return goodsService.getSimilarGoods(categoryName, price);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
@@ -196,12 +221,15 @@ public class GoodsController {
         return ResponseEntity.ok(Converter.getDtoFromComplaint(newComplaint));
     }
 
+    //TODO повертати не Long а створити модель й повертати її
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/total")
     public Long totalNumberOfGoods() {
         return goodsService.getTotalNumberOfGoods();
     }
 
+
+    // TODO повертати не мапу а створити модель й повертати її
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/category/total")
     public ResponseEntity<Map<Category, Long>> amountOfGoodsByCategory() {

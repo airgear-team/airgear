@@ -26,8 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/mail")
 public class EmailController {
 
-    @Autowired
     private EmailServiceImpl emailService;
+
+    @Autowired
+    public EmailController(EmailServiceImpl emailService){
+        this.emailService=emailService;
+    }
 
     @PostMapping("/send")
     public String sendEmail(@RequestBody EmailsRequestStructure request) {

@@ -13,6 +13,11 @@ import java.util.List;
 @RequestMapping("/location")
 public class LocationController {
 
+    //TODO
+    // 1. Винести залежності в конструктор
+    // 2. Винести зайвк логіку в сервіс (в контролері ми повинні викликати тільки один метод сервісу)
+    // 3. Створити власні виключення й кидати їх
+
     @Autowired
     private LocationServiceImpl locationService;
 
