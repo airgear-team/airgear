@@ -3,9 +3,11 @@ package com.airgear.integration;
 import com.airgear.dto.*;
 import com.airgear.model.AccountStatus;
 import com.airgear.model.AuthToken;
+import com.airgear.model.RentalCard;
 import com.airgear.model.User;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,8 +32,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.validation.constraints.AssertTrue;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @Slf4j
@@ -52,6 +56,7 @@ public class UserControllerTest {
     private static HttpHeaders headersModerator;
 
     private static Goods goodsTest;
+    private static RentalCard rentalCard;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -107,7 +112,6 @@ public class UserControllerTest {
     private void userAuthenticate(User user, HttpHeaders currentHeaders, Boolean isRegister){
         LoginUserDto loginUser = new LoginUserDto(user.getUsername(), user.getPassword());
         HttpEntity<?> entity = new HttpEntity<>(loginUser, currentHeaders);
-        //HttpEntity<?> entity = new HttpEntity<>(null, currentHeaders);
         ResponseEntity<AuthToken> response = this.template.exchange("http://localhost:" + port + "/auth/authenticate", HttpMethod.POST, entity, AuthToken.class);
         log.info("status response: " + response.getStatusCode());
         if (response.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
@@ -219,6 +223,50 @@ public class UserControllerTest {
 
     @Test
     @Order(9)
+    public void createRentalCardByUser(){
+
+        RentalCardDto rentalCardDto = RentalCardDto.builder()
+                .lessorUsername("userTest")
+                .renterUsername("moderatorTest")
+                .firstDate(OffsetDateTime.parse("2024-02-24T00:00:00.937Z"))
+                .lastDate(OffsetDateTime.parse("2024-02-27T00:00:00.937Z"))
+                .description("description")
+                .goodsId(goodsTest.getId())
+                .rentalPrice(BigDecimal.valueOf(200))
+                .fine(BigDecimal.valueOf(0.01))
+                .duration(ChronoUnit.DAYS)
+                .quantity(7L).build();
+
+        HttpEntity<?> entity = new HttpEntity<>(rentalCardDto, headersUser);
+        rentalCard = template.postForObject("http://localhost:" + port + "/rental", entity, RentalCard.class);
+        assertNotNull(rentalCard);
+        assertThat(rentalCard.getGoods().getName()).isEqualTo("bolt");
+        assertTrue(ChronoUnit.DAYS.between(rentalCard.getFirstDate(), rentalCard.getLastDate())==7);
+        assertNotNull(goodsTest.getCreatedAt());
+    }
+    @Test
+    @Order(10)
+    public void updateRentalCardByUser(){
+        rentalCard.setDescription("Changed");
+        HttpEntity<?> entity = new HttpEntity<>(RentalCardDto.getDtoFromRentalCard(rentalCard), headersUser);
+        ResponseEntity<RentalCard> response = template.exchange("http://localhost:" + port + "/rental/"+rentalCard.getId(), HttpMethod.PUT, entity, RentalCard.class);
+        rentalCard = response.getBody();
+        assertNotNull(rentalCard);
+        assertEquals("Changed", rentalCard.getDescription());
+    }
+    @Test
+    @Order(11)
+    public void deleteRentalCardByUser(){
+        HttpEntity<?> entity = new HttpEntity<>(rentalCard, headersUser);
+        ResponseEntity<String> response = template.exchange("http://localhost:" + port + "/rental/"+rentalCard.getId(), HttpMethod.DELETE, entity, String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        Assertions.assertNull(response.getBody());
+    }
+
+
+
+    @Test
+    @Order(12)
     public void deleteGoodsByModerator(){
         HttpEntity<?> entity = new HttpEntity<>(goodsTest, headersModerator);
         ResponseEntity<String> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.DELETE, entity, String.class);
@@ -226,7 +274,7 @@ public class UserControllerTest {
     }
 
     @Test
-    @Order(10)
+    @Order(13)
     public void deleteGoodsByUser(){
         HttpEntity<?> entity = new HttpEntity<>(goodsTest, headersUser);
         ResponseEntity<String> response = template.exchange("http://localhost:" + port + "/goods/"+goodsTest.getId(), HttpMethod.DELETE, entity, String.class);
@@ -235,7 +283,7 @@ public class UserControllerTest {
     }
 
     @Test
-    @Order(11)
+    @Order(14)
     public void createLocation(){
         String st ="settlement=Ivanivka&region_id=1";
         HttpEntity<?> entityLocation = new HttpEntity<>(null, headersUser);
