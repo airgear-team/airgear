@@ -12,6 +12,7 @@ import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,9 @@ public class GoodsServiceImpl implements GoodsService {
     private CategoryRepository categoryRepository;
     @Autowired
     private GoodsViewRepository goodsViewRepository;
+
+    private static final int SIMILAR_GOODS_LIMIT = 12;
+    private static final BigDecimal PRICE_VARIATION_PERCENTAGE = new BigDecimal("0.15");
 
     @Override
     public Goods getGoodsById(Long id) {
@@ -84,6 +88,12 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsRepository.findCountNewGoodsFromPeriod(fromDate, toDate);
     }
 
+    public Long countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String categoryName) {
+        return categoryName != null ?
+                goodsRepository.countByDeletedAtBetweenAndCategory(startDate, endDate, categoryName) :
+                goodsRepository.countByDeletedAtBetween(startDate, endDate);
+    }
+
     @Override
     public List<Goods> getAllGoods() {
         List<Goods> goodsList = goodsRepository.findAll();
@@ -104,6 +114,14 @@ public class GoodsServiceImpl implements GoodsService {
         return randomizeAndLimit(goods, quantity);
     }
 
+    //will return number of similar goods (same category and price within limit)
+    @Override
+    public Page<Goods> getSimilarGoods(String categoryName, BigDecimal price) {
+        BigDecimal lowerBound = price.multiply(BigDecimal.ONE.subtract(PRICE_VARIATION_PERCENTAGE));
+        BigDecimal upperBound = price.multiply(BigDecimal.ONE.add(PRICE_VARIATION_PERCENTAGE));
+
+        return filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0, SIMILAR_GOODS_LIMIT));
+    }
 
     @Override
     public Map<Category, Long> getAmountOfGoodsByCategory() {
