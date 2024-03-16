@@ -657,7 +657,6 @@
                 onDelete="CASCADE"
                 onUpdate="CASCADE"/>
     </changeSet>
-=======
 
     <changeSet id="addGoodsView" author="vladyslav.haivoronskyi">
         <createTable tableName="goods_view">
