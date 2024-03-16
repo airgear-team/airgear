@@ -54,7 +54,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods saveGoods(@Valid Goods goods) {  // TODO to refactor this code
-        //checkCategory(goods);
+        checkCategory(goods);
         Long userId = goods.getUser().getId();
         int categoryId = goods.getCategory().getId();
         int productCount = goodsRepository.countByUserIdAndCategoryId(userId, categoryId);
@@ -67,7 +67,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Goods updateGoods(Goods existingGoods) {
-        //checkCategory(existingGoods);
+        checkCategory(existingGoods);
         existingGoods.setLastModified(OffsetDateTime.now());
         return goodsRepository.save(existingGoods);
     }
