@@ -1,5 +1,7 @@
 package com.airgear.service.impl;
 
+import com.airgear.exception.GoodsExceptions;
+import com.airgear.model.User;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
@@ -48,9 +50,11 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Goods saveGoods(@Valid Goods goods) {
         //checkCategory(goods);
-        int productCount = goodsRepository.countByUserIdAndCategoryId(goods.getUser().getId(), goods.getCategory().getId());
+        Long userId = goods.getUser().getId();
+        int categoryId = goods.getCategory().getId();
+        int productCount = goodsRepository.countByUserIdAndCategoryId(userId, categoryId);
         if (productCount >= MAX_GOODS_IN_CATEGORY_COUNT) {
-            throw new RuntimeException("Product limit exceeded for this category");
+            throw GoodsExceptions.goodsLimitExceeded(categoryId);
         }
         goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
