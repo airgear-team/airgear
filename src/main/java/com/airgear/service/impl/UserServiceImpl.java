@@ -11,8 +11,10 @@ import java.util.stream.StreamSupport;
 
 import com.airgear.dto.RoleDto;
 import com.airgear.exception.ForbiddenException;
+import com.airgear.model.goods.Goods;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.repository.AccountStatusRepository;
+import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.model.Role;
 import com.airgear.model.User;
@@ -21,6 +23,7 @@ import com.airgear.service.RoleService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,6 +40,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GoodsRepository goodsRepository;
 
     @Autowired
     private AccountStatusRepository accountStatusRepository;
@@ -168,6 +174,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepository.countByCreatedAtBetween(start, end);
     }
 
+    @Override
+    public Set<Goods> getFavoriteGoods(Authentication auth) {
+        User user = this.findByUsername(auth.getName());
+        return userRepository.getFavoriteGoodsByUser(user.getId());
+    }
+
     // TODO to use this method inside the "public User save(UserDto user)" method for better performance
     public void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException {
         boolean usernameExists = userRepository.existsByUsername(userDto.getUsername());
@@ -190,4 +202,3 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepository.countByDeleteAtBetween(start, end);
     }
 }
-

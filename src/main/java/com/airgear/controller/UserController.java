@@ -146,4 +146,11 @@ public class UserController {
         return ResponseEntity.ok().body(Map.of("count", count));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
+    @GetMapping("/favorites")
+    public Set<Goods> getFavoriteGoods (Authentication auth) {
+        log.info("auth name : {}", auth.getName());
+        return userService.getFavoriteGoods(auth);
+    }
+
 }

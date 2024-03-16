@@ -3,11 +3,14 @@ package com.airgear.service;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
+import com.airgear.model.goods.Goods;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface UserService {
 
@@ -39,7 +42,10 @@ public interface UserService {
 
     int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
 
+    Set<Goods> getFavoriteGoods(Authentication auth);
+
     void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException;
 
     int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
+
 }
