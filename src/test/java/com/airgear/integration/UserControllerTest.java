@@ -32,8 +32,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.validation.constraints.AssertTrue;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -241,7 +239,7 @@ public class UserControllerTest {
         rentalCard = template.postForObject("http://localhost:" + port + "/rental", entity, RentalCard.class);
         assertNotNull(rentalCard);
         assertThat(rentalCard.getGoods().getName()).isEqualTo("bolt");
-        assertTrue(ChronoUnit.DAYS.between(rentalCard.getFirstDate(), rentalCard.getLastDate())==7);
+        assertEquals(7, ChronoUnit.DAYS.between(rentalCard.getFirstDate(), rentalCard.getLastDate()));
         assertNotNull(goodsTest.getCreatedAt());
     }
     @Test
@@ -290,6 +288,16 @@ public class UserControllerTest {
         ResponseEntity<Location> locationResp= template.postForEntity("http://localhost:" + port + "/location/create"+"?"+st, entityLocation, Location.class);
         assertNotNull(locationResp.getBody());
         assertThat(locationResp.getBody().getSettlement()).isEqualTo("Ivanivka");
+    }
+
+    @Test
+    @Order(15)
+    public void getAmountOfNewGoodsByCategoryTest(){
+        String st ="fromDate=2000-03-11T00:00:00.937Z&toDate=3000-03-11T00:00:00.937Z";
+        HttpEntity<?> entity = new HttpEntity<>(null, headersUser);
+        ResponseEntity<String> resp= template.exchange("http://localhost:" + port + "/goods/category/total/new"+"?"+st, HttpMethod.GET, entity, String.class);
+        assertNotNull(resp.getBody());
+        assertTrue(resp.getBody().contains(goodsTest.getCategory().getName()));
     }
 
 }

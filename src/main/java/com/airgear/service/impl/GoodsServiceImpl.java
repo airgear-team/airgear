@@ -10,6 +10,7 @@ import com.airgear.repository.CategoryRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
+import org.hibernate.boot.jaxb.cfg.spi.JaxbCfgEventTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,12 +19,8 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.math.BigDecimal;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service(value = "goodsService")
@@ -193,6 +190,12 @@ public class GoodsServiceImpl implements GoodsService {
             return;
         }
         goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
+    }
+
+    @Override
+    public Map<Category, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate) {
+        List<Object> list = goodsRepository.findCountNewGoodsByCategoryFromPeriod(fromDate,toDate);
+        return list==null?null:list.stream().map(x->(Object[])x).collect(Collectors.toMap(x->(Category)x[0], x->(Long)x[1]));
     }
 
 }

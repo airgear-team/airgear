@@ -237,4 +237,14 @@ public class GoodsController {
         return ResponseEntity.ok(categoryAmounts);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/category/total/new")
+    public ResponseEntity<Map<Category, Long>> amountOfNewGoodsByCategory(
+            @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
+            @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate
+            ){
+        Map<Category, Long> categoryAmounts = goodsService.getAmountOfNewGoodsByCategory(fromDate,toDate);
+        return ResponseEntity.ok(categoryAmounts);
+    }
+
 }

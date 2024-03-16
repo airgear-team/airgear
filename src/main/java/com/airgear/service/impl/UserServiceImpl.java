@@ -103,6 +103,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User save(UserDto user) {
+        if(user.getPhone()!=null && userRepository.existsByPhone(user.getPhone())){
+            throw new ForbiddenException("Other user with phone number exists!");
+        }
         Role role = roleService.findByName("USER");
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(role);

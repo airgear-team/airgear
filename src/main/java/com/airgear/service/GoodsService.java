@@ -45,5 +45,9 @@ public interface GoodsService {
     //will return 12 similar goods (same category and similar price)
     Page<Goods> getSimilarGoods(String categoryName, BigDecimal price);
 
+    Map<Category, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate);
+
     void saveGoodsView(String ip, Long userId, Goods goods);
+  
 }
+
