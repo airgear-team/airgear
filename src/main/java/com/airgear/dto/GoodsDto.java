@@ -26,6 +26,8 @@ public class GoodsDto {
     private CategoryDto category;
     private String phoneNumber;
     private UserDto user;
+    private boolean isNew;
+
 
     public Goods toGoods() {
         return Goods.builder()
@@ -38,6 +40,7 @@ public class GoodsDto {
                 .category(category.toCategory())
                 .phoneNumber(phoneNumber)
                 .user(user.toUser())
+                .isNew(isNew)
                 .build();
     }
 
@@ -64,6 +67,7 @@ public class GoodsDto {
                 .category(CategoryDto.fromCategory(goods.getCategory()))
                 .phoneNumber(goods.getPhoneNumber())
                 .user(UserDto.fromUser(goods.getUser()))
+                .isNew(goods.isNew())
                 .build();
     }
 

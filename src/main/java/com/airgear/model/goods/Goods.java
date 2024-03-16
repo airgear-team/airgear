@@ -33,7 +33,7 @@ import java.util.Set;
 public class Goods {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
@@ -108,4 +108,6 @@ public class Goods {
     @JsonIgnore
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<GoodsView> goodsViews;
+
+    private boolean isNew;
 }
