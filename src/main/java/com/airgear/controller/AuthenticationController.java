@@ -1,6 +1,7 @@
 package com.airgear.controller;
 
 import com.airgear.dto.LoginUserDto;
+import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.exception.UserExceptions;
 import com.airgear.model.AuthToken;
 import com.airgear.model.ErrorResponse;
@@ -52,11 +53,18 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthToken(token));
     }
 
+    // TODO to use the special DTO for user saving
+    // TODO "userService.checkForUserUniqueness(userDto)" - to use in a UserService in a method "public User save(UserDto user)"
+    // TODO to refactor  "saveUser()" method
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public User saveUser(@RequestBody com.airgear.dto.UserDto user) {
-        User savedUser = userService.save(user);
-        emailService.sendWelcomeEmail(savedUser);
-        return savedUser;
+    public ResponseEntity<?> saveUser(@RequestBody com.airgear.dto.UserDto userDto) {
+        try {
+            userService.checkForUserUniqueness(userDto);
+            User user = userService.save(userDto);
+            return ResponseEntity.ok(user);
+        } catch (UserUniquenessViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @RequestMapping(value = "/service/authenticate", method = RequestMethod.GET)

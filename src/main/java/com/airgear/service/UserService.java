@@ -1,5 +1,6 @@
 package com.airgear.service;
 
+import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
 import org.springframework.data.domain.Pageable;
@@ -37,5 +38,8 @@ public interface UserService {
     void markUserAsPotentiallyScam(Long userId, boolean isScam);
 
     int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
+
+    void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException;
+
     int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
 }
