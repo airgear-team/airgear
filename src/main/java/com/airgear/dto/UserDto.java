@@ -64,11 +64,11 @@ public class UserDto {
                 .phone(user.getPhone())
                 .name(user.getName())
                 .roles(RoleDto.fromRoles(user.getRoles()))
-                .goods(GoodsDto.fromGoodsSet(user.getGoods()))
+                .goods(user.getGoods() == null ? null : GoodsDto.fromGoodsSet(user.getGoods()))
                 .createdAt(user.getCreatedAt())
                 .deleteAt(user.getDeleteAt())
                 .accountStatus(AccountStatusDto.fromAccountStatus(user.getAccountStatus()))
-                .userReviews(UserReviewDto.fromUserReviews(user.getUserReviews()))
+               .userReviews(user.getUserReviews() == null ? null : UserReviewDto.fromUserReviews(user.getUserReviews()))
                 .build();
     }
 

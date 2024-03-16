@@ -176,11 +176,29 @@ public class GoodsController {
         return goodsService.getNewGoodsFromPeriod(fromDate, toDate);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @GetMapping("/getCountDeletedGoods")
+    public ResponseEntity<Long> countDeletedGoods( // TODO return special DTO
+            @RequestParam(required = false) String categoryName,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate) {
+        Long count = goodsService.countDeletedGoods(startDate, endDate, categoryName);
+        return ResponseEntity.ok(count);
+    }
+
     @GetMapping("/random-goods")
     public List<Goods> getRandomGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
         return goodsService.getRandomGoods(categoryName, quantity);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/similar-goods")
+    public Page<Goods> getSimilarGoods(
+            @RequestParam(required = false, name = "category") String categoryName,
+            @RequestParam(name = "price") BigDecimal price) {
+        return goodsService.getSimilarGoods(categoryName, price);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
@@ -216,6 +234,16 @@ public class GoodsController {
     @GetMapping("/category/total")
     public ResponseEntity<Map<Category, Long>> amountOfGoodsByCategory() {
         Map<Category, Long> categoryAmounts = goodsService.getAmountOfGoodsByCategory();
+        return ResponseEntity.ok(categoryAmounts);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/category/total/new")
+    public ResponseEntity<Map<Category, Long>> amountOfNewGoodsByCategory(
+            @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
+            @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate
+            ){
+        Map<Category, Long> categoryAmounts = goodsService.getAmountOfNewGoodsByCategory(fromDate,toDate);
         return ResponseEntity.ok(categoryAmounts);
     }
 

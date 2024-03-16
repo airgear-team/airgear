@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ public class User {
     private String email;
 
     @Column
+    @Pattern(regexp = "^\\+380\\d{9}$", message = "the phones must be in the format +380XXXXXXXXX")
     private String phone;
 
     @Column

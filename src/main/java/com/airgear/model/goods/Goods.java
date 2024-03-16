@@ -33,7 +33,7 @@ import java.util.Set;
 public class Goods {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
@@ -55,14 +55,6 @@ public class Goods {
 
     @Embedded
     private Deposit deposit;
-
-    @Embeddable
-    class Deposit {
-        private BigDecimal amount;
-        private Currency currency;
-
-        enum Currency {UAH, EUR, USD}
-    }
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -87,17 +79,14 @@ public class Goods {
     private String phoneNumber;
 
     @Column(name = "created_at", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime createdAt;
 
     @Column(name = "last_modified")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime lastModified;
 
     @Column(name = "deleted_at")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime deletedAt;
 
     @OneToMany(mappedBy = "goods")
@@ -116,4 +105,6 @@ public class Goods {
     @JsonIgnore
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<GoodsView> goodsViews;
+
+    private boolean isNew;
 }

@@ -7,9 +7,7 @@ import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -63,12 +61,13 @@ public class GenerateDataService implements CommandLineRunner {
      * @return The saved user.
      */
     private User generateUserById(int i) {
-        UserDto userDto = new UserDto(
-                "username" + i,
-                "Password" + i,
-                "user" + i + "@gmail.com",
-                generateUniquePhoneNumber(),
-                "user name " + i);
+        UserDto userDto = UserDto.builder()
+                .username("username" + i)
+                .password("Password" + i)
+                .email("user" + i + "@gmail.com")
+                .phone(generateUniquePhoneNumber())
+                .name("user name " + i).build();
+
         return userService.save(userDto);
     }
 

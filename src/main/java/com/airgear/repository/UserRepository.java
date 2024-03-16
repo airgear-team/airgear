@@ -22,6 +22,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     boolean existsByUsername(String username);
 
+    boolean existsByEmail(String email);
+
+    boolean existsByPhone(String phone);
+
     @Modifying
     @Transactional
     @Query(value = "UPDATE user SET account_status_id = :accountStatusId WHERE id = :userId", nativeQuery = true)
@@ -41,4 +45,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Query("Select fg FROM User user join  user.favoriteGoods fg where user.id = :userId")
     Set<Goods> getFavoriteGoodsByUser(Long userId);
+
+    int countByDeleteAtBetween(OffsetDateTime start, OffsetDateTime end);
+  
 }

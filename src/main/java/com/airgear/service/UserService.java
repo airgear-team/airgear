@@ -1,5 +1,6 @@
 package com.airgear.service;
 
+import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
 import com.airgear.model.goods.Goods;
@@ -42,4 +43,9 @@ public interface UserService {
     int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
 
     Set<Goods> getFavoriteGoods(Authentication auth);
+
+    void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException;
+
+    int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
+
 }
