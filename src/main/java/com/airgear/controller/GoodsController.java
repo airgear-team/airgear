@@ -178,7 +178,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     @GetMapping("/getCountDeletedGoods")
-    public ResponseEntity<Long> countDeletedGoods(
+    public ResponseEntity<Long> countDeletedGoods( // TODO return special DTO
             @RequestParam(required = false) String categoryName,
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate) {
