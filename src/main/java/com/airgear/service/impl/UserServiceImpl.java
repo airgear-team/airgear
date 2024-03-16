@@ -165,6 +165,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepository.countByCreatedAtBetween(start, end);
     }
 
+    // TODO to use this method inside the "public User save(UserDto user)" method for better performance
     public void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException {
         boolean usernameExists = userRepository.existsByUsername(userDto.getUsername());
         boolean emailExists = userRepository.existsByEmail(userDto.getEmail());
