@@ -588,6 +588,7 @@
                 onDelete="CASCADE"
                 onUpdate="CASCADE"/>
     </changeSet>
+
     <!-- Create Rental Card Table -->
     <changeSet id="addRentalCardTable" author="Olena.Sinkevych">
         <createTable tableName="rental_card">
@@ -656,4 +657,42 @@
                 onDelete="CASCADE"
                 onUpdate="CASCADE"/>
     </changeSet>
+
+    <changeSet id="addGoodsView" author="vladyslav.haivoronskyi">
+        <createTable tableName="goods_view">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ip" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="addGoodsViewForeignKey" author="vladyslav.haivoronskyi">
+        <addForeignKeyConstraint baseTableName="goods_view"
+                                 baseColumnNames="goods_id"
+                                 constraintName="fk_goods_view_goods_id"
+                                 referencedTableName="goods"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+    </changeSet>
+    <changeSet id="add_is_new_column_to_goods_table" author="Opanasenko-Mykhailo">
+        <addColumn tableName="goods">
+            <column name="is_new" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
