@@ -39,6 +39,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthToken(token));
     }
 
+    // TODO to use the special DTO for user saving
+    // TODO "userService.checkForUserUniqueness(userDto)" - to use in a UserService in a method "public User save(UserDto user)"
+    // TODO to refactor  "saveUser()" method
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> saveUser(@RequestBody com.airgear.dto.UserDto userDto) {
         try {
