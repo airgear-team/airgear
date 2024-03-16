@@ -1,5 +1,7 @@
 package com.airgear.service.impl;
 
+import com.airgear.exception.GoodsExceptions;
+import com.airgear.model.User;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
@@ -26,7 +28,8 @@ import java.util.stream.Collectors;
 
 @Service(value = "goodsService")
 public class GoodsServiceImpl implements GoodsService {
-
+    private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
+    // TODO to add constructor with parameters
     @Autowired
     private GoodsRepository goodsRepository;
     @Autowired
@@ -40,18 +43,24 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Goods getGoodsById(Long id) {
         Optional<Goods> goodsOptional = goodsRepository.findById(id);
-        return goodsOptional.orElse(null);
+        return goodsOptional.orElse(null); // TODO to change on GoodsExceptions.goodsNotFound()
     }
 
     @Override
     public void deleteGoods(Goods goods) {
         goods.setDeletedAt(OffsetDateTime.now());
-        goodsRepository.save(goods);
+        goodsRepository.save(goods); // TODO to get Entity from DB and to delete this line (dirty checking)
     }
 
     @Override
-    public Goods saveGoods(@Valid Goods goods) {
+    public Goods saveGoods(@Valid Goods goods) {  // TODO to refactor this code
         //checkCategory(goods);
+        Long userId = goods.getUser().getId();
+        int categoryId = goods.getCategory().getId();
+        int productCount = goodsRepository.countByUserIdAndCategoryId(userId, categoryId);
+        if (productCount >= MAX_GOODS_IN_CATEGORY_COUNT) {
+            throw GoodsExceptions.goodsLimitExceeded(categoryId);
+        }
         goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
@@ -152,13 +161,13 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsRepository.count();
     }
 
-    private void checkCategory(Goods goods){
-        if (goods.getCategory()!=null){
-            Category category= categoryRepository.findByName(goods.getCategory().getName());
-            if (category!=null)
+    private void checkCategory(Goods goods) {
+        if (goods.getCategory() != null) {
+            Category category = categoryRepository.findByName(goods.getCategory().getName());
+            if (category != null)
                 goods.setCategory(category);
             else
-                throw new RuntimeException("not correct category for good with id: "+goods.getId());
+                throw new RuntimeException("not correct category for good with id: " + goods.getId());
         }
     }
 
@@ -174,6 +183,7 @@ public class GoodsServiceImpl implements GoodsService {
         Collections.shuffle(goods);
         return goods.subList(0, Math.min(goods.size(), limit));
     }
+
     @Override
     public void saveGoodsView(String ip, Long userId, Goods goods) {
         if (goodsViewRepository.existsByIpAndGoods(ip, goods)) {
