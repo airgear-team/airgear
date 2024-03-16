@@ -49,7 +49,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void deleteGoods(Goods goods) {
         goods.setDeletedAt(OffsetDateTime.now());
-        goodsRepository.save(goods); // TODO to delete this line (dirty checking)
+        goodsRepository.save(goods); // TODO to get Entity from DB and to delete this line (dirty checking)
     }
 
     @Override
