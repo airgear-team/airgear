@@ -40,7 +40,7 @@ public class User {
     private String email;
 
     @Column
-    @Pattern(regexp = "\\+\\d{12}",message = "format phone: +XXXXXXXXXXXX")
+    @Pattern(regexp = "^\\+380\\d{9}$", message = "the phones must be in the format +380XXXXXXXXX")
     private String phone;
 
     @Column
