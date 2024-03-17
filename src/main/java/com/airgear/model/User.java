@@ -20,8 +20,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"goods", "favoriteGoods"})
-@ToString(exclude = {"goods", "favoriteGoods"})
+@EqualsAndHashCode(exclude = {"goods", "favoriteGoods", "userReviews", "complaints"})
+@ToString(exclude = {"goods", "favoriteGoods","userReviews", "complaints"})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
