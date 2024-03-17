@@ -9,8 +9,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.airgear.config.AccountStatusConfig;
 import com.airgear.dto.RoleDto;
 import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.UserExceptions;
 import com.airgear.model.goods.Goods;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.repository.AccountStatusRepository;
@@ -200,5 +202,26 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
         return userRepository.countByDeleteAtBetween(start, end);
+    }
+
+    @Override
+    @Transactional
+    public UserDto blockUser(Long userId) {
+        User user = getUserById(userId);
+        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.INACTIVE.name()));
+        return UserDto.fromUser(user);
+    }
+
+    @Override
+    @Transactional
+    public UserDto unblockUser(Long userId) {
+        User user = getUserById(userId);
+        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.ACTIVE.name()));
+        return UserDto.fromUser(user);
+    }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> UserExceptions.userNotFound(userId));
     }
 }
