@@ -695,4 +695,14 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="create_photo_table" author="kyrylo.fursov">
+        <createTable tableName="photo">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_photo"/>
+            </column>
+            <column name="web_view_link" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column></createTable>
+    </changeSet>
+
 </databaseChangeLog>
