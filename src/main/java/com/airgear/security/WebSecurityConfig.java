@@ -1,7 +1,5 @@
-package com.airgear.config;
+package com.airgear.security;
 
-import com.airgear.security.JwtAuthenticationFilter;
-import com.airgear.security.UnauthorizedEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -38,19 +38,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors()
+        http
+                .cors()
                 .and()
                 .httpBasic()
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/authenticate", "/auth/register").permitAll()
+                .antMatchers(getPermitAllUrls()).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    private String[] getPermitAllUrls() {
+        List<String> permitAllUrls = new ArrayList<>();
+        permitAllUrls.add("/v3/api-docs/**");
+        permitAllUrls.add("/swagger-ui/**");
+        permitAllUrls.add("/swagger-ui.html");
+        permitAllUrls.add("/auth/authenticate");
+        permitAllUrls.add("/auth/service/authenticate");
+        permitAllUrls.add("/auth/register");
+        permitAllUrls.add("/goods/random-goods");
+        permitAllUrls.add("/auth/test");
+        return permitAllUrls.toArray(new String[permitAllUrls.size()]);
     }
  
     @Override

@@ -4,7 +4,7 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
     <!-- Create Goods Table -->
-    <changeSet id="1.0.0" author="ilya.deus">
+    <changeSet id="addGoodsTable" author="ilya.deus">
         <createTable tableName="goods">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -27,16 +27,8 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Add_weekends_price" author="Oleksandr Panchenko">
-        <addColumn tableName="goods">
-            <column name="weekends_price" type="DECIMAL(19, 2)">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-    </changeSet>
-
     <!-- Create Role Table -->
-    <changeSet id="1.0.1" author="ilya.deus">
+    <changeSet id="addRoleTable" author="ilya.deus">
         <createTable tableName="role">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -51,7 +43,7 @@
     </changeSet>
 
     <!-- Create User Table -->
-    <changeSet id="1.0.2" author="ilya.deus">
+    <changeSet id="addUserTable" author="ilya.deus">
         <createTable tableName="user">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -75,7 +67,7 @@
     </changeSet>
 
     <!-- Create User_Roles Join Table -->
-    <changeSet id="1.0.3" author="ilya.deus">
+    <changeSet id="addUserRolesJoinTable" author="ilya.deus">
         <createTable tableName="user_roles">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -87,7 +79,7 @@
     </changeSet>
 
     <!-- Add Foreign Key Constraint for Goods Table -->
-    <changeSet id="1.0.4" author="ilya.deus">
+    <changeSet id="addForeignKeyConstraintGoodsTable" author="ilya.deus">
         <addForeignKeyConstraint
                 baseTableName="goods"
                 baseColumnNames="user_id"
@@ -99,7 +91,7 @@
     </changeSet>
 
     <!-- Add Foreign Key Constraint for User_Roles Table -->
-    <changeSet id="1.0.5" author="ilya.deus">
+    <changeSet id="addForeignKeyConstraintUserRolesTable" author="ilya.deus">
         <addForeignKeyConstraint
                 baseTableName="user_roles"
                 baseColumnNames="user_id"
@@ -119,13 +111,16 @@
     </changeSet>
 
     <changeSet id="addDefaultRoles" author="ilya.deus">
-        <sql>INSERT INTO role (name, description) VALUES ('USER', 'This is role for simple users')</sql>
-        <sql>INSERT INTO role (name, description) VALUES ('MODERATOR', 'This is role for moderator')</sql>
-        <sql>INSERT INTO role (name, description) VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('USER', 'This is role for simple users')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('MODERATOR', 'This is role for moderator')</sql>
+        <sql>INSERT INTO role (name, description)
+             VALUES ('ADMIN', 'This is role for users with admins rights')</sql>
     </changeSet>
 
     <!-- Create Account_Status Table -->
-    <changeSet id="1.0.7" author="vladyslav.haivoronskyi">
+    <changeSet id="addAccountStatusTable" author="vladyslav.haivoronskyi">
         <createTable tableName="account_status">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -140,21 +135,23 @@
     </changeSet>
 
     <changeSet id="addDefaultStatus" author="vladyslav.haivoronskyi">
-        <sql>INSERT INTO account_status (status_name, description) VALUES ('ACTIVE', 'This is status for active users')</sql>
-        <sql>INSERT INTO account_status (status_name, description) VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
+        <sql>INSERT INTO account_status (status_name, description)
+             VALUES ('ACTIVE', 'This is status for active users')</sql>
+        <sql>INSERT INTO account_status (status_name, description)
+             VALUES ('INACTIVE', 'This is status for users with deleted account')</sql>
     </changeSet>
-  
-      <!-- Add Phone to the Goods Table -->
-    <changeSet id="1.0.7" author="Oleksandr Tuleninov">
+
+    <!-- Add Phone to the Goods Table -->
+    <changeSet id="addPhoneGoodsTable " author="Oleksandr Tuleninov">
         <addColumn tableName="goods">
             <column name="phone" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
         </addColumn>
     </changeSet>
-  
+
     <!-- Add created_at, deleted_at fields to the User Table -->
-    <changeSet id="1.0.9" author="Oleksandr Tuleninov">
+    <changeSet id="addCreatedAndDeletedFieldsUserTable" author="Oleksandr Tuleninov">
         <addColumn tableName="user">
             <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
@@ -195,9 +192,12 @@
     </changeSet>
 
     <changeSet id="addDefaultGoodsStatus" author="vladyslav.haivoronskyi">
-        <sql>INSERT INTO goods_status (name) VALUES ('ACTIVE')</sql>
-        <sql>INSERT INTO goods_status (name) VALUES ('INACTIVE')</sql>
-        <sql>INSERT INTO goods_status (name) VALUES ('DELETED')</sql>
+        <sql>INSERT INTO goods_status (name)
+             VALUES ('ACTIVE')</sql>
+        <sql>INSERT INTO goods_status (name)
+             VALUES ('INACTIVE')</sql>
+        <sql>INSERT INTO goods_status (name)
+             VALUES ('DELETED')</sql>
     </changeSet>
 
     <!-- Create User_Roles Join Table -->
@@ -210,6 +210,489 @@
                 <constraints nullable="false" primaryKey="true"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="createRegionTable" author="alex.ilchenko">
+        <createTable tableName="region">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="region" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="insertRegionData" author="alex.ilchenko">
+        <sql>INSERT INTO region (region)
+             VALUES ('Вінницька');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Волинська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Дніпропетровська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Донецька');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Житомирська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Закарпатська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Запорізька');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Івано-Франківська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Київ');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Київська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Кіровоградська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Луганська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Львівська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Миколаївська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Одеська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Полтавська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Республіка Крим');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Рівненська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Севастополь');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Сумська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Тернопільська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Харківська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Херсонська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Хмельницька');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Черкаська');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Чернівецька');</sql>
+        <sql>INSERT INTO region (region)
+             VALUES ('Чернігівська');</sql>
+    </changeSet>
+
+    <changeSet id="addLocationTable" author="alex.ilchenko">
+        <createTable tableName="location">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="settlement" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="region_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="addForeignKeyInLocation" author="alex.ilchenko">
+        <addForeignKeyConstraint
+                baseTableName="location"
+                baseColumnNames="region_id"
+                constraintName="fk_locations_region"
+                referencedTableName="region"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="changeLocationColumn" author="alex.ilchenko">
+        <addColumn tableName="goods">
+            <column name="location_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="goods"
+                                 baseColumnNames="location_id"
+                                 constraintName="fk_goods_location"
+                                 referencedTableName="location"
+                                 referencedColumnNames="id"/>
+        <dropColumn tableName="goods" columnName="location"/>
+    </changeSet>
+
+    <!-- Create Category Table -->
+    <changeSet id="addCategoryTable" author="Oleksandr Tuleninov">
+        <createTable tableName="category">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Insert data to Category Table -->
+    <changeSet id="insertDataCategoryTable" author="Oleksandr Tuleninov">
+        <sql>INSERT INTO category (name)
+             VALUES ('REAL_ESTATE')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('TRANSPORT_AND_SPECIAL_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('TECH_AND_ELECTRONICS')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('CLOTHING_AND_ACCESSORIES')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('RECREATION_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('TOOLS_AND_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('SPORTS_EQUIPMENT')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('BEAUTY_AND_HEALTH')</sql>
+        <sql>INSERT INTO category (name)
+             VALUES ('EVENT_GOODS')</sql>
+    </changeSet>
+
+    <!-- Add Category to Goods Table -->
+    <changeSet id="addCategoryGoodsTable" author="Oleksandr Tuleninov">
+        <addColumn tableName="goods">
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add Foreign Key Constraint for Goods Table -->
+    <changeSet id="addForeignKeyConstraintGoodsTable" author="Oleksandr Tuleninov">
+        <addForeignKeyConstraint
+                baseTableName="goods"
+                baseColumnNames="category_id"
+                constraintName="fk_goods_category_fk"
+                referencedTableName="category"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+    <!-- Creat the user_reviews table -->
+    <changeSet id="addUserReviewsTable" author="Opanasenko-Mykhailo">
+        <createTable tableName="user_reviews">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="reviewer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reviewed_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rating" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="user_reviews"
+                baseColumnNames="reviewer_id"
+                referencedTableName="user"
+                referencedColumnNames="id" constraintName="fk_reviewer_id"/>
+        <addForeignKeyConstraint
+                baseTableName="user_reviews"
+                baseColumnNames="reviewed_user_id"
+                referencedTableName="user"
+                referencedColumnNames="id" constraintName="fk_reviewed_user_id"/>
+    </changeSet>
+    <changeSet id="addRatingColumnToUserTable" author="Opanasenko-Mykhailo">
+        <addColumn tableName="user">
+            <column name="rating" type="FLOAT"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Create Message Table -->
+    <changeSet id="createMessageTable" author="vitalii.shkaraputa">
+        <createTable tableName="messages">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="text" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="goods_id"
+                             referencedTableName="goods"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="user_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Added weekends price to goods-->
+    <changeSet id="addWeekendsPrice" author="Oleksandr Panchenko">
+        <addColumn tableName="goods">
+            <column name="weekends_price" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Create complaint table-->
+    <changeSet id="createComplaintTable" author="Oleksandr Panchenko">
+        <createTable tableName="complaint">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="complaint_category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create complaint category table-->
+    <changeSet id="createComplaintCategoryTable" author="Oleksandr Panchenko">
+        <createTable tableName="complaint_category">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Add Foreign Keys Constraint for Complaint Table -->
+    <changeSet id="addForeignKeysComplaintTable" author="Oleksandr Panchenko">
+        <addForeignKeyConstraint
+                baseTableName="complaint"
+                baseColumnNames="complaint_category_id"
+                constraintName="fk_complaint_category"
+                referencedTableName="complaint_category"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="complaint"
+                baseColumnNames="user_id"
+                constraintName="fk_complaint_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="complaint"
+                baseColumnNames="goods_id"
+                constraintName="fk_complaint_goods"
+                referencedTableName="goods"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+    <!-- Add default complaint categories from Complaint_category table -->
+    <changeSet id="addDefaultComplaintCategories" author="Oleksandr Panchenko">
+        <sql>INSERT INTO complaint_category (name)
+             VALUES ('Fraud')</sql>
+        <sql>INSERT INTO complaint_category (name)
+             VALUES ('Violation of copyright')</sql>
+        <sql>INSERT INTO complaint_category (name)
+             VALUES ('Unacceptable content')</sql>
+    </changeSet>
+
+    <changeSet id="createFeedbackTable" author="Opanasenko-Mykhailo">
+        <createTable tableName="feedback">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Add is_potentially_scam column to user table -->
+    <changeSet id="addIsPotentiallyScamToUser" author="kyrylo.fursov">
+        <addColumn tableName="user">
+            <column name="is_potentially_scam" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="addUserLastActivity" author="Opanasenko-Mykhailo">
+        <addColumn tableName="user">
+            <column name="last_activity" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Create Favorite_Goods Join Table -->
+    <changeSet id="addFavoriteGoodsTable" author="vladyslav.haivoronskyi">
+        <createTable tableName="user_favorite_goods">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Add Foreign Key Constraint for User_Favorite_Goods Table -->
+    <changeSet id="addUserFavoriteGoodsTable" author="vladyslav.haivoronskyi">
+        <addForeignKeyConstraint
+                baseTableName="user_favorite_goods"
+                baseColumnNames="user_id"
+                constraintName="fk_user_favorite_goods_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="user_favorite_goods"
+                baseColumnNames="goods_id"
+                constraintName="fk_user_favorite_goods_goods"
+                referencedTableName="goods"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+    <!-- Create Rental Card Table -->
+    <changeSet id="addRentalCardTable" author="Olena.Sinkevych">
+        <createTable tableName="rental_card">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lessor_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="renter_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_date" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="duration" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="quantity" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rental_price" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="fine" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="deleted_at" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="rental_card"
+                baseColumnNames="lessor_id"
+                constraintName="fk_lessor_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="rental_card"
+                baseColumnNames="renter_id"
+                constraintName="fk_renter_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="rental_card"
+                baseColumnNames="goods_id"
+                constraintName="fk_card_goods"
+                referencedTableName="goods"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="addGoodsView" author="vladyslav.haivoronskyi">
+        <createTable tableName="goods_view">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ip" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="addGoodsViewForeignKey" author="vladyslav.haivoronskyi">
+        <addForeignKeyConstraint baseTableName="goods_view"
+                                 baseColumnNames="goods_id"
+                                 constraintName="fk_goods_view_goods_id"
+                                 referencedTableName="goods"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+    </changeSet>
+    <changeSet id="add_is_new_column_to_goods_table" author="Opanasenko-Mykhailo">
+        <addColumn tableName="goods">
+            <column name="is_new" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 
     <changeSet id="create_photo_table" author="kyrylo.fursov">

@@ -1,0 +1,32 @@
+package com.airgear.model.goods;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+/**
+ * The {@code Category} Represents a category entity in the database.
+ * <p>
+ *
+ * @author Oleksandr Tuleninov
+ * @version 01
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "category")
+public class Category {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(nullable = false)
+    private String name;
+
+}

@@ -1,6 +1,7 @@
 package com.airgear.model.goods.response;
 
 import com.airgear.model.goods.Goods;
+import com.airgear.model.goods.Location;
 
 /**
  * The {@code GoodsResponse} representing the response for a Goods entity.
@@ -16,7 +17,7 @@ public record GoodsResponse(long id,
                             String name,
                             String description,
                             double price,
-                            String location,
+                            Location location,
                             long userId
 ) {
 

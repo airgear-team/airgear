@@ -1,11 +1,16 @@
 package com.airgear.model.goods;
 
+import com.airgear.model.Complaint;
+import com.airgear.model.GoodsView;
 import com.airgear.model.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.*;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,17 +19,21 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import javax.validation.constraints.Size;
-import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 @Data
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"user", "usersAddedToFavorite", "goodsViews"})
+@ToString(exclude = {"user", "usersAddedToFavorite", "goodsViews"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Goods {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
@@ -40,24 +49,20 @@ public class Goods {
 
     private BigDecimal weekendsPrice;
 
-    @NotBlank(message = "Location cannot be blank")
-    @Size(min = 3, max = 255, message = "Location length must be between 3 and 255 characters")
-    private String location;
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     @Embedded
     private Deposit deposit;
 
-    @Embeddable
-    class Deposit {
-        private BigDecimal amount;
-        private Currency currency;
-
-        enum Currency {UAH, EUR, USD}
-    }
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "goods_goods_status",
@@ -74,17 +79,32 @@ public class Goods {
     private String phoneNumber;
 
     @Column(name = "created_at", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime createdAt;
 
     @Column(name = "last_modified")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime lastModified;
 
     @Column(name = "deleted_at")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime deletedAt;
 
+    @OneToMany(mappedBy = "goods")
+    private List<Complaint> complaints;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_FAVORITE_GOODS",
+            joinColumns = {
+                    @JoinColumn(name = "GOODS_ID")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "USER_ID")})
+    private Set<User> usersAddedToFavorite;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<GoodsView> goodsViews;
+
+    private boolean isNew;
 }

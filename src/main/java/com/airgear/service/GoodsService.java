@@ -1,17 +1,22 @@
 package com.airgear.service;
 
+import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
 
 public interface GoodsService {
 
     Goods getGoodsById(Long id);
 
-    void deleteGoodsById(Long id);
+    void deleteGoods(Goods goods);
 
     Goods saveGoods(Goods goods);
 
@@ -19,6 +24,30 @@ public interface GoodsService {
 
     Set<Goods> getAllGoodsByUsername(String username);
 
+    List<Goods> getAllGoods();
+
+    Page<Goods> getAllGoods(Pageable pageable);
+
+    Page<Goods> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+
     Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName);
 
+    int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
+
+    Long countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String categoryName);
+
+    Long getTotalNumberOfGoods();
+
+    Map<Category, Long> getAmountOfGoodsByCategory();
+
+    List<Goods> getRandomGoods(String categoryName, int quantity);
+
+    //will return 12 similar goods (same category and similar price)
+    Page<Goods> getSimilarGoods(String categoryName, BigDecimal price);
+
+    Map<Category, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate);
+
+    void saveGoodsView(String ip, Long userId, Goods goods);
+  
 }
+
