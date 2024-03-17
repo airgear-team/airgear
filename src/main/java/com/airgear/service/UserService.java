@@ -48,4 +48,7 @@ public interface UserService {
 
     int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
 
+    UserDto blockUser(Long userId);
+
+    UserDto unblockUser(Long userId);
 }

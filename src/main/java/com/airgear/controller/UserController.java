@@ -153,4 +153,16 @@ public class UserController {
         return userService.getFavoriteGoods(auth);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @PatchMapping(value = "/{userId}/block")
+    public ResponseEntity<UserDto> blockUser (@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.blockUser(userId));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PatchMapping(value = "/{userId}/unblock")
+    public ResponseEntity<UserDto> unblockUser (@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.unblockUser(userId));
+    }
+
 }
