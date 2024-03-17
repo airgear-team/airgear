@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.*;
 
 public class CustomUserDetails extends org.springframework.security.core.userdetails.User {
-    private final User source;
 
     public CustomUserDetails(User source) {
         super(source.getUsername(),
@@ -19,7 +18,6 @@ public class CustomUserDetails extends org.springframework.security.core.userdet
                 true,
                 true,
                 getAuthorities(source));
-        this.source = source;
     }
 
     private static Set<SimpleGrantedAuthority> getAuthorities(User source) {
