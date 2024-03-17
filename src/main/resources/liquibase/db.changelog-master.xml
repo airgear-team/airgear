@@ -618,4 +618,26 @@
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
     </changeSet>
+
+    <changeSet id="create-checkout-table" author="alex.ilchenko">
+        <createTable tableName="checkout">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="action" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="decimal(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="varchar(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="version" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
