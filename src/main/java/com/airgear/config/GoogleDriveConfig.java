@@ -14,13 +14,13 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 
-@Configuration
+//@Configuration
 public class GoogleDriveConfig {
 
     private static final String APPLICATION_NAME = "AirGear";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-    @Bean
+    //@Bean
     public Drive googleDriveService() throws GeneralSecurityException, IOException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         GoogleCredentials credentials = GoogleCredentials.fromStream(
