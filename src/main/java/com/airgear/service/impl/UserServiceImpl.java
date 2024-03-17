@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.airgear.config.AccountStatusConfig;
+import com.airgear.dto.AccountStatusDto;
 import com.airgear.dto.RoleDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.UserExceptions;
@@ -59,6 +60,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
 //        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
+        new CustomUserDetails(user);
         return new CustomUserDetails(user);
     }
 
@@ -222,8 +224,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return UserDto.fromUser(user);
     }
 
+
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> UserExceptions.userNotFound(userId));
     }
+
 }

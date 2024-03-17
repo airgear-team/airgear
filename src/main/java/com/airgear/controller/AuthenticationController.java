@@ -1,10 +1,9 @@
 package com.airgear.controller;
 
-import com.airgear.dto.AccountStatusDto;
+import com.airgear.config.AccountStatusConfig;
 import com.airgear.dto.LoginUserDto;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.exception.UserExceptions;
-import com.airgear.model.AccountStatus;
 import com.airgear.model.AuthToken;
 import com.airgear.model.ErrorResponse;
 import com.airgear.model.User;
@@ -48,14 +47,8 @@ public class AuthenticationController {
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> generateToken(@RequestBody LoginUserDto userDto) throws AuthenticationException {
 
-//        User user = userService.findByUsername(userDto.getUsername());
-//
-//        if (user == null)
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login or password is incorrect!");
-//
-//        AccountStatus status = user.getAccountStatus();
-//        if (status.getStatusName() == "BLOCKED")
-//            return ResponseEntity.status(HttpStatus.LOCKED).body("The user is blocked! Call your system administrator for more details.");
+        if (userService.findByUsername(userDto.getUsername()) == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login or password is incorrect!");
 
         final String token = getToken(userDto);
         return ResponseEntity.ok(new AuthToken(token));
@@ -88,12 +81,17 @@ public class AuthenticationController {
 
      // TODO зробити SecurityContextHolder.getContext().setAuthentication(authentication); у фільтрі 
     private String getToken(LoginUserDto user) {
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
-                        user.getPassword()
-                )
-        );
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getUsername(),
+                            user.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            throw UserExceptions.userIsBlocked(user.getUsername());
+        }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtTokenUtil.generateToken(authentication);
     }
