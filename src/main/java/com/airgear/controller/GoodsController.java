@@ -8,6 +8,7 @@ import com.airgear.exception.GenerateRentalAgreementException;
 import com.airgear.model.Complaint;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.RentalAgreement;
+import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.service.*;
 import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
@@ -135,6 +136,12 @@ public class GoodsController {
     @GetMapping("/category/total")
     public ResponseEntity<AmountOfGoodsByCategoryResponse> amountOfGoodsByCategory() {
         return ResponseEntity.ok(goodsService.getAmountOfGoodsByCategory());
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/{goodsId}/addTopPlacements")
+    public ResponseEntity<TopGoodsPlacement> addTopGoodsPlacements() {
+        return ResponseEntity.ok(goodsService.addTopGoodsPlacements(););
     }
 
 }

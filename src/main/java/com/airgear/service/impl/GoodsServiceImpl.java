@@ -146,17 +146,17 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public List<GoodsDto> getRandomGoods(String categoryName, int quantity) {
-        List<Goods> goods;
+        List<Goods> goods = getTopGoodsPlacements();
+        List<Goods> randomGoods;
         Category category = convertStringToCategory(categoryName);
         if (category != null) {
-            goods = goodsRepository.findAllByCategory(category);
+            randomGoods = randomizeAndLimit(goodsRepository.findAllByCategory(category), quantity);
         } else {
-            goods = goodsRepository.findAll();
+            randomGoods = randomizeAndLimit(goodsRepository.findAll(), quantity);
         }
-
-        return GoodsDto.fromGoodsList(randomizeAndLimit(goods, quantity));
+        goods.addAll(randomGoods);
+        return GoodsDto.fromGoodsList(goods);
     }
-
 
     @Override
     public AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory() {
@@ -269,11 +269,21 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public void addTopGoodsPlacements(Long goodsId, Long userId, OffsetDateTime startAt, OffsetDateTime endAt) {
+        Goods goods = getGoodsById(goodsId);
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            throw userNotFound(userId);
+        }
+        if (goods == null) {
+            throw new GoodsNotFoundException("Goods not found");
+        }
+        if (!userId.equals(goods.getUser().getId()) && !userOptional.get().getRoles().contains("ADMIN")) {
+            throw new ForbiddenException("It is not your goods");
+        }
         topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
                 .userId(userId)
-                .goods(getGoodsById(goodsId))
+                .goods(goods)
                 .startAt(startAt)
                 .endAt(endAt).build());
     }
-
 }
