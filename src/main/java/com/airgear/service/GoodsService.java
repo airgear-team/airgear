@@ -1,10 +1,6 @@
 package com.airgear.service;
 
-import com.airgear.dto.AmountOfGoodsByCategoryResponse;
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.TopGoodsPlacementDto;
-import com.airgear.dto.TotalNumberOfGoodsResponse;
-import com.airgear.model.goods.Category;
+import com.airgear.dto.*;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
 import org.springframework.data.domain.Page;
@@ -47,6 +43,8 @@ public interface GoodsService {
     TotalNumberOfGoodsResponse getTotalNumberOfGoodsResponse();
 
     AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory();
+
+    TotalNumberOfTopGoodsResponse getTotalNumberOfTopGoodsResponse();
 
     List<GoodsDto> getRandomGoods(String categoryName, int quantity);
 

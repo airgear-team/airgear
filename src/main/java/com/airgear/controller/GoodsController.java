@@ -129,6 +129,12 @@ public class GoodsController {
         return ResponseEntity.ok(goodsService.getTotalNumberOfGoodsResponse());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @GetMapping("/getNumbersOfTopGoods")
+    public ResponseEntity<TotalNumberOfTopGoodsResponse> getTotalNumberOfTopGoods() {
+        return ResponseEntity.ok(goodsService.getTotalNumberOfTopGoodsResponse());
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/category/total")
     public ResponseEntity<AmountOfGoodsByCategoryResponse> amountOfGoodsByCategory() {
@@ -140,5 +146,7 @@ public class GoodsController {
     public ResponseEntity<TopGoodsPlacementDto> addTopGoodsPlacements(@Valid @RequestBody TopGoodsPlacementDto topGoodsPlacementDto) {
         return ResponseEntity.ok(goodsService.addTopGoodsPlacements(topGoodsPlacementDto));
     }
+
+
 
 }

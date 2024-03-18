@@ -1,9 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.AmountOfGoodsByCategoryResponse;
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.TopGoodsPlacementDto;
-import com.airgear.dto.TotalNumberOfGoodsResponse;
+import com.airgear.dto.*;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.GoodsNotFoundException;
 import com.airgear.model.User;
@@ -168,6 +165,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     }
 
+
     @Override
     public Page<Goods> getAllGoods(Pageable pageable) {
         return goodsRepository.findAll(pageable);
@@ -195,6 +193,12 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public TotalNumberOfGoodsResponse getTotalNumberOfGoodsResponse() {
         return new TotalNumberOfGoodsResponse(goodsRepository.count());
+    }
+
+    @Override
+    public TotalNumberOfTopGoodsResponse getTotalNumberOfTopGoodsResponse() {
+        return new TotalNumberOfTopGoodsResponse(topGoodsPlacementRepository.countAllActivePlacements());
+
     }
 
     private void checkCategory(Goods goods) {
