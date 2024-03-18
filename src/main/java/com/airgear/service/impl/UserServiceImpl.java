@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         AccountStatus accountStatus = accountStatusRepository.findById(accountStatusId).orElseThrow(() -> new RuntimeException("Account status not found"));
 
-        if (accountStatus.getId() == 2) { // Assuming 2 is the ID for INACTIVE
+        if (accountStatus.getId() == 2) {
             user.setAccountStatus(accountStatus);
             userRepository.save(user);
             sendFarewellEmail(Set.of(user.getEmail()));
