@@ -1,5 +1,6 @@
 package com.airgear.service;
 
+import com.airgear.dto.GoodsDto;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
@@ -41,7 +42,7 @@ public interface GoodsService {
     List<Goods> getRandomGoods(String categoryName, int quantity);
 
     //will return 12 similar goods (same category and similar price)
-    Page<Goods> getSimilarGoods(String categoryName, BigDecimal price);
+    Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price);
 
     void saveGoodsView(String ip, Long userId, Goods goods);
 

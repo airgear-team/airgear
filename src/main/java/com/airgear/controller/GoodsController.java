@@ -6,16 +6,12 @@ import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Category;
 import com.airgear.model.Complaint;
-import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.GoodsStatus;
 import com.airgear.model.RentalAgreement;
 import com.airgear.model.User;
 import com.airgear.service.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.airgear.service.ComplaintService;
-import com.airgear.repository.GoodsStatusRepository;
-import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import com.airgear.utils.Converter;
@@ -30,7 +26,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
@@ -185,7 +180,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/similar-goods")
-    public Page<Goods> getSimilarGoods(
+    public Page<GoodsDto> getSimilarGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(name = "price") BigDecimal price) {
         return goodsService.getSimilarGoods(categoryName, price);

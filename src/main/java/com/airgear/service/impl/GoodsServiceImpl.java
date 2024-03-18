@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.GoodsDto;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
@@ -101,11 +102,12 @@ public class GoodsServiceImpl implements GoodsService {
 
     //will return number of similar goods (same category and price within limit)
     @Override
-    public Page<Goods> getSimilarGoods(String categoryName, BigDecimal price) {
+    public Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price) {
         BigDecimal lowerBound = price.multiply(BigDecimal.ONE.subtract(PRICE_VARIATION_PERCENTAGE));
         BigDecimal upperBound = price.multiply(BigDecimal.ONE.add(PRICE_VARIATION_PERCENTAGE));
 
-        return filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0, SIMILAR_GOODS_LIMIT));
+        Page<Goods> goods = filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0, SIMILAR_GOODS_LIMIT));
+        return goods.map(GoodsDto::fromGoods);
     }
 
     @Override
