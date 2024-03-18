@@ -1,9 +1,6 @@
 package com.airgear.controller;
 
-import com.airgear.dto.AmountOfGoodsByCategoryResponse;
-import com.airgear.dto.ComplaintDTO;
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.TotalNumberOfGoodsResponse;
+import com.airgear.dto.*;
 import com.airgear.exception.GenerateRentalAgreementException;
 import com.airgear.model.Complaint;
 import com.airgear.model.goods.Goods;
@@ -139,9 +136,9 @@ public class GoodsController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/{goodsId}/addTopPlacements")
-    public ResponseEntity<TopGoodsPlacement> addTopGoodsPlacements() {
-        return ResponseEntity.ok(goodsService.addTopGoodsPlacements(););
+    @PostMapping("/addTopPlacements")
+    public ResponseEntity<TopGoodsPlacementDto> addTopGoodsPlacements(@Valid @RequestBody TopGoodsPlacementDto topGoodsPlacementDto) {
+        return ResponseEntity.ok(goodsService.addTopGoodsPlacements(topGoodsPlacementDto));
     }
 
 }

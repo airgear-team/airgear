@@ -2,6 +2,7 @@ package com.airgear.service;
 
 import com.airgear.dto.AmountOfGoodsByCategoryResponse;
 import com.airgear.dto.GoodsDto;
+import com.airgear.dto.TopGoodsPlacementDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
@@ -57,7 +58,7 @@ public interface GoodsService {
 
     List<Goods> getTopGoodsPlacements();
 
-    void addTopGoodsPlacements(Long goodsId, Long userId, OffsetDateTime startAt, OffsetDateTime endAt);
+    TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto);
 
 
 }

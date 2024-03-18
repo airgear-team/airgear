@@ -2,6 +2,7 @@ package com.airgear.service.impl;
 
 import com.airgear.dto.AmountOfGoodsByCategoryResponse;
 import com.airgear.dto.GoodsDto;
+import com.airgear.dto.TopGoodsPlacementDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.GoodsNotFoundException;
@@ -268,22 +269,23 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public void addTopGoodsPlacements(Long goodsId, Long userId, OffsetDateTime startAt, OffsetDateTime endAt) {
-        Goods goods = getGoodsById(goodsId);
-        Optional<User> userOptional = userRepository.findById(userId);
+    public TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto) {
+        TopGoodsPlacement topGoodsPlacement = topGoodsPlacementDto.toModel();
+        Goods goods = getGoodsById(topGoodsPlacement.getGoods().getId());
+        Optional<User> userOptional = userRepository.findById(topGoodsPlacement.getUserId());
         if (userOptional.isEmpty()) {
-            throw userNotFound(userId);
+            throw userNotFound(topGoodsPlacement.getUserId());
         }
         if (goods == null) {
             throw new GoodsNotFoundException("Goods not found");
         }
-        if (!userId.equals(goods.getUser().getId()) && !userOptional.get().getRoles().contains("ADMIN")) {
+        if (!topGoodsPlacement.getUserId().equals(goods.getUser().getId()) && !userOptional.get().getRoles().contains("ADMIN")) {
             throw new ForbiddenException("It is not your goods");
         }
-        topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
-                .userId(userId)
+        return TopGoodsPlacementDto.toDto(topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
+                .userId(topGoodsPlacement.getUserId())
                 .goods(goods)
-                .startAt(startAt)
-                .endAt(endAt).build());
+                .startAt(topGoodsPlacement.getStartAt())
+                .endAt(topGoodsPlacement.getEndAt()).build()));
     }
 }
