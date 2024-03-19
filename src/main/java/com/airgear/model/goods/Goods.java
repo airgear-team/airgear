@@ -64,6 +64,9 @@ public class Goods {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Enumerated(EnumType.STRING)
+    private GoodsVerificationStatus verificationStatus;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "goods_goods_status",
             joinColumns = {
@@ -72,6 +75,7 @@ public class Goods {
             inverseJoinColumns = {
                     @JoinColumn(name = "goods_status_id")})
     private GoodsStatus goodsStatus;
+
 
     @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
     @Pattern(regexp = "^\\+380\\d{9}$", message = "The phone number must be in the format +380XXXXXXXXX")
