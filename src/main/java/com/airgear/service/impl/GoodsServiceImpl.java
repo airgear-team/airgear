@@ -1,16 +1,14 @@
 package com.airgear.service.impl;
 
 import com.airgear.exception.GoodsExceptions;
-import com.airgear.model.User;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
-import com.airgear.model.goods.response.GoodsResponse;
+import com.airgear.dto.GoodsResponseDTO;
 import com.airgear.repository.CategoryRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
-import org.hibernate.boot.jaxb.cfg.spi.JaxbCfgEventTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -76,7 +74,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName) {
+    public Page<GoodsResponseDTO> listGoodsByName(Pageable pageable, String goodsName) {
         return null;
     }
 

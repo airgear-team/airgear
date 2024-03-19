@@ -1,8 +1,8 @@
 package com.airgear.controller;
 
-import com.airgear.model.message.request.ChangeTextRequest;
-import com.airgear.model.message.request.SaveMessageRequest;
-import com.airgear.model.message.response.MessageResponse;
+import com.airgear.dto.ChangeTextRequestDTO;
+import com.airgear.dto.SaveMessageRequestDTO;
+import com.airgear.dto.MessageResponseDTO;
 import com.airgear.service.MessageService;
 import com.airgear.utils.Routes;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,8 +53,8 @@ public class MessageController {
     )
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PageableAsQueryParam
-    public Page<MessageResponse> views(@Parameter(hidden = true) Pageable pageable,
-                                       @PathVariable long goodsId) {
+    public Page<MessageResponseDTO> views(@Parameter(hidden = true) Pageable pageable,
+                                          @PathVariable long goodsId) {
         return messageService.getAllMessageByGoodsId(pageable, goodsId);
     }
 
@@ -70,7 +70,7 @@ public class MessageController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    public MessageResponse getMessageById(@PathVariable UUID messageId) {
+    public MessageResponseDTO getMessageById(@PathVariable UUID messageId) {
         return messageService.getMessageById(messageId)
                 .orElseThrow(() -> messageNotFound(messageId));
     }
@@ -88,11 +88,11 @@ public class MessageController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    public ResponseEntity<MessageResponse> create(@RequestBody @Valid SaveMessageRequest request,
-                                                  UriComponentsBuilder ucb) {
-        MessageResponse response = messageService.create(request);
+    public ResponseEntity<MessageResponseDTO> create(@RequestBody @Valid SaveMessageRequestDTO request,
+                                                     UriComponentsBuilder ucb) {
+        MessageResponseDTO response = messageService.create(request);
         return ResponseEntity
-                .created(ucb.path("/{id}").build(response.id()))
+                .created(ucb.path("/{id}").build(response.getId()))
                 .body(response);
     }
 
@@ -109,8 +109,8 @@ public class MessageController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    public MessageResponse changeText(@PathVariable UUID messageId,
-                                      @RequestBody @Valid ChangeTextRequest request) {
+    public MessageResponseDTO changeText(@PathVariable UUID messageId,
+                                         @RequestBody @Valid ChangeTextRequestDTO request) {
         return messageService.changeTextMessage(messageId, request);
     }
 

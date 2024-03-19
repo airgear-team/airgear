@@ -1,34 +1,40 @@
-package com.airgear.model.goods.response;
+package com.airgear.dto;
 
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.Location;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Setter;
 
 /**
  * The {@code GoodsResponse} representing the response for a Goods entity.
- *
- * This record includes essential information about a goods entity such as its identifier, name,
+ * This class includes essential information about a goods entity such as its identifier, name,
  * description, price, location, and the user's identifier who owns the goods.
- * <p>
  *
  * @author Oleksandr Tuleninov
  * @version 01
  */
-public record GoodsResponse(long id,
-                            String name,
-                            String description,
-                            double price,
-                            Location location,
-                            long userId
-) {
+
+@Data
+@Setter(AccessLevel.NONE)
+@AllArgsConstructor
+public class GoodsResponseDTO {
+    long id;
+    String name;
+    String description;
+    double price;
+    Location location;
+    long userId;
 
     /**
-     * Creates a new GoodsResponse object from a Goods entity.
+     * Creates a new GoodsResponseDTO object from a Goods entity.
      *
      * @param goods The Goods entity from which to create the response.
      * @return A new GoodsResponse object with information extracted from the provided Goods entity.
      */
-    public static GoodsResponse fromGoods(Goods goods) {
-        return new GoodsResponse(
+    public static GoodsResponseDTO fromGoods(Goods goods) {
+        return new GoodsResponseDTO(
                 goods.getId(),
                 goods.getName(),
                 goods.getDescription(),
