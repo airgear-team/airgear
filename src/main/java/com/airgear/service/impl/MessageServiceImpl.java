@@ -2,7 +2,7 @@ package com.airgear.service.impl;
 
 import com.airgear.model.User;
 import com.airgear.model.goods.Goods;
-import com.airgear.model.message.Message;
+import com.airgear.model.Message;
 import com.airgear.dto.ChangeTextRequestDTO;
 import com.airgear.dto.SaveMessageRequestDTO;
 import com.airgear.dto.MessageResponseDTO;

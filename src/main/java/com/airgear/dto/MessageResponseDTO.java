@@ -1,6 +1,6 @@
 package com.airgear.dto;
 
-import com.airgear.model.message.Message;
+import com.airgear.model.Message;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
