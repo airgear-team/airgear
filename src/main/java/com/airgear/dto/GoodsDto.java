@@ -17,6 +17,7 @@ import java.util.*;
 @Data
 @Builder
 public class GoodsDto {
+
     private Long id;
     private String name;
     private String description;
