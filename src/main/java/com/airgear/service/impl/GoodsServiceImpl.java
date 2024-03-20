@@ -38,7 +38,6 @@ import static com.airgear.exception.UserExceptions.userNotFound;
 
 @Service(value = "goodsService")
 public class GoodsServiceImpl implements GoodsService {
-    private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
 
     private UserRepository userRepository;
     private GoodsRepository goodsRepository;
@@ -57,6 +56,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
 
+    private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
     private static final int SIMILAR_GOODS_LIMIT = 12;
     private static final BigDecimal PRICE_VARIATION_PERCENTAGE = new BigDecimal("0.15");
 
@@ -163,6 +163,11 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public Long getTotalNumberOfGoods() {
+        return null;
+    }
+
+    @Override
     public List<Goods> getAllGoods() {
         return goodsRepository.findAll();
     }
@@ -196,7 +201,6 @@ public class GoodsServiceImpl implements GoodsService {
         return new AmountOfGoodsByCategoryResponse(goodsList.stream()
                 .collect(Collectors.groupingBy(Goods::getCategory, Collectors.counting())));
         // Grouping by category and quantity
-
     }
 
     @Override
@@ -237,7 +241,6 @@ public class GoodsServiceImpl implements GoodsService {
                 throw new RuntimeException("not correct category for good with id: " + goods.getId());
         }
     }
-
 
     private Category convertStringToCategory(String categoryName) {
         if (categoryName != null) {
