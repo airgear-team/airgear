@@ -1,5 +1,6 @@
 package com.airgear.controller;
 
+import com.airgear.dto.CalendarDay;
 import com.airgear.dto.RentalCardDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.RentalCard;
@@ -7,12 +8,15 @@ import com.airgear.model.User;
 import com.airgear.service.RentalCardService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/rental")
@@ -62,5 +66,15 @@ public class RentalCardController {
         }
         rentalCardService.deleteRentalCard(existingRentalCard);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/calendar/{goodsId}")
+    public ResponseEntity<List<CalendarDay>> getCalendarForGoods(@PathVariable Long goodsId,
+                                                                 @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
+                                                                 @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate
+    ){
+        List<CalendarDay> list = rentalCardService.getCalendarForGoods(goodsId,fromDate,toDate);
+        return ResponseEntity.ok(list);
     }
 }
