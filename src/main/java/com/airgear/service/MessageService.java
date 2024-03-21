@@ -29,5 +29,5 @@ public interface MessageService {
 
     void deleteMessageById(UUID messageId);
 
-    Object getTotalNumberOfSendMessages();
+    Long getTotalNumberOfSendMessages();
 }
