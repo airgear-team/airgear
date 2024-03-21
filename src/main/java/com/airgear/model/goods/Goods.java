@@ -3,7 +3,7 @@ package com.airgear.model.goods;
 import com.airgear.model.Complaint;
 import com.airgear.model.GoodsView;
 import com.airgear.model.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.airgear.model.goods.enums.GoodsCondition;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -106,5 +106,6 @@ public class Goods {
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<GoodsView> goodsViews;
 
-    private boolean isNew;
+    @Enumerated(EnumType.STRING)
+    private GoodsCondition goodsCondition;
 }
