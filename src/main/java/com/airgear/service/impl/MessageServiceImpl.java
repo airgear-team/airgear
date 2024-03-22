@@ -86,6 +86,11 @@ public class MessageServiceImpl implements MessageService {
         messageRepository.deleteById(messageId);
     }
 
+    @Override
+    public Long getTotalNumberOfSendMessages() {
+        return messageRepository.count();
+    }
+
     private MessageResponseDTO save(SaveMessageRequestDTO request, Goods goods, User user, UUID uuid) {
         Message message = new Message();
         message.setId(uuid);

@@ -125,4 +125,10 @@ public class MessageController {
     public void deleteMessageById(@PathVariable UUID messageId) {
         messageService.deleteMessageById(messageId);
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping("/total-number")
+    public ResponseEntity<Long> totalNumberOfSendMessages() {
+        return ResponseEntity.ok(messageService.getTotalNumberOfSendMessages());
+    }
 }
