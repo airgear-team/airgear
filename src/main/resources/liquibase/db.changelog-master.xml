@@ -702,9 +702,9 @@
             </column>
             <column name="web_view_link" type="varchar(255)">
                 <constraints nullable="false"/>
-            </column></createTable>
+            </column>
+        </createTable>
     </changeSet>
-
 
     <changeSet id="create-checkout-table" author="alex.ilchenko">
         <createTable tableName="checkout">
@@ -757,5 +757,14 @@
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="modify_goods_table" author="Opanasenko-Mykhailo">
+        <dropColumn tableName="goods" columnName="is_new"/>
+        <addColumn tableName="goods">
+            <column name="goods_condition" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

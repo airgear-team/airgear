@@ -1,6 +1,7 @@
 package com.airgear.dto;
 
 import com.airgear.model.goods.Goods;
+import com.airgear.model.goods.enums.GoodsCondition;
 import lombok.Builder;
 import lombok.Data;
 
@@ -27,7 +28,7 @@ public class GoodsDto {
     private CategoryDto category;
     private String phoneNumber;
     private UserDto user;
-    private boolean isNew;
+    private GoodsCondition goodsCondition;
 
 
     public Goods toGoods() {
@@ -41,7 +42,7 @@ public class GoodsDto {
                 .category(category.toCategory())
                 .phoneNumber(phoneNumber)
                 .user(user.toUser())
-                .isNew(isNew)
+                .goodsCondition(goodsCondition)
                 .build();
     }
 
@@ -69,7 +70,7 @@ public class GoodsDto {
                 .phoneNumber(goods.getPhoneNumber())
                 //TODO циклічна залежність
 //                .user(UserDto.fromUser(goods.getUser()))
-                .isNew(goods.isNew())
+                .goodsCondition(goods.getGoodsCondition())
                 .build();
     }
 
