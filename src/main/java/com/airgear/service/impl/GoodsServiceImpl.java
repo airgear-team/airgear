@@ -281,6 +281,10 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setUser(user);
         goods.setGoodsStatus(goodsStatusService.getGoodsById(1L));
         goods.setCreatedAt(OffsetDateTime.now());
+        //TODO
+        goodsDto.getLocation().setId(1l);
+        goods.setLocation(goodsDto.getLocation().toLocation());
+
         return GoodsDto.fromGoods(goodsRepository.save(goods));
     }
 

@@ -6,6 +6,7 @@ import com.airgear.dto.GoodsDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
 import com.airgear.exception.GenerateRentalAgreementException;
 import com.airgear.model.Complaint;
+import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.RentalAgreement;
 import com.airgear.service.*;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)

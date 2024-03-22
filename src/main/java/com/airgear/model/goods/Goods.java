@@ -49,6 +49,7 @@ public class Goods {
 
     private BigDecimal weekendsPrice;
 
+    //TODO
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
@@ -73,8 +74,8 @@ public class Goods {
                     @JoinColumn(name = "goods_status_id")})
     private GoodsStatus goodsStatus;
 
-    @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
-    @Pattern(regexp = "^\\+380\\d{9}$", message = "The phone number must be in the format +380XXXXXXXXX")
+//    @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
+//    @Pattern(regexp = "^\\+\\d{1,3}\\s?\\(?\\d{1,4}\\)?[\\s.-]?\\d{1,4}[\\s.-]?\\d{1,4}$", message = "The phone number must be in the format +380XXXXXXXXX")
     @JoinColumn(name = "phone")
     private String phoneNumber;
 
