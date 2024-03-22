@@ -4,8 +4,8 @@ import com.airgear.exception.GoodsExceptions;
 import com.airgear.model.User;
 import com.airgear.dto.AmountOfGoodsByCategoryResponse;
 import com.airgear.dto.GoodsDto;
+import com.airgear.dto.TopGoodsPlacementDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
-import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.GoodsNotFoundException;
 import com.airgear.model.User;
@@ -14,11 +14,9 @@ import com.airgear.dto.GoodsDto;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
+import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.model.goods.response.GoodsResponse;
-import com.airgear.repository.CategoryRepository;
-import com.airgear.repository.GoodsRepository;
-import com.airgear.repository.GoodsViewRepository;
-import com.airgear.repository.UserRepository;
+import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
 import org.hibernate.boot.jaxb.cfg.spi.JaxbCfgEventTypeEnum;
 import com.airgear.service.GoodsStatusService;
@@ -32,8 +30,6 @@ import javax.validation.Valid;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.airgear.exception.UserExceptions.userNotFound;
@@ -46,15 +42,17 @@ public class GoodsServiceImpl implements GoodsService {
     private CategoryRepository categoryRepository;
     private GoodsViewRepository goodsViewRepository;
     private GoodsStatusService goodsStatusService;
+    private TopGoodsPlacementRepository topGoodsPlacementRepository;
 
     @Autowired
     public GoodsServiceImpl(UserRepository userRepository, GoodsRepository goodsRepository, CategoryRepository categoryRepository,
-                            GoodsViewRepository goodsViewRepository, GoodsStatusService goodsStatusService) {
+                            GoodsViewRepository goodsViewRepository, GoodsStatusService goodsStatusService, TopGoodsPlacementRepository topGoodsPlacementRepository) {
         this.userRepository = userRepository;
         this.goodsRepository = goodsRepository;
         this.categoryRepository = categoryRepository;
         this.goodsViewRepository = goodsViewRepository;
         this.goodsStatusService = goodsStatusService;
+        this.topGoodsPlacementRepository = topGoodsPlacementRepository;
     }
 
 
@@ -177,17 +175,17 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public List<Goods> getRandomGoods(String categoryName, int quantity) {
-        List<Goods> goods;
+    public List<GoodsDto> getRandomGoods(String categoryName, int quantity) {
+        List<Goods> goods = getTopGoodsPlacements();
+        List<Goods> randomGoods;
         Category category = convertStringToCategory(categoryName);
-
         if (category != null) {
-            goods = goodsRepository.findAllByCategory(category);
+            randomGoods = randomizeAndLimit(goodsRepository.findAllByCategory(category), quantity);
         } else {
-            goods = goodsRepository.findAll();
+            randomGoods = randomizeAndLimit(goodsRepository.findAll(), quantity);
         }
-
-        return randomizeAndLimit(goods, quantity);
+        goods.addAll(randomGoods);
+        return GoodsDto.fromGoodsList(goods);
     }
 
     //will return number of similar goods (same category and price within limit)
@@ -310,4 +308,31 @@ public class GoodsServiceImpl implements GoodsService {
         return GoodsDto.fromGoods(goods);
     }
 
+    @Override
+    public List<Goods> getTopGoodsPlacements() {
+        List<Goods> result = new ArrayList<>();
+        topGoodsPlacementRepository.findAllActivePlacements().forEach(goods -> result.add(goods.getGoods()));
+        return result;
+    }
+
+    @Override
+    public TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto) {
+        TopGoodsPlacement topGoodsPlacement = topGoodsPlacementDto.toModel();
+        Goods goods = getGoodsById(topGoodsPlacement.getGoods().getId());
+        Optional<User> userOptional = userRepository.findById(topGoodsPlacement.getUserId());
+        if (userOptional.isEmpty()) {
+            throw userNotFound(topGoodsPlacement.getUserId());
+        }
+        if (goods == null) {
+            throw new GoodsNotFoundException("Goods not found");
+        }
+        if (!topGoodsPlacement.getUserId().equals(goods.getUser().getId()) && !userOptional.get().getRoles().contains("ADMIN")) {
+            throw new ForbiddenException("It is not your goods");
+        }
+        return TopGoodsPlacementDto.toDto(topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
+                .userId(topGoodsPlacement.getUserId())
+                .goods(goods)
+                .startAt(topGoodsPlacement.getStartAt())
+                .endAt(topGoodsPlacement.getEndAt()).build()));
+    }
 }

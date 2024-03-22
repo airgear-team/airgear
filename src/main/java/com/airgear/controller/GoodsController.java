@@ -5,11 +5,13 @@ import com.airgear.dto.ComplaintDTO;
 import com.airgear.dto.CountDeletedGoodsDTO;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
+import com.airgear.dto.*;
 import com.airgear.exception.GenerateRentalAgreementException;
 import com.airgear.model.Complaint;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.RentalAgreement;
+import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.service.*;
 import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
@@ -111,7 +113,7 @@ public class GoodsController {
     }
 
     @GetMapping("/random-goods")
-    public List<Goods> getRandomGoods(
+    public List<GoodsDto> getRandomGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
         return goodsService.getRandomGoods(categoryName, quantity);
@@ -165,6 +167,12 @@ public class GoodsController {
             ){
         Map<Category, Long> categoryAmounts = goodsService.getAmountOfNewGoodsByCategory(fromDate,toDate);
         return ResponseEntity.ok(categoryAmounts);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @PostMapping("/addTopPlacements")
+    public ResponseEntity<TopGoodsPlacementDto> addTopGoodsPlacements(@Valid @RequestBody TopGoodsPlacementDto topGoodsPlacementDto) {
+        return ResponseEntity.ok(goodsService.addTopGoodsPlacements(topGoodsPlacementDto));
     }
 
 }

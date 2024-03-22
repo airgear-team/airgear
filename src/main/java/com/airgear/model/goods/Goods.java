@@ -49,7 +49,6 @@ public class Goods {
 
     private BigDecimal weekendsPrice;
 
-    //TODO
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
@@ -108,4 +107,8 @@ public class Goods {
     private Set<GoodsView> goodsViews;
 
     private boolean isNew;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<TopGoodsPlacement> topGoodsPlacements;
 }
