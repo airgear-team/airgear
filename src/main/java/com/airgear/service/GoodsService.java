@@ -1,10 +1,6 @@
 package com.airgear.service;
 
-import com.airgear.dto.AmountOfGoodsByCategoryResponse;
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.TopGoodsPlacementDto;
-import com.airgear.dto.TotalNumberOfGoodsResponse;
-import com.airgear.dto.CountDeletedGoodsDTO;
+import com.airgear.dto.*;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
