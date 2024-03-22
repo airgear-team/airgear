@@ -13,6 +13,8 @@ import com.airgear.dto.RoleDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Goods;
 import com.airgear.exception.UserUniquenessViolationException;
+import com.airgear.model.AccountStatus;
+import com.airgear.model.email.EmailMessage;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.UserRepository;
@@ -49,6 +51,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
+
+    @Autowired
+    private EmailServiceImpl emailService;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
@@ -101,10 +106,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (user == null || user.getAccountStatus().getId() == accountStatusId) {
             throw new ForbiddenException("User not found or was already deleted");
         }
-        if (accountStatusId == 2L) {
-            user.setDeleteAt(OffsetDateTime.now());
+
+        AccountStatus accountStatus = accountStatusRepository.findById(accountStatusId).orElseThrow(() -> new RuntimeException("Account status not found"));
+
+        if (accountStatus.getId() == 2) {
+            user.setAccountStatus(accountStatus);
+            userRepository.save(user);
+            sendFarewellEmail(Set.of(user.getEmail()));
+        } else {
+            user.setAccountStatus(accountStatus);
+            userRepository.save(user);
         }
-        userRepository.setAccountStatusId(accountStatusId, user.getId());
+}
+
+    private void sendFarewellEmail(Set<String> userEmails) {
+        EmailMessage emailMessage = new EmailMessage();
+        emailMessage.setSubject("We're sad to see you go!");
+        emailMessage.setMessage("Hello,\n\nWe noticed that your account is now inactive. We're sorry to see you leave! If there was any issue with our service, or if you have any feedback, please let us know. We hope to serve you again in the future.\n\nBest,\nThe Airgear Team");
+
+        emailService.sendMail(emailMessage, userEmails);
     }
 
     @Override
