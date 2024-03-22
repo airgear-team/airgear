@@ -5,7 +5,6 @@ import com.airgear.dto.GoodsDto;
 import com.airgear.dto.TopGoodsPlacementDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
 import com.airgear.dto.CountDeletedGoodsDTO;
-import com.airgear.dto.GoodsDto;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
@@ -53,6 +52,8 @@ public interface GoodsService {
 
     AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory();
 
+    TotalNumberOfTopGoodsResponse getTotalNumberOfTopGoodsResponse();
+
     List<GoodsDto> getRandomGoods(String categoryName, int quantity);
 
     //will return 12 similar goods (same category and similar price)
@@ -62,7 +63,6 @@ public interface GoodsService {
 
     void saveGoodsView(String ip, Long userId, Goods goods);
 
-
     GoodsDto createGoods(String username, GoodsDto goodsDto);
 
     GoodsDto addToFavorites(String username, Long goodsId);
@@ -71,6 +71,4 @@ public interface GoodsService {
 
     TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto);
 
-
 }
-

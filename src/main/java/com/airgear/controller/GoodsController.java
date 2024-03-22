@@ -153,6 +153,12 @@ public class GoodsController {
         return ResponseEntity.ok(goodsService.getTotalNumberOfGoodsResponse());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @GetMapping("/getNumbersOfTopGoods")
+    public ResponseEntity<TotalNumberOfTopGoodsResponse> getTotalNumberOfTopGoods() {
+        return ResponseEntity.ok(goodsService.getTotalNumberOfTopGoodsResponse());
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/category/total")
     public ResponseEntity<AmountOfGoodsByCategoryResponse> amountOfGoodsByCategory() {
