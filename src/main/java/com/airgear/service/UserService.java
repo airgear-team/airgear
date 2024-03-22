@@ -1,5 +1,6 @@
 package com.airgear.service;
 
+import com.airgear.dto.AccountStatusDto;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
@@ -47,5 +48,9 @@ public interface UserService {
     void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException;
 
     int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end);
+
+    UserDto blockUser(Long userId);
+
+    UserDto unblockUser(Long userId);
 
 }

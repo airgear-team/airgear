@@ -9,8 +9,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.airgear.config.AccountStatusConfig;
+import com.airgear.dto.AccountStatusDto;
 import com.airgear.dto.RoleDto;
 import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.UserExceptions;
 import com.airgear.model.goods.Goods;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.AccountStatus;
@@ -21,6 +24,7 @@ import com.airgear.repository.UserRepository;
 import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
+import com.airgear.security.CustomUserDetails;
 import com.airgear.service.RoleService;
 import com.airgear.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +64,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
+//        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
+        return new CustomUserDetails(user);
     }
 
     private Set<SimpleGrantedAuthority> getAuthority(User user) {
@@ -221,4 +226,27 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
         return userRepository.countByDeleteAtBetween(start, end);
     }
+
+    @Override
+    @Transactional
+    public UserDto blockUser(Long userId) {
+        User user = getUserById(userId);
+        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.INACTIVE.name()));
+        return UserDto.fromUser(user);
+    }
+
+    @Override
+    @Transactional
+    public UserDto unblockUser(Long userId) {
+        User user = getUserById(userId);
+        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.ACTIVE.name()));
+        return UserDto.fromUser(user);
+    }
+
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> UserExceptions.userNotFound(userId));
+    }
+
 }

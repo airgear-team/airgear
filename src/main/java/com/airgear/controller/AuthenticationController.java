@@ -1,5 +1,6 @@
 package com.airgear.controller;
 
+import com.airgear.config.AccountStatusConfig;
 import com.airgear.dto.LoginUserDto;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.exception.UserExceptions;
@@ -80,12 +81,17 @@ public class AuthenticationController {
 
      // TODO зробити SecurityContextHolder.getContext().setAuthentication(authentication); у фільтрі 
     private String getToken(LoginUserDto user) {
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
-                        user.getPassword()
-                )
-        );
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getUsername(),
+                            user.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            throw UserExceptions.userIsBlocked(user.getUsername());
+        }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtTokenUtil.generateToken(authentication);
     }
