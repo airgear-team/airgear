@@ -1,4 +1,4 @@
-package com.airgear.aspects;
+package com.airgear.aspect;
 
 import com.airgear.service.Logging;
 import org.aspectj.lang.annotation.After;

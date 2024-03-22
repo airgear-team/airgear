@@ -1,4 +1,4 @@
-package com.airgear.aspects;
+package com.airgear.aspect;
 
 import com.airgear.model.User;
 import com.airgear.repository.UserRepository;
