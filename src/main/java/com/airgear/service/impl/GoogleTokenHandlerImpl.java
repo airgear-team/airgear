@@ -1,7 +1,7 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.LoginUserDto;
-import com.airgear.dto.TokenResponse;
+import com.airgear.dto.TokenResponseDTO;
 import com.airgear.dto.UserDto;
 import com.airgear.service.GoogleTokenHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,14 +54,14 @@ public class GoogleTokenHandlerImpl implements GoogleTokenHandler {
     public LoginUserDto execute(String token) {
         String tokenUrl = thirdPartyUrl + token;
 
-        TokenResponse tokenResponse = getTokenResponse(tokenUrl);
+        TokenResponseDTO tokenResponse = getTokenResponse(tokenUrl);
 
         return new LoginUserDto(
-                tokenResponse.sub(),
+                tokenResponse.getSub(),
                 defaultPassword);
     }
 
-    private TokenResponse getTokenResponse(String validationUrl) {
+    private TokenResponseDTO getTokenResponse(String validationUrl) {
         HttpURLConnection connection = getHttpURLConnection(validationUrl);
         StringBuilder response = readFromConnection(connection);
         String tokenInfo = response.toString();
@@ -69,9 +69,9 @@ public class GoogleTokenHandlerImpl implements GoogleTokenHandler {
         return parseTokenInfo(tokenInfo);
     }
 
-    private TokenResponse parseTokenInfo(String tokenInfo) {
+    private TokenResponseDTO parseTokenInfo(String tokenInfo) {
         try {
-            return objectMapper.readValue(tokenInfo, TokenResponse.class);
+            return objectMapper.readValue(tokenInfo, TokenResponseDTO.class);
         } catch (JsonProcessingException e) {
             log.error("JsonProcessingException in 'getTokenRequest(String tokenInfo)' method.");
             throw new RuntimeException(e);

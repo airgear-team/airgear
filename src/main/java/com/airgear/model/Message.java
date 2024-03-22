@@ -1,4 +1,4 @@
-package com.airgear.model.message;
+package com.airgear.model;
 
 import com.airgear.model.User;
 import com.airgear.model.goods.Goods;

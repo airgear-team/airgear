@@ -1,7 +1,7 @@
 package com.airgear.controller;
 
 import com.airgear.utils.Routes;
-import com.airgear.model.goods.response.GoodsResponse;
+import com.airgear.dto.GoodsResponseDTO;
 import com.airgear.service.GoodsService;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
@@ -44,8 +44,8 @@ public class SearchController {
     )
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PageableAsQueryParam
-    public Page<GoodsResponse> listGoodsByName(@Parameter(hidden = true) Pageable pageable,
-                                               @PathVariable String goodsName) {
+    public Page<GoodsResponseDTO> listGoodsByName(@Parameter(hidden = true) Pageable pageable,
+                                                  @PathVariable String goodsName) {
         return goodsService.listGoodsByName(pageable, goodsName);
     }
 }

@@ -18,6 +18,10 @@ import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.model.goods.response.GoodsResponse;
 import com.airgear.repository.*;
+import com.airgear.dto.GoodsResponseDTO;
+import com.airgear.repository.CategoryRepository;
+import com.airgear.repository.GoodsRepository;
+import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
 import org.hibernate.boot.jaxb.cfg.spi.JaxbCfgEventTypeEnum;
 import com.airgear.service.GoodsStatusService;
@@ -148,7 +152,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName) {
+    public Page<GoodsResponseDTO> listGoodsByName(Pageable pageable, String goodsName) {
         return null;
     }
 
