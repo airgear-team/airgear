@@ -119,7 +119,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/similar-goods")
-    public Page<Goods> getSimilarGoods(
+    public Page<GoodsDto> getSimilarGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(name = "price") BigDecimal price) {
         return goodsService.getSimilarGoods(categoryName, price);

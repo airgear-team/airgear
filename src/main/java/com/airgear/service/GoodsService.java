@@ -4,6 +4,7 @@ import com.airgear.dto.AmountOfGoodsByCategoryResponse;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
 import com.airgear.dto.CountDeletedGoodsDTO;
+import com.airgear.dto.GoodsDto;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
@@ -54,12 +55,12 @@ public interface GoodsService {
     List<Goods> getRandomGoods(String categoryName, int quantity);
 
     //will return 12 similar goods (same category and similar price)
-    Page<Goods> getSimilarGoods(String categoryName, BigDecimal price);
+    Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price);
 
     Map<Category, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate);
 
     void saveGoodsView(String ip, Long userId, Goods goods);
-  
+
 
     GoodsDto createGoods(String username, GoodsDto goodsDto);
 
