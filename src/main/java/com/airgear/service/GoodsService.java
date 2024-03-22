@@ -3,6 +3,7 @@ package com.airgear.service;
 import com.airgear.dto.AmountOfGoodsByCategoryResponse;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
+import com.airgear.dto.CountDeletedGoodsDTO;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.response.GoodsResponse;
@@ -43,7 +44,7 @@ public interface GoodsService {
 
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
-    Long countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String categoryName);
+    CountDeletedGoodsDTO countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String category);
 
     Long getTotalNumberOfGoods();
     TotalNumberOfGoodsResponse getTotalNumberOfGoodsResponse();
