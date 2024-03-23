@@ -767,13 +767,4 @@
             </column>
         </addColumn>
     </changeSet>
-
-    <changeSet id="addDefaultGoodsCondition" author="Opanasenko-Mykhailo">
-        <sql>
-            UPDATE goods
-            SET goods_condition = 'NEW'
-            WHERE goods_condition IS NULL OR goods_condition = '';
-        </sql>
-    </changeSet>
-
 </databaseChangeLog>
