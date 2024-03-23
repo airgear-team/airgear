@@ -10,27 +10,20 @@ import com.airgear.repository.ComplaintRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.ComplaintService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 
 @Service(value = "complaintService")
+@AllArgsConstructor
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
     private final ComplaintCategoryRepository complaintCategoryRepository;
     private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
-
-    @Autowired
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, ComplaintCategoryRepository complaintCategoryRepository, UserRepository userRepository, GoodsRepository goodsRepository) {
-        this.complaintRepository = complaintRepository;
-        this.complaintCategoryRepository = complaintCategoryRepository;
-        this.userRepository = userRepository;
-        this.goodsRepository = goodsRepository;
-    }
 
     @Override
     @Transactional

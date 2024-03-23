@@ -1,17 +1,14 @@
 package com.airgear.controller;
 
-import com.airgear.config.AccountStatusConfig;
 import com.airgear.dto.LoginUserDto;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.exception.UserExceptions;
 import com.airgear.model.AuthToken;
-import com.airgear.model.ErrorResponse;
 import com.airgear.model.User;
 import com.airgear.security.TokenProvider;
-import com.airgear.service.EmailService;
 import com.airgear.service.ThirdPartyTokenHandler;
 import com.airgear.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,26 +20,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/auth") // TODO використати класс шляхів Routes.AUTH
+@AllArgsConstructor
 public class AuthenticationController {
 
-    // TODO інжектити поля через конструктор
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private TokenProvider jwtTokenUtil;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ThirdPartyTokenHandler tokenHandler;
-    @Autowired
-    private EmailService emailService;
+    private final AuthenticationManager authenticationManager;
+    private final TokenProvider jwtTokenUtil;
+    private final UserService userService;
+    private final ThirdPartyTokenHandler tokenHandler;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> generateToken(@RequestBody LoginUserDto userDto) throws AuthenticationException {
@@ -81,7 +68,7 @@ public class AuthenticationController {
 
      // TODO зробити SecurityContextHolder.getContext().setAuthentication(authentication); у фільтрі 
     private String getToken(LoginUserDto user) {
-        Authentication authentication = null;
+        Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(

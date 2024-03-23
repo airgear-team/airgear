@@ -3,8 +3,8 @@ package com.airgear.service.impl;
 import com.airgear.model.User;
 import com.airgear.model.email.EmailMessage;
 import com.airgear.service.EmailService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,15 +21,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
     @Value("${spring.mail.username}")
     private String fromMail;
-    // TODO to use constructor with arguments
     // TODO custom Exceptions
     // TODO refactoring the void sendWelcomeEmail(User user) method
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     @Override
     public String sendMail(EmailMessage emailMessage, Set<String> addresses) {

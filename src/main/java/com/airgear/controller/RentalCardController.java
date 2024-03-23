@@ -7,7 +7,7 @@ import com.airgear.model.RentalCard;
 import com.airgear.model.User;
 import com.airgear.service.RentalCardService;
 import com.airgear.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,11 +20,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rental")
+@AllArgsConstructor
 public class RentalCardController {
-    @Autowired
-    private RentalCardService rentalCardService;
-    @Autowired
-    private UserService userService;
+
+    private final RentalCardService rentalCardService;
+    private final UserService userService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @RequestMapping(value = "/{rentalCardId}", method = RequestMethod.GET)
@@ -34,7 +34,7 @@ public class RentalCardController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
-    public RentalCard createRentalCard(Authentication auth, @RequestBody RentalCardDto rentalCardDto) {
+    public RentalCard createRentalCard(@RequestBody RentalCardDto rentalCardDto) {
         return rentalCardService.saveRentalCard(rentalCardDto);
     }
 

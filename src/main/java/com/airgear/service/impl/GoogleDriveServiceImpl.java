@@ -6,7 +6,7 @@ import com.airgear.service.UploadPhotoService;
 import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.google.api.services.drive.model.Permission;
@@ -17,13 +17,11 @@ import java.nio.file.Path;
 import java.util.Collections;
 
 //@Service
+@AllArgsConstructor
 public class GoogleDriveServiceImpl implements UploadPhotoService {
 
-    @Autowired
-    private Drive driveService;
-
-    @Autowired
-    private PhotoRepository photoRepository;
+    private final Drive driveService;
+    private final PhotoRepository photoRepository;
 
     /**
      * Uploads a photo to Google Drive and saves its web view link in the database.

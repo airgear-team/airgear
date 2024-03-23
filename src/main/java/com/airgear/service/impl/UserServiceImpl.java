@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.airgear.config.AccountStatusConfig;
-import com.airgear.dto.AccountStatusDto;
 import com.airgear.dto.RoleDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.UserExceptions;
@@ -27,7 +26,7 @@ import com.airgear.dto.UserDto;
 import com.airgear.security.CustomUserDetails;
 import com.airgear.service.RoleService;
 import com.airgear.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,25 +38,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service(value = "userService")
+@AllArgsConstructor
 public class UserServiceImpl implements UserDetailsService, UserService {
 
-    @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private GoodsRepository goodsRepository;
-
-    @Autowired
-    private AccountStatusRepository accountStatusRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder bcryptEncoder;
-
-    @Autowired
-    private EmailServiceImpl emailService;
+    private final RoleService roleService;
+    private final UserRepository userRepository;
+    private final AccountStatusRepository accountStatusRepository;
+    private final BCryptPasswordEncoder bcryptEncoder;
+    private final EmailServiceImpl emailService;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);

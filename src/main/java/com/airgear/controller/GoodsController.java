@@ -11,13 +11,12 @@ import com.airgear.model.Complaint;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.RentalAgreement;
-import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.service.*;
 import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
 import com.airgear.utils.Converter;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.Page;
@@ -39,18 +38,12 @@ import java.util.Map;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/goods")
+@AllArgsConstructor
 public class GoodsController {
 
-    private GoodsService goodsService;
-    private ComplaintService complaintService;
-    private RentalAgreementService rentalAgreementService;
-
-    @Autowired
-    public GoodsController(GoodsService goodsService, ComplaintService complaintService, RentalAgreementService rentalAgreementService) {
-        this.goodsService = goodsService;
-        this.complaintService = complaintService;
-        this.rentalAgreementService = rentalAgreementService;
-    }
+    private final GoodsService goodsService;
+    private final ComplaintService complaintService;
+    private final RentalAgreementService rentalAgreementService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping

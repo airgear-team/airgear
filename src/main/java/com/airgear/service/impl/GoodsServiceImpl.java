@@ -21,6 +21,7 @@ import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.GoodsStatusService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,26 +37,15 @@ import java.util.stream.Collectors;
 import static com.airgear.exception.UserExceptions.userNotFound;
 
 @Service(value = "goodsService")
+@AllArgsConstructor
 public class GoodsServiceImpl implements GoodsService {
 
-    private UserRepository userRepository;
-    private GoodsRepository goodsRepository;
-    private CategoryRepository categoryRepository;
-    private GoodsViewRepository goodsViewRepository;
-    private GoodsStatusService goodsStatusService;
-    private TopGoodsPlacementRepository topGoodsPlacementRepository;
-
-    @Autowired
-    public GoodsServiceImpl(UserRepository userRepository, GoodsRepository goodsRepository, CategoryRepository categoryRepository,
-                            GoodsViewRepository goodsViewRepository, GoodsStatusService goodsStatusService, TopGoodsPlacementRepository topGoodsPlacementRepository) {
-        this.userRepository = userRepository;
-        this.goodsRepository = goodsRepository;
-        this.categoryRepository = categoryRepository;
-        this.goodsViewRepository = goodsViewRepository;
-        this.goodsStatusService = goodsStatusService;
-        this.topGoodsPlacementRepository = topGoodsPlacementRepository;
-    }
-
+    private final UserRepository userRepository;
+    private final GoodsRepository goodsRepository;
+    private final CategoryRepository categoryRepository;
+    private final GoodsViewRepository goodsViewRepository;
+    private final GoodsStatusService goodsStatusService;
+    private final TopGoodsPlacementRepository topGoodsPlacementRepository;
 
     private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
     private static final int SIMILAR_GOODS_LIMIT = 12;

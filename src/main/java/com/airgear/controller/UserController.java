@@ -4,14 +4,12 @@ import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
-import com.airgear.repository.AccountStatusRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -26,20 +24,16 @@ import java.util.Set;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
     //TODO
     // 1. Винести всю логіку в сервіси. Лишити тільки викликання одного методу сервісу
-    // 2. Перенести залежностів в конструктор
     // 3. Винисти константи в клас utils.Constants та дати їх більш конкретну назву
     // 4. Зробити власні ексепшени
 
-    @Autowired
     private UserService userService;
-    @Autowired
     private GoodsService goodsService;
-    @Autowired
-    private AccountStatusRepository accountStatusRepository;
     private static final int MAX_LIMIT = 500;
 
     @PreAuthorize("hasRole('ADMIN')")

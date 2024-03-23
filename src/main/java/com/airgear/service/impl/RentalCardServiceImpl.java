@@ -8,7 +8,7 @@ import com.airgear.repository.RentalCardRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.RentalCardService;
 import com.airgear.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,14 +19,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class RentalCardServiceImpl implements RentalCardService {
 
-    @Autowired
-    private RentalCardRepository rentalCardRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private GoodsService goodsService;
+    private final RentalCardRepository rentalCardRepository;
+    private final UserService userService;
+    private final GoodsService goodsService;
 
     @Override
     public RentalCard getRentalCardById(Long id) {

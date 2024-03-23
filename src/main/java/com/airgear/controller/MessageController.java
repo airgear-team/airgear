@@ -6,6 +6,7 @@ import com.airgear.dto.MessageResponseDTO;
 import com.airgear.service.MessageService;
 import com.airgear.utils.Routes;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.AllArgsConstructor;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,13 +33,10 @@ import static com.airgear.exception.MessageExceptions.messageNotFound;
  */
 @RestController
 @RequestMapping(Routes.MESSAGE)
+@AllArgsConstructor
 public class MessageController {
 
     private final MessageService messageService;
-
-    public MessageController(MessageService messageService) {
-        this.messageService = messageService;
-    }
 
     /**
      * Retrieves a paginated list of messages associated with a specific goods ID.
