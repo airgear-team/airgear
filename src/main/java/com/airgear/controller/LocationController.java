@@ -1,44 +1,67 @@
 package com.airgear.controller;
 
-import com.airgear.model.goods.Location;
-import com.airgear.model.goods.Region;
-import com.airgear.service.impl.GoodsServiceImpl;
-import com.airgear.service.impl.LocationServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.airgear.model.location.request.SaveLocationRequest;
+import com.airgear.model.location.response.LocationResponse;
+import com.airgear.model.region.response.RegionResponse;
+import com.airgear.service.LocationService;
+import com.airgear.utils.Routes;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import javax.validation.Valid;
 
+/**
+ * Controller class for managing locations.
+ * Handles HTTP requests related to locations, such as creation, retrieval.
+ * <p>
+ *
+ * @author Oleksandr Ilchenko, Oleksandr Tuleninov
+ * @version 01
+ * @see ResponseEntity
+ * @see UriComponentsBuilder
+ * @see LocationService
+ * @see Page
+ * @see Pageable
+ */
 @RestController
-@RequestMapping("/location")
+@RequestMapping(Routes.LOCATION)
 public class LocationController {
 
-    //TODO
-    // 1. Винести залежності в конструктор
-    // 2. Винести зайвк логіку в сервіс (в контролері ми повинні викликати тільки один метод сервісу)
-    // 3. Створити власні виключення й кидати їх
+    private final LocationService locationService;
 
-    @Autowired
-    private LocationServiceImpl locationService;
-
-    @Autowired
-    private GoodsServiceImpl goodsService;
-
-    @GetMapping("/regions")
-    public List<Region> getAllRegions() {
-        return locationService.getAllRegions();
+    public LocationController(LocationService locationService) {
+        this.locationService = locationService;
     }
 
-    @PostMapping("/create")
-    public Location createLocation(@RequestParam String settlement, @RequestParam Long region_id) {
-        Region region = locationService.getRegionById(region_id);
-        if (region != null) {
-            Location location = new Location();
-            location.setSettlement(settlement);
-            location.setRegionId(region_id);
-            return locationService.addLocation(location);
-        }
-        throw new RuntimeException("don't find region");
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    public ResponseEntity<LocationResponse> createLocation(@RequestBody @Valid SaveLocationRequest request,
+                                                           UriComponentsBuilder ucb) {
+        LocationResponse response = locationService.addLocation(request);
+        return ResponseEntity
+                .created(ucb.path("/{id}").build(response.id()))
+                .body(response);
     }
 
+    @GetMapping(
+            value = "/regions",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @PageableAsQueryParam
+    public Page<RegionResponse> getAllRegions(@Parameter(hidden = true) Pageable pageable) {
+        return locationService.getAllRegions(pageable);
+    }
 }

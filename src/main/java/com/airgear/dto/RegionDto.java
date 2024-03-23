@@ -1,6 +1,6 @@
 package com.airgear.dto;
 
-import com.airgear.model.goods.Region;
+import com.airgear.model.region.Region;
 import lombok.Builder;
 import lombok.Data;
 

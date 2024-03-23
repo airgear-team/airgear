@@ -1,6 +1,7 @@
 package com.airgear.dto;
 
-import com.airgear.model.goods.Location;
+import com.airgear.model.location.Location;
+import com.airgear.model.region.Region;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,14 +20,14 @@ import java.util.List;
 @Builder
 public class LocationDto {
     private Long id;
-    private Long regionId;
+    private Region region;
     private String settlement;
 
     public Location toLocation() {
         return Location.builder()
                 .id(id)
                 .settlement(settlement)
-                .regionId(regionId)
+                .region(region)
                 .build();
     }
 
@@ -34,7 +35,7 @@ public class LocationDto {
         return LocationDto.builder()
                 .id(location.getId())
                 .settlement(location.getSettlement())
-                .regionId(location.getRegionId())
+                .region(location.getRegion())
                 .build();
     }
 
