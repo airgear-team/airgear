@@ -1,6 +1,7 @@
 package com.airgear.repository;
 
 import com.airgear.model.User;
+import com.airgear.model.goods.Goods;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,12 +14,17 @@ import java.util.List;
 import java.util.Map;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
 
     boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByPhone(String phone);
 
     @Modifying
     @Transactional
@@ -36,4 +42,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
     void updateIsPotentiallyScamStatus(@Param("userId") Long userId, @Param("isScam") boolean isScam);
 
     int countByCreatedAtBetween(OffsetDateTime start, OffsetDateTime end);
+
+    @Query("Select fg FROM User user join  user.favoriteGoods fg where user.id = :userId")
+    Set<Goods> getFavoriteGoodsByUser(Long userId);
+
+    int countByDeleteAtBetween(OffsetDateTime start, OffsetDateTime end);
+  
 }

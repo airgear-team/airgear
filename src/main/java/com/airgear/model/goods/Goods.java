@@ -3,7 +3,7 @@ package com.airgear.model.goods;
 import com.airgear.model.Complaint;
 import com.airgear.model.GoodsView;
 import com.airgear.model.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.airgear.model.goods.enums.GoodsCondition;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +33,7 @@ import java.util.Set;
 public class Goods {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
@@ -56,14 +56,6 @@ public class Goods {
     @Embedded
     private Deposit deposit;
 
-    @Embeddable
-    class Deposit {
-        private BigDecimal amount;
-        private Currency currency;
-
-        enum Currency {UAH, EUR, USD}
-    }
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -71,6 +63,9 @@ public class Goods {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @Enumerated(EnumType.STRING)
+    private GoodsVerificationStatus verificationStatus;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "goods_goods_status",
@@ -81,23 +76,20 @@ public class Goods {
                     @JoinColumn(name = "goods_status_id")})
     private GoodsStatus goodsStatus;
 
-    @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
-    @Pattern(regexp = "^\\+380\\d{9}$", message = "The phone number must be in the format +380XXXXXXXXX")
+//    @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
+//    @Pattern(regexp = "^\\+\\d{1,3}\\s?\\(?\\d{1,4}\\)?[\\s.-]?\\d{1,4}[\\s.-]?\\d{1,4}$", message = "The phone number must be in the format +380XXXXXXXXX")
     @JoinColumn(name = "phone")
     private String phoneNumber;
 
     @Column(name = "created_at", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime createdAt;
 
     @Column(name = "last_modified")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime lastModified;
 
     @Column(name = "deleted_at")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private OffsetDateTime deletedAt;
 
     @OneToMany(mappedBy = "goods")
@@ -116,4 +108,11 @@ public class Goods {
     @JsonIgnore
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<GoodsView> goodsViews;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<TopGoodsPlacement> topGoodsPlacements;
+
+    @Enumerated(EnumType.STRING)
+    private GoodsCondition goodsCondition;
 }

@@ -5,22 +5,17 @@ import com.airgear.model.goods.Region;
 import com.airgear.repository.LocationRepository;
 import com.airgear.repository.RegionsRepository;
 import com.airgear.service.LocationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
     private final RegionsRepository regionsRepository;
-
-    @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, RegionsRepository regionsRepository) {
-        this.locationRepository = locationRepository;
-        this.regionsRepository = regionsRepository;
-    }
 
     @Override
     public List<Region> getAllRegions() {

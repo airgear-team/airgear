@@ -589,6 +589,75 @@
                 onUpdate="CASCADE"/>
     </changeSet>
 
+    <!-- Create Rental Card Table -->
+    <changeSet id="addRentalCardTable" author="Olena.Sinkevych">
+        <createTable tableName="rental_card">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lessor_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="renter_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_date" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="duration" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="quantity" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rental_price" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="fine" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="deleted_at" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="rental_card"
+                baseColumnNames="lessor_id"
+                constraintName="fk_lessor_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="rental_card"
+                baseColumnNames="renter_id"
+                constraintName="fk_renter_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="rental_card"
+                baseColumnNames="goods_id"
+                constraintName="fk_card_goods"
+                referencedTableName="goods"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
     <changeSet id="addGoodsView" author="vladyslav.haivoronskyi">
         <createTable tableName="goods_view">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -617,5 +686,85 @@
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
+    </changeSet>
+    <changeSet id="add_is_new_column_to_goods_table" author="Opanasenko-Mykhailo">
+        <addColumn tableName="goods">
+            <column name="is_new" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="create_photo_table" author="kyrylo.fursov">
+        <createTable tableName="photo">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_photo"/>
+            </column>
+            <column name="web_view_link" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-checkout-table" author="alex.ilchenko">
+        <createTable tableName="checkout">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="action" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="decimal(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="varchar(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="version" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="addTopGoodsPlacement" author="vladyslav.haivoronskyi">
+        <createTable tableName="top_goods_placement">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="addTopGoodsPlacementForeignKey" author="vladyslav.haivoronskyi">
+        <addForeignKeyConstraint baseTableName="top_goods_placement"
+                                 baseColumnNames="goods_id"
+                                 constraintName="fk_top_goods_placement_goods_id"
+                                 referencedTableName="goods"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="modify_goods_table" author="Opanasenko-Mykhailo">
+        <dropColumn tableName="goods" columnName="is_new"/>
+        <addColumn tableName="goods">
+            <column name="goods_condition" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

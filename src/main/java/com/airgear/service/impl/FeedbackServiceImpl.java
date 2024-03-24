@@ -6,21 +6,16 @@ import com.airgear.model.User;
 import com.airgear.repository.FeedbackRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.FeedbackService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service(value = "feedbackService")
+@AllArgsConstructor
 public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, UserRepository userRepository) {
-        this.feedbackRepository = feedbackRepository;
-        this.userRepository = userRepository;
-    }
 
     public List<Feedback> getAllFeedback() {
         return feedbackRepository.findAll();

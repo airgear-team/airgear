@@ -7,7 +7,7 @@ import com.airgear.service.RentalAgreementService;
 import com.airgear.utils.Utils;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,10 +18,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 @Service
+@AllArgsConstructor
 public class RentalAgreementServiceImpl implements RentalAgreementService {
 
-    @Autowired
-    private GoodsService goodsService;
+    private final GoodsService goodsService;
 
     @Override
     public ResponseEntity<FileSystemResource> generateRentalAgreementResponse(RentalAgreement rental, Long goodsId) throws IOException {

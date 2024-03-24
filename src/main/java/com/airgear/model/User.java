@@ -19,8 +19,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"goods", "favoriteGoods"})
-@ToString(exclude = {"goods", "favoriteGoods"})
+@EqualsAndHashCode(exclude = {"goods", "favoriteGoods", "userReviews", "complaints"})
+@ToString(exclude = {"goods", "favoriteGoods","userReviews", "complaints"})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
@@ -39,6 +39,7 @@ public class User {
     private String email;
 
     @Column
+    //@Pattern(regexp = "^\\+380\\d{9}$", message = "the phones must be in the format +380XXXXXXXXX")
     private String phone;
 
     @Column

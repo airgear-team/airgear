@@ -1,8 +1,8 @@
 package com.airgear.service;
 
-import com.airgear.model.message.request.ChangeTextRequest;
-import com.airgear.model.message.request.SaveMessageRequest;
-import com.airgear.model.message.response.MessageResponse;
+import com.airgear.dto.ChangeTextRequestDTO;
+import com.airgear.dto.SaveMessageRequestDTO;
+import com.airgear.dto.MessageResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,14 +19,15 @@ import java.util.UUID;
  */
 public interface MessageService {
 
-    Page<MessageResponse> getAllMessageByGoodsId(Pageable pageable, long goodsId);
+    Page<MessageResponseDTO> getAllMessageByGoodsId(Pageable pageable, long goodsId);
 
-    Optional<MessageResponse> getMessageById(UUID messageId);
+    Optional<MessageResponseDTO> getMessageById(UUID messageId);
 
-    MessageResponse create(SaveMessageRequest request);
+    MessageResponseDTO create(SaveMessageRequestDTO request);
 
-    MessageResponse changeTextMessage(UUID messageId, ChangeTextRequest request);
+    MessageResponseDTO changeTextMessage(UUID messageId, ChangeTextRequestDTO request);
 
     void deleteMessageById(UUID messageId);
 
+    Long getTotalNumberOfSendMessages();
 }

@@ -1,6 +1,5 @@
-package com.airgear.model.message;
+package com.airgear.model;
 
-import com.airgear.model.User;
 import com.airgear.model.goods.Goods;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,5 +40,4 @@ public class Message {
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
 }

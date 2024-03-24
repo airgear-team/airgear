@@ -2,27 +2,22 @@ package com.airgear.controller;
 
 import com.airgear.model.goods.Location;
 import com.airgear.model.goods.Region;
-import com.airgear.service.impl.GoodsServiceImpl;
 import com.airgear.service.impl.LocationServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/location")
+@AllArgsConstructor
 public class LocationController {
 
     //TODO
-    // 1. Винести залежності в конструктор
     // 2. Винести зайвк логіку в сервіс (в контролері ми повинні викликати тільки один метод сервісу)
     // 3. Створити власні виключення й кидати їх
 
-    @Autowired
-    private LocationServiceImpl locationService;
-
-    @Autowired
-    private GoodsServiceImpl goodsService;
+    private final LocationServiceImpl locationService;
 
     @GetMapping("/regions")
     public List<Region> getAllRegions() {

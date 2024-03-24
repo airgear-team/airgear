@@ -2,9 +2,9 @@ package com.airgear.service.impl;
 
 import com.airgear.dto.LoginUserDto;
 import com.airgear.security.ThirdPartyService;
-import com.airgear.dto.UserDto;
 import com.airgear.service.GoogleTokenHandler;
 import com.airgear.service.ThirdPartyTokenHandler;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +25,10 @@ import static com.airgear.security.ThirdPartyService.valueOf;
  * @version 1.0
  */
 @Service
+@AllArgsConstructor
 public class ThirdPartyTokenHandlerImpl implements ThirdPartyTokenHandler {
 
     private final GoogleTokenHandler googleTokenHandler;
-
-    public ThirdPartyTokenHandlerImpl(GoogleTokenHandler googleTokenHandler) {
-        this.googleTokenHandler = googleTokenHandler;
-    }
 
     /**
      * Executes token handling based on the third-party service specified in the request headers.
