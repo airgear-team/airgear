@@ -102,13 +102,6 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Goods saveGoods(@Valid Goods goods) {  // TODO to refactor this code
         checkCategory(goods);
-        Long userId = goods.getUser().getId();
-        int categoryId = goods.getCategory().getId();
-        int productCount = goodsRepository.countByUserIdAndCategoryId(userId, categoryId);
-        if (productCount >= MAX_GOODS_IN_CATEGORY_COUNT) {
-            throw GoodsExceptions.goodsLimitExceeded(categoryId);
-        }
-        goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
 
@@ -278,8 +271,8 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Map<Category, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate) {
-        List<Object> list = goodsRepository.findCountNewGoodsByCategoryFromPeriod(fromDate,toDate);
-        return list==null?null:list.stream().map(x->(Object[])x).collect(Collectors.toMap(x->(Category)x[0], x->(Long)x[1]));
+        List<Object> list = goodsRepository.findCountNewGoodsByCategoryFromPeriod(fromDate, toDate);
+        return list == null ? null : list.stream().map(x -> (Object[]) x).collect(Collectors.toMap(x -> (Category) x[0], x -> (Long) x[1]));
     }
 
     @Override
@@ -296,8 +289,20 @@ public class GoodsServiceImpl implements GoodsService {
         goodsDto.getLocation().setId(1l);
         goods.setLocation(goodsDto.getLocation().toLocation());
 
+        checkGoodsLimit(goods);
+
         return GoodsDto.fromGoods(goodsRepository.save(goods));
     }
+
+    private void checkGoodsLimit(Goods goods) {
+        Long userId = goods.getUser().getId();
+        int categoryId = goods.getCategory().getId();
+        int productCount = goodsRepository.countByUserIdAndCategoryId(userId, categoryId);
+        if (productCount >= MAX_GOODS_IN_CATEGORY_COUNT) {
+            throw GoodsExceptions.goodsLimitExceeded(categoryId);
+        }
+    }
+
 
     @Override
     public GoodsDto addToFavorites(String username, Long goodsId) {
