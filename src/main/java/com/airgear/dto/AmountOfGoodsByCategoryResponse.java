@@ -1,6 +1,5 @@
 package com.airgear.dto;
 
-import com.airgear.model.goods.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,5 +9,5 @@ import java.util.Map;
 @AllArgsConstructor
 public class AmountOfGoodsByCategoryResponse {
 
-    Map<Category, Long> categoryAmounts;
+    Map<CategoryDto, Long> categoryAmounts;
 }

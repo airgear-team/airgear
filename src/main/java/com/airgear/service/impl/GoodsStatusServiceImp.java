@@ -11,7 +11,9 @@ import javax.persistence.EntityNotFoundException;
 @Service(value = "goodsStatusService")
 @AllArgsConstructor
 public class GoodsStatusServiceImp implements GoodsStatusService {
+
     private GoodsStatusRepository goodsStatusRepository;
+
     @Override
     public GoodsStatus getGoodsById(Long id) {
         return goodsStatusRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("GoodsStatus not found"));

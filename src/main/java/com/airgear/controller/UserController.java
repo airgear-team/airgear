@@ -6,6 +6,7 @@ import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,15 +28,11 @@ import static com.airgear.utils.Constants.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final GoodsService goodsService;
-
-    public UserController(UserService userService, GoodsService goodsService) {
-        this.userService = userService;
-        this.goodsService = goodsService;
-    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -63,7 +61,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @GetMapping("/goods-count")
+    @GetMapping("/user-goods-count")
     public ResponseEntity<List<Map<String, Integer>>> getTopUserGoodsCount(@RequestParam(required = false, defaultValue = "30") int limit) {
         Pageable pageable = PageRequest.of(0, Math.min(limit, MAX_LIMIT_RECORDS_ON_PAGE));
         return ResponseEntity.ok(userService.getUserGoodsCount(pageable));
@@ -109,5 +107,33 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllActiveUsers(Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return ResponseEntity.ok(userService.findActiveUsers());
+    }
+
+    //@PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/deleted-users-for-period")
+    public ResponseEntity<?> getDeletedUsersCountForPeriod(@RequestParam("start") String start, @RequestParam("end") String end) {
+        OffsetDateTime startDate = OffsetDateTime.parse(start);
+        OffsetDateTime endDate = OffsetDateTime.parse(end);
+        int count = userService.countDeletedUsersBetweenDates(startDate, endDate);
+        return ResponseEntity.ok().body(Map.of("count", count));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
+    @GetMapping("/favorites")
+    public Set<GoodsDto> getFavoriteGoods (Authentication auth) {
+        log.info("auth name : {}", auth.getName());
+        return userService.getFavoriteGoods(auth);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @PatchMapping(value = "/{userId}/block")
+    public ResponseEntity<UserDto> blockUser (@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.blockUser(userId));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PatchMapping(value = "/{userId}/unblock")
+    public ResponseEntity<UserDto> unblockUser (@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.unblockUser(userId));
     }
 }

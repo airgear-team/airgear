@@ -12,8 +12,6 @@ import java.util.Set;
 @Data
 @Builder
 public class TopGoodsPlacementDto {
-
-    //TODO with mapstruct
     private Long id;
     private Long userId;
     private GoodsDto goods;

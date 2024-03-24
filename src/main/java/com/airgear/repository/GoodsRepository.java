@@ -15,7 +15,7 @@ import java.util.Set;
 
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
-    Set<Goods> getGoodsByUserUsername(String userUsername);
+    Set<Goods> getGoodsByUserName(String username);
 
     Page<Goods> findAllByNameLikeIgnoreCase(Pageable pageable, String goodsName);
 
@@ -49,5 +49,4 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     List<Object> findCountNewGoodsByCategoryFromPeriod(@Param("fromDate")OffsetDateTime fromDate, @Param("toDate") OffsetDateTime toDate);
 
     int countByUserIdAndCategoryId(Long userId, Integer categoryId);
-
 }

@@ -1,44 +1,51 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.*;
+import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.GoodsExceptions;
+import com.airgear.exception.GoodsNotFoundException;
+import com.airgear.mapper.CategoryMapper;
 import com.airgear.mapper.GoodsMapper;
+import com.airgear.mapper.LocationMapper;
+import com.airgear.model.User;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
-import com.airgear.repository.CategoryRepository;
-import com.airgear.repository.GoodsRepository;
-import com.airgear.repository.GoodsViewRepository;
+import com.airgear.model.goods.TopGoodsPlacement;
+import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.airgear.service.GoodsStatusService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.math.BigDecimal;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.airgear.exception.UserExceptions.userNotFound;
+
 @Service(value = "goodsService")
+@RequiredArgsConstructor
 public class GoodsServiceImpl implements GoodsService {
 
+    private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
     private final CategoryRepository categoryRepository;
     private final GoodsViewRepository goodsViewRepository;
+    private final GoodsStatusService goodsStatusService;
     private final GoodsMapper goodsMapper;
+    private final CategoryMapper categoryMapper;
+    private final LocationMapper locationMapper;
+    private final TopGoodsPlacementRepository topGoodsPlacementRepository;
 
-    @Autowired
-    public GoodsServiceImpl(GoodsRepository goodsRepository, CategoryRepository categoryRepository, GoodsViewRepository goodsViewRepository, GoodsMapper goodsMapper) {
-        this.goodsRepository = goodsRepository;
-        this.categoryRepository = categoryRepository;
-        this.goodsViewRepository = goodsViewRepository;
-        this.goodsMapper = goodsMapper;
-    }
+    private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
+    private static final int SIMILAR_GOODS_LIMIT = 12;
+    private static final BigDecimal PRICE_VARIATION_PERCENTAGE = new BigDecimal("0.15");
 
     @Override
     public Goods getGoodsById(Long id) {
@@ -47,28 +54,82 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public GoodsDto getGoodsById(String ipAddress, String username, Long goodsId) {
+        User user = userRepository.findByUsername(username);
+        Goods goods = getGoodsById(goodsId);
+        if (goods == null) {
+            throw new GoodsNotFoundException("Goods not found");
+        }
+        if (!goods.getGoodsStatus().getName().equals("ACTIVE")) {
+            throw new GoodsNotFoundException("Goods was deleted");
+        }
+        saveGoodsView(ipAddress, user.getId(), goods);
+        return goodsMapper.toDto(goods);
+    }
+    @Override
     public void deleteGoods(Goods goods) {
+        goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
         goods.setDeletedAt(OffsetDateTime.now());
         goodsRepository.save(goods);
     }
 
     @Override
-    public Goods saveGoods(@Valid Goods goods) {
-        //checkCategory(goods);
+    public void deleteGoods(String username, Long goodsId) {
+        User user = userRepository.findByUsername(username);
+        Goods goods = getGoodsById(goodsId);
+
+        if (!user.getId().equals(goods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
+            throw new ForbiddenException("It is not your goods");
+        }
+        deleteGoods(goods);
+    }
+
+    @Override
+    public Goods saveGoods(@Valid Goods goods) {  // TODO to refactor this code
+        checkCategory(goods);
+        Long userId = goods.getUser().getId();
+        int categoryId = goods.getCategory().getId();
+        int productCount = goodsRepository.countByUserIdAndCategoryId(userId, categoryId);
+        if (productCount >= MAX_GOODS_IN_CATEGORY_COUNT) {
+            throw GoodsExceptions.goodsLimitExceeded(categoryId);
+        }
         goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
 
     @Override
-    public Goods updateGoods(Goods existingGoods) {
+    public Goods updateGoods(@Valid Goods existingGoods) {
         //checkCategory(existingGoods);
         existingGoods.setLastModified(OffsetDateTime.now());
         return goodsRepository.save(existingGoods);
     }
 
     @Override
+    public GoodsDto updateGoods(String username, Long goodsId, GoodsDto updatedGoodsDto) {
+        User user = userRepository.findByUsername(username);
+        Goods existingGoods = getGoodsById(goodsId);
+        Goods updatedGoods = goodsMapper.toModel(updatedGoodsDto);
+        if (!user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
+            throw new ForbiddenException("It is not your goods");
+        }
+        if (updatedGoods.getName() != null) {
+            existingGoods.setName(updatedGoods.getName());
+        }
+        if (updatedGoods.getDescription() != null) {
+            existingGoods.setDescription(updatedGoods.getDescription());
+        }
+        if (updatedGoods.getPrice() != null) {
+            existingGoods.setPrice(updatedGoods.getPrice());
+        }
+        if (updatedGoods.getLocation() != null) {
+            existingGoods.setLocation(updatedGoods.getLocation());
+        }
+        return goodsMapper.toDto(updateGoods(existingGoods));
+    }
+
+    @Override
     public Set<GoodsDto> getAllGoodsByUsername(String username) {
-        return goodsMapper.toDtoSet(goodsRepository.getGoodsByUserUsername(username));
+        return goodsMapper.toDtoSet(goodsRepository.getGoodsByUserName(username));
     }
 
     @Override
@@ -82,32 +143,46 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public CountDeletedGoodsDTO countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String category) {
+        Long count = category != null ?
+                goodsRepository.countByDeletedAtBetweenAndCategory(startDate, endDate, category) :
+                goodsRepository.countByDeletedAtBetween(startDate, endDate);
+        return new CountDeletedGoodsDTO(category, startDate, endDate, count);
+    }
+
+    @Override
     public List<Goods> getAllGoods() {
         return goodsRepository.findAll();
     }
 
     @Override
-    public List<Goods> getRandomGoods(String categoryName, int quantity) {
-        List<Goods> goods;
+    public List<GoodsDto> getRandomGoods(String categoryName, int quantity) {
+        List<Goods> goods = getTopGoodsPlacements();
+        List<Goods> randomGoods;
         Category category = convertStringToCategory(categoryName);
-
         if (category != null) {
-            goods = goodsRepository.findAllByCategory(category);
+            randomGoods = randomizeAndLimit(goodsRepository.findAllByCategory(category), quantity);
         } else {
-            goods = goodsRepository.findAll();
+            randomGoods = randomizeAndLimit(goodsRepository.findAll(), quantity);
         }
-
-        return randomizeAndLimit(goods, quantity);
+        goods.addAll(randomGoods);
+        return goodsMapper.toDtoList(goods);
     }
 
+    @Override
+    public Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price) {
+        BigDecimal lowerBound = price.multiply(BigDecimal.ONE.subtract(PRICE_VARIATION_PERCENTAGE));
+        BigDecimal upperBound = price.multiply(BigDecimal.ONE.add(PRICE_VARIATION_PERCENTAGE));
+
+        Page<Goods> goods = filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0, SIMILAR_GOODS_LIMIT));
+        return goods.map(goodsMapper::toDto);
+    }
 
     @Override
-    public Map<Category, Long> getAmountOfGoodsByCategory() {
+    public AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory() {
         List<Goods> goodsList = goodsRepository.findAll();
-
-        // Grouping by category and quantity
-        return goodsList.stream()
-                .collect(Collectors.groupingBy(Goods::getCategory, Collectors.counting()));
+        return new AmountOfGoodsByCategoryResponse(goodsList.stream()
+                .collect(Collectors.groupingBy(goods -> categoryMapper.toDto(goods.getCategory()), Collectors.counting())));
     }
 
     @Override
@@ -139,6 +214,17 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsRepository.count();
     }
 
+    @Override
+    public TotalNumberOfGoodsResponse getTotalNumberOfGoodsResponse() {
+        return new TotalNumberOfGoodsResponse(goodsRepository.count());
+    }
+
+    @Override
+    public TotalNumberOfTopGoodsResponse getTotalNumberOfTopGoodsResponse() {
+        return new TotalNumberOfTopGoodsResponse(topGoodsPlacementRepository.countAllActivePlacements());
+
+    }
+
     private void checkCategory(Goods goods) {
         if (goods.getCategory() != null) {
             Category category = categoryRepository.findByName(goods.getCategory().getName());
@@ -148,7 +234,6 @@ public class GoodsServiceImpl implements GoodsService {
                 throw new RuntimeException("not correct category for good with id: " + goods.getId());
         }
     }
-
 
     private Category convertStringToCategory(String categoryName) {
         if (categoryName != null) {
@@ -173,4 +258,70 @@ public class GoodsServiceImpl implements GoodsService {
         goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
     }
 
+    @Override
+    public Map<CategoryDto, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate) {
+        List<Object> list = goodsRepository.findCountNewGoodsByCategoryFromPeriod(fromDate,toDate);
+        return list==null?null:list.stream().map(x->(Object[])x).collect(Collectors.toMap(x->(CategoryDto) x[0], x->(Long)x[1]));
+    }
+
+    @Override
+    public GoodsDto createGoods(String username, GoodsDto goodsDto) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw userNotFound(username);
+        }
+        Goods goods = goodsMapper.toModel(goodsDto);
+        goods.setUser(user);
+        goods.setGoodsStatus(goodsStatusService.getGoodsById(1L));
+        goods.setCreatedAt(OffsetDateTime.now());
+        goodsDto.getLocation().setId(1L);
+        goods.setLocation(locationMapper.toModel(goodsDto.getLocation()));
+
+        return goodsMapper.toDto(goodsRepository.save(goods));
+    }
+
+    @Override
+    public GoodsDto addToFavorites(String username, Long goodsId) {
+        User user = userRepository.findByUsername(username);
+        Goods goods = getGoodsById(goodsId);
+        if (goods == null) {
+            throw new GoodsNotFoundException("Goods not found");
+        }
+
+        if (user.getFavoriteGoods().contains(goods)) {
+            user.getFavoriteGoods().remove(goods);
+        } else {
+            user.getFavoriteGoods().add(goods);
+        }
+        userRepository.save(user);
+        return goodsMapper.toDto(goods);
+    }
+
+    @Override
+    public List<Goods> getTopGoodsPlacements() {
+        List<Goods> result = new ArrayList<>();
+        topGoodsPlacementRepository.findAllActivePlacements().forEach(goods -> result.add(goods.getGoods()));
+        return result;
+    }
+
+    @Override
+    public TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto) {
+        TopGoodsPlacement topGoodsPlacement = topGoodsPlacementDto.toModel();
+        Goods goods = getGoodsById(topGoodsPlacement.getGoods().getId());
+        Optional<User> userOptional = userRepository.findById(topGoodsPlacement.getUserId());
+        if (userOptional.isEmpty()) {
+            throw userNotFound(topGoodsPlacement.getUserId());
+        }
+        if (goods == null) {
+            throw new GoodsNotFoundException("Goods not found");
+        }
+        if (!topGoodsPlacement.getUserId().equals(goods.getUser().getId()) && !userOptional.get().getRoles().contains("ADMIN")) {
+            throw new ForbiddenException("It is not your goods");
+        }
+        return TopGoodsPlacementDto.toDto(topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
+                .userId(topGoodsPlacement.getUserId())
+                .goods(goods)
+                .startAt(topGoodsPlacement.getStartAt())
+                .endAt(topGoodsPlacement.getEndAt()).build()));
+    }
 }

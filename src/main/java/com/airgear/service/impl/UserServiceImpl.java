@@ -8,21 +8,30 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
+import com.airgear.config.AccountStatusConfig;
+import com.airgear.dto.GoodsDto;
 import com.airgear.dto.RoleDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.exception.ChangeRoleException;
 import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.UserExceptions;
+import com.airgear.exception.UserUniquenessViolationException;
+import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.RoleMapper;
 import com.airgear.mapper.UserMapper;
+import com.airgear.model.AccountStatus;
+import com.airgear.model.email.EmailMessage;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
+import com.airgear.service.EmailService;
 import com.airgear.service.RoleService;
 import com.airgear.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,6 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.airgear.utils.Constants.ROLE_ADMIN_NAME;
 
 @Service(value = "userService")
+@AllArgsConstructor
 public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final RoleService roleService;
@@ -41,17 +51,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final AccountStatusRepository accountStatusRepository;
     private final BCryptPasswordEncoder bcryptEncoder;
     private final UserMapper userMapper;
+    private final GoodsMapper goodsMapper;
     private final RoleMapper roleMapper;
-
-    @Autowired
-    public UserServiceImpl(RoleService roleService, UserRepository userRepository, AccountStatusRepository accountStatusRepository, BCryptPasswordEncoder bcryptEncoder, UserMapper userMapper, RoleMapper roleMapper) {
-        this.roleService = roleService;
-        this.userRepository = userRepository;
-        this.accountStatusRepository = accountStatusRepository;
-        this.bcryptEncoder = bcryptEncoder;
-        this.userMapper = userMapper;
-        this.roleMapper = roleMapper;
-    }
+    private final EmailService emailService;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
@@ -105,14 +107,32 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (user == null || user.getAccountStatus().getId() == accountStatusId) {
             throw new ForbiddenException("User not found or was already deleted");
         }
-        if (accountStatusId == 2L) {
-            user.setDeleteAt(OffsetDateTime.now());
+
+        AccountStatus accountStatus = accountStatusRepository.findById(accountStatusId).orElseThrow(() -> new RuntimeException("Account status not found"));
+
+        if (accountStatus.getId() == 2) {
+            user.setAccountStatus(accountStatus);
+            userRepository.save(user);
+            sendFarewellEmail(Set.of(user.getEmail()));
+        } else {
+            user.setAccountStatus(accountStatus);
+            userRepository.save(user);
         }
-        userRepository.setAccountStatusId(accountStatusId, user.getId());
+    }
+
+    private void sendFarewellEmail(Set<String> userEmails) {
+        EmailMessage emailMessage = new EmailMessage();
+        emailMessage.setSubject("We're sad to see you go!");
+        emailMessage.setMessage("Hello,\n\nWe noticed that your account is now inactive. We're sorry to see you leave! If there was any issue with our service, or if you have any feedback, please let us know. We hope to serve you again in the future.\n\nBest,\nThe Airgear Team");
+
+        emailService.sendMail(emailMessage, userEmails);
     }
 
     @Override
     public User save(UserDto user) {
+        if(user.getPhone()!=null && userRepository.existsByPhone(user.getPhone())){
+            throw new ForbiddenException("Other user with phone number exists!");
+        }
         Role role = roleService.findByName("USER");
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(role);
@@ -179,6 +199,55 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public Set<GoodsDto> getFavoriteGoods(Authentication auth) {
+        UserDto user = this.findByUsername(auth.getName());
+        return goodsMapper.toDtoSet(userRepository.getFavoriteGoodsByUser(user.getId()));
+    }
+    // TODO to use this method inside the "public User save(UserDto user)" method for better performance
+    public void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException {
+        boolean usernameExists = userRepository.existsByUsername(userDto.getUsername());
+        boolean emailExists = userRepository.existsByEmail(userDto.getEmail());
+        boolean phoneExists = userRepository.existsByPhone(userDto.getPhone());
+
+        if (usernameExists) {
+            throw new UserUniquenessViolationException("Username already exists.");
+        }
+        if (emailExists) {
+            throw new UserUniquenessViolationException("Email already exists.");
+        }
+        if (phoneExists) {
+            throw new UserUniquenessViolationException("Phone number already exists.");
+        }
+    }
+
+    @Override
+    public int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
+        return userRepository.countByDeleteAtBetween(start, end);
+    }
+
+    @Override
+    @Transactional
+    public UserDto blockUser(Long userId) {
+        User user = getUserById(userId);
+        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.INACTIVE.name()));
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    @Transactional
+    public UserDto unblockUser(Long userId) {
+        User user = getUserById(userId);
+        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.ACTIVE.name()));
+        return userMapper.toDto(user);
+    }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> UserExceptions.userNotFound(userId));
+    }
+
+
+    @Override
     public void deleteAccount(String username) {
         User user = userRepository.findByUsername(username);
         if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> "ADMIN".equals(role.getName()))) {
@@ -192,9 +261,5 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (!executorUser.getRoles().contains(role) && role.getName().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
             throw new ChangeRoleException("Access denied");
         }
-    }
-
-    @Override
-    public void checkForUserUniqueness(UserDto userDto) {
     }
 }

@@ -29,7 +29,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     @Transactional
-    public Complaint save(String userName, Long goodsId, ComplaintDto complaintDTO) {
+    public ComplaintDto save(String userName, Long goodsId, ComplaintDto complaintDTO) {
         Complaint newComplaint = complaintMapper.toModel(complaintDTO);
         User user = userRepository.findByUsername(userName);
         Goods goods = goodsRepository.getReferenceById(goodsId);
@@ -38,6 +38,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         newComplaint.setUser(user);
         newComplaint.setGoods(goods);
         newComplaint.setCreatedAt(OffsetDateTime.now());
-        return complaintRepository.save(newComplaint);
+        return complaintMapper.toDto(complaintRepository.save(newComplaint));
     }
 }
