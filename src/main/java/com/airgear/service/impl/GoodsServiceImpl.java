@@ -5,7 +5,6 @@ import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
-import com.airgear.model.goods.response.GoodsResponse;
 import com.airgear.repository.CategoryRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.GoodsViewRepository;
@@ -73,7 +72,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName) {
+    public Page<GoodsDto> listGoodsByName(Pageable pageable, String goodsName) {
         return null;
     }
 
@@ -84,8 +83,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public List<Goods> getAllGoods() {
-        List<Goods> goodsList = goodsRepository.findAll();
-        return goodsList;
+        return goodsRepository.findAll();
     }
 
     @Override

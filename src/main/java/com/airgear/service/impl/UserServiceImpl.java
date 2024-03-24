@@ -63,9 +63,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        user.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-        });
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
         return authorities;
     }
 
@@ -194,5 +192,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (!executorUser.getRoles().contains(role) && role.getName().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
             throw new ChangeRoleException("Access denied");
         }
+    }
+
+    @Override
+    public void checkForUserUniqueness(UserDto userDto) {
     }
 }

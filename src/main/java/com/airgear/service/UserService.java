@@ -42,4 +42,6 @@ public interface UserService {
     void deleteAccount(String username);
 
     void accessToRoleChange(String executor, RoleDto role);
+
+    void checkForUserUniqueness(UserDto userDto);
 }

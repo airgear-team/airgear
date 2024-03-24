@@ -3,7 +3,6 @@ package com.airgear.service;
 import com.airgear.dto.GoodsDto;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
-import com.airgear.model.goods.response.GoodsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -31,7 +30,7 @@ public interface GoodsService {
 
     Page<Goods> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
-    Page<GoodsResponse> listGoodsByName(Pageable pageable, String goodsName);
+    Page<GoodsDto> listGoodsByName(Pageable pageable, String goodsName);
 
     int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
 
