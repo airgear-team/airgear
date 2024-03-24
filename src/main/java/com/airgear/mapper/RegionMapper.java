@@ -1,7 +1,7 @@
 package com.airgear.mapper;
 
 import com.airgear.dto.RegionDto;
-import com.airgear.model.goods.Region;
+import com.airgear.model.region.Region;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

@@ -1,7 +1,7 @@
 package com.airgear.dto;
 
 import com.airgear.model.goods.Goods;
-import com.airgear.model.goods.Location;
+import com.airgear.model.location.Location;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

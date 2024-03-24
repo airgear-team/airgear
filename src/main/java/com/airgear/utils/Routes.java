@@ -16,5 +16,6 @@ public class Routes {
     public static final String SEARCH = "/search";
     public static final String GOODS = "/goods";
     public static final String MESSAGE = GOODS + "/message";
+    public static final String LOCATION = "/location";
 
 }
