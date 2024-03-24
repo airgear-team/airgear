@@ -10,6 +10,7 @@ import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.MessageRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.MessageService;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,19 +33,12 @@ import static com.airgear.exception.UserExceptions.userNotFound;
  */
 @Service
 @Transactional
+@AllArgsConstructor
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
     private final GoodsRepository goodsRepository;
     private final UserRepository userRepository;
-
-    public MessageServiceImpl(MessageRepository messageRepository,
-                              GoodsRepository goodsRepository,
-                              UserRepository userRepository) {
-        this.messageRepository = messageRepository;
-        this.goodsRepository = goodsRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public Page<MessageResponseDTO> getAllMessageByGoodsId(Pageable pageable, long goodsId) {

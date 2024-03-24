@@ -6,28 +6,30 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.airgear.config.AccountStatusConfig;
-import com.airgear.dto.AccountStatusDto;
+import com.airgear.dto.GoodsDto;
 import com.airgear.dto.RoleDto;
+import com.airgear.dto.UserExistDto;
+import com.airgear.exception.ChangeRoleException;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.UserExceptions;
-import com.airgear.model.goods.Goods;
 import com.airgear.exception.UserUniquenessViolationException;
+import com.airgear.mapper.GoodsMapper;
+import com.airgear.mapper.RoleMapper;
+import com.airgear.mapper.UserMapper;
 import com.airgear.model.AccountStatus;
 import com.airgear.model.email.EmailMessage;
 import com.airgear.repository.AccountStatusRepository;
-import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
-import com.airgear.security.CustomUserDetails;
+import com.airgear.service.EmailService;
 import com.airgear.service.RoleService;
 import com.airgear.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,65 +40,59 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.airgear.utils.Constants.ROLE_ADMIN_NAME;
+
 @Service(value = "userService")
+@AllArgsConstructor
 public class UserServiceImpl implements UserDetailsService, UserService {
 
-    @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private GoodsRepository goodsRepository;
-
-    @Autowired
-    private AccountStatusRepository accountStatusRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder bcryptEncoder;
-
-    @Autowired
-    private EmailServiceImpl emailService;
+    private final RoleService roleService;
+    private final UserRepository userRepository;
+    private final AccountStatusRepository accountStatusRepository;
+    private final BCryptPasswordEncoder bcryptEncoder;
+    private final UserMapper userMapper;
+    private final GoodsMapper goodsMapper;
+    private final RoleMapper roleMapper;
+    private final EmailService emailService;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
-//        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
-        return new CustomUserDetails(user);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
     }
 
     private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        user.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-        });
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
         return authorities;
     }
 
-    public List<User> findAll() {
-        List<User> list = new ArrayList<>();
-        userRepository.findAll().iterator().forEachRemaining(list::add);
-        return list;
+    public List<UserDto> findAll() {
+        List<User> users = new ArrayList<>();
+        userRepository.findAll().iterator().forEachRemaining(users::add);
+        return userMapper.toDtoList(users);
     }
 
-    public List<User> findActiveUsers() {
-        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(user -> user.getAccountStatus() != null && user.getAccountStatus().getStatusName().equals("ACTIVE"))
-                .collect(Collectors.toList());
+    public List<UserDto> findActiveUsers() {
+        List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                .filter(user -> user.getAccountStatus() != null && user.getAccountStatus().getStatusName().equals("ACTIVE")).toList();
+        return userMapper.toDtoList(users);
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserDto findByUsername(String username) {
+        return userMapper.toDto(userRepository.findByUsername(username));
     }
 
 
     @Override
-    public boolean isUsernameExists(String username) {
-        return userRepository.existsByUsername(username);
+    public UserExistDto isUsernameExists(String username) {
+        return UserExistDto.builder()
+                .username(username)
+                .exist(userRepository.existsByUsername(username))
+                .build();
     }
 
 
@@ -122,7 +118,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             user.setAccountStatus(accountStatus);
             userRepository.save(user);
         }
-}
+    }
 
     private void sendFarewellEmail(Set<String> userEmails) {
         EmailMessage emailMessage = new EmailMessage();
@@ -140,8 +136,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         Role role = roleService.findByName("USER");
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(role);
-        user.setRoles(RoleDto.fromRoles(roleSet));
-        User newUser = user.toUser();
+        user.setRoles(roleMapper.toDtoSet(roleSet));
+        User newUser = userMapper.toModel(user);
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         newUser.setCreatedAt(OffsetDateTime.now());
         newUser.setAccountStatus(accountStatusRepository.findByStatusName("ACTIVE"));
@@ -155,7 +151,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User addRole(String username, String role) {
-        User user = findByUsername(username);
+        User user = userRepository.findByUsername(username);
         Set<Role> roles = user.getRoles();
         roles.add(roleService.findByName("ADMIN"));
         user.setRoles(roles);
@@ -164,7 +160,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User deleteRole(String username, String role) {
-        User user = findByUsername(username);
+        User user = userRepository.findByUsername(username);
         Set<Role> roles = user.getRoles();
         roles.remove(roleService.findByName("ADMIN"));
         if (roles.isEmpty()) {
@@ -173,19 +169,20 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return update(user);
     }
 
-
     @Override
-    public User apponintModerator(String username) {
+    public UserDto appointRole(String username, RoleDto role) {
         User user = userRepository.findByUsername(username);
-        user.getRoles().add(roleService.findByName("MODERATOR"));
-        return userRepository.save(user);
+        user.getRoles().add(roleMapper.toModel(role));
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDto(updatedUser);
     }
 
     @Override
-    public User removeModerator(String username) {
+    public UserDto removeRole(String username, RoleDto role) {
         User user = userRepository.findByUsername(username);
-        user.getRoles().remove(roleService.findByName("MODERATOR"));
-        return userRepository.save(user);
+        user.getRoles().remove(roleMapper.toModel(role));
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDto(updatedUser);
     }
 
     @Transactional
@@ -195,16 +192,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public int countNewUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
-        return userRepository.countByCreatedAtBetween(start, end);
+    public int countNewUsersBetweenDates(String start, String end) {
+        OffsetDateTime startDate = OffsetDateTime.parse(start);
+        OffsetDateTime endDate = OffsetDateTime.parse(end);
+        return userRepository.countByCreatedAtBetween(startDate, endDate);
     }
 
     @Override
-    public Set<Goods> getFavoriteGoods(Authentication auth) {
-        User user = this.findByUsername(auth.getName());
-        return userRepository.getFavoriteGoodsByUser(user.getId());
+    public Set<GoodsDto> getFavoriteGoods(Authentication auth) {
+        UserDto user = this.findByUsername(auth.getName());
+        return goodsMapper.toDtoSet(userRepository.getFavoriteGoodsByUser(user.getId()));
     }
-
     // TODO to use this method inside the "public User save(UserDto user)" method for better performance
     public void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException {
         boolean usernameExists = userRepository.existsByUsername(userDto.getUsername());
@@ -232,7 +230,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserDto blockUser(Long userId) {
         User user = getUserById(userId);
         user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.INACTIVE.name()));
-        return UserDto.fromUser(user);
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -240,13 +238,28 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserDto unblockUser(Long userId) {
         User user = getUserById(userId);
         user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.ACTIVE.name()));
-        return UserDto.fromUser(user);
+        return userMapper.toDto(user);
     }
-
 
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> UserExceptions.userNotFound(userId));
     }
 
+
+    @Override
+    public void deleteAccount(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> "ADMIN".equals(role.getName()))) {
+            setAccountStatus(username, 2);
+        } else throw new ForbiddenException("Insufficient privileges");
+    }
+
+    @Override
+    public void accessToRoleChange(String executor, RoleDto role) {
+        UserDto executorUser = findByUsername(executor);
+        if (!executorUser.getRoles().contains(role) && role.getName().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
+            throw new ChangeRoleException("Access denied");
+        }
+    }
 }

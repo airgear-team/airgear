@@ -1,6 +1,7 @@
 package com.airgear.aspect;
 
 import com.airgear.service.Logging;
+import lombok.AllArgsConstructor;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -21,13 +22,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Aspect
 @Component
+@AllArgsConstructor
 public class LoggingAspect {
 
     private final Logging logging;
-
-    public LoggingAspect(Logging logging) {
-        this.logging = logging;
-    }
 
     /**
      * Pointcut definition for methods in controllers.

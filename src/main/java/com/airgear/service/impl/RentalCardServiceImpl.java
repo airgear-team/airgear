@@ -5,10 +5,11 @@ import com.airgear.dto.RentalCardDto;
 import com.airgear.dto.DayTime;
 import com.airgear.model.RentalCard;
 import com.airgear.repository.RentalCardRepository;
+import com.airgear.repository.UserRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.RentalCardService;
 import com.airgear.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,14 +20,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class RentalCardServiceImpl implements RentalCardService {
 
-    @Autowired
-    private RentalCardRepository rentalCardRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private GoodsService goodsService;
+    private final RentalCardRepository rentalCardRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final GoodsService goodsService;
 
     @Override
     public RentalCard getRentalCardById(Long id) {
@@ -42,8 +42,8 @@ public class RentalCardServiceImpl implements RentalCardService {
     @Override
     public RentalCard saveRentalCard(RentalCardDto rentalCardDto) {
         RentalCard rentalCard = rentalCardDto.getRentalCardFromDto();
-        rentalCard.setRenter(userService.findByUsername(rentalCardDto.getRenterUsername()));
-        rentalCard.setLessor(userService.findByUsername(rentalCardDto.getLessorUsername()));
+        rentalCard.setRenter(userRepository.findByUsername(rentalCardDto.getRenterUsername()));
+        rentalCard.setLessor(userRepository.findByUsername(rentalCardDto.getLessorUsername()));
         rentalCard.setGoods(goodsService.getGoodsById(rentalCardDto.getGoodsId()));
         rentalCard.setCreatedAt(OffsetDateTime.now());
         checkDays(rentalCard);

@@ -6,6 +6,7 @@ import com.airgear.dto.UserDto;
 import com.airgear.service.GoogleTokenHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import java.net.URL;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GoogleTokenHandlerImpl implements GoogleTokenHandler {
 
     @Value("${validation.google.url}")
@@ -39,10 +41,6 @@ public class GoogleTokenHandlerImpl implements GoogleTokenHandler {
     private String defaultPassword;
 
     private final ObjectMapper objectMapper;
-
-    public GoogleTokenHandlerImpl(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     /**
      * Executes the handling of a Google token.

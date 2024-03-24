@@ -1,23 +1,14 @@
 package com.airgear.controller;
 
-import com.airgear.dto.AmountOfGoodsByCategoryResponse;
-import com.airgear.dto.ComplaintDTO;
-import com.airgear.dto.CountDeletedGoodsDTO;
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.TotalNumberOfGoodsResponse;
 import com.airgear.dto.*;
 import com.airgear.exception.GenerateRentalAgreementException;
-import com.airgear.model.Complaint;
-import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.RentalAgreement;
-import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.service.*;
 import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
-import com.airgear.utils.Converter;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.Page;
@@ -39,18 +30,12 @@ import java.util.Map;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/goods")
+@AllArgsConstructor
 public class GoodsController {
 
     private GoodsService goodsService;
     private ComplaintService complaintService;
     private RentalAgreementService rentalAgreementService;
-
-    @Autowired
-    public GoodsController(GoodsService goodsService, ComplaintService complaintService, RentalAgreementService rentalAgreementService) {
-        this.goodsService = goodsService;
-        this.complaintService = complaintService;
-        this.rentalAgreementService = rentalAgreementService;
-    }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
@@ -60,16 +45,17 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
-    public ResponseEntity<GoodsDto> getGoodsById(HttpServletRequest request, Authentication auth, @PathVariable Long goodsId) {
+    public ResponseEntity<GoodsDto> getGoodsById(HttpServletRequest request, Authentication auth,
+                                                 @PathVariable Long goodsId) {
         return ResponseEntity.ok(goodsService.getGoodsById(request.getRemoteAddr(), auth.getName(), goodsId));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PutMapping("/{goodsId}")
     public ResponseEntity<GoodsDto> updateGoods(
-            Authentication auth,
-            @PathVariable Long goodsId,
-            @Valid @RequestBody GoodsDto updatedGoods) {
+                                                Authentication auth,
+                                                @PathVariable Long goodsId,
+                                                @Valid @RequestBody GoodsDto updatedGoods) {
         return ResponseEntity.ok(goodsService.updateGoods(auth.getName(), goodsId, updatedGoods));
     }
 
@@ -88,7 +74,8 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/download/rental/{goodsId}")
-    public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId, @Valid @RequestBody RentalAgreement rental) {
+    public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId,
+                                                       @Valid @RequestBody RentalAgreement rental) {
         try {
             return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
         } catch (IOException e) {
@@ -139,12 +126,10 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/{goodsId}/complaint")
-    public ResponseEntity<ComplaintDTO> addComplaint
-            (Authentication auth,
-             @PathVariable Long goodsId,
-             @Valid @RequestBody ComplaintDTO complaint) {
-        Complaint newComplaint = complaintService.save(auth.getName(), goodsId, complaint);
-        return ResponseEntity.ok(Converter.getDtoFromComplaint(newComplaint));
+    public ResponseEntity<ComplaintDto> addComplaint (Authentication auth,
+                                                      @PathVariable Long goodsId,
+                                                      @Valid @RequestBody ComplaintDto complaint) {
+        return ResponseEntity.ok(complaintService.save(auth.getName(), goodsId, complaint));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
@@ -167,11 +152,11 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/category/total/new")
-    public ResponseEntity<Map<Category, Long>> amountOfNewGoodsByCategory(
+    public ResponseEntity<Map<CategoryDto, Long>> amountOfNewGoodsByCategory(
             @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
             @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate
-            ){
-        Map<Category, Long> categoryAmounts = goodsService.getAmountOfNewGoodsByCategory(fromDate,toDate);
+    ){
+        Map<CategoryDto, Long> categoryAmounts = goodsService.getAmountOfNewGoodsByCategory(fromDate,toDate);
         return ResponseEntity.ok(categoryAmounts);
     }
 
@@ -180,5 +165,4 @@ public class GoodsController {
     public ResponseEntity<TopGoodsPlacementDto> addTopGoodsPlacements(@Valid @RequestBody TopGoodsPlacementDto topGoodsPlacementDto) {
         return ResponseEntity.ok(goodsService.addTopGoodsPlacements(topGoodsPlacementDto));
     }
-
 }

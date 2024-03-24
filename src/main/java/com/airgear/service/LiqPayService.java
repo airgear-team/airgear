@@ -6,8 +6,8 @@ import org.springframework.security.core.Authentication;
 
 public interface LiqPayService {
 
-    public CheckoutDTO createCheckoutDtoPay(Goods goods, Authentication auth);
+    CheckoutDTO createCheckoutDtoPay(Goods goods, Authentication auth);
 
-    public String generatePaymentLink(CheckoutDTO checkoutDTO) throws IllegalAccessException;
+    String generatePaymentLink(CheckoutDTO checkoutDTO) throws IllegalAccessException;
 
 }

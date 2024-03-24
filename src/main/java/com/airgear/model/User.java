@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
