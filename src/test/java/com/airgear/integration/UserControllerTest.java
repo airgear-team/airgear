@@ -1,6 +1,9 @@
 package com.airgear.integration;
 
 import com.airgear.dto.*;
+import com.airgear.mapper.CategoryMapper;
+import com.airgear.mapper.LocationMapper;
+import com.airgear.mapper.UserMapper;
 import com.airgear.model.AccountStatus;
 import com.airgear.model.AuthToken;
 import com.airgear.model.RentalCard;
@@ -14,10 +17,12 @@ import java.util.stream.Stream;
 
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
-import com.airgear.model.goods.Location;
+import com.airgear.model.location.Location;
+import com.airgear.model.region.Region;
 import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.RoleRepository;
 import com.airgear.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@RequiredArgsConstructor
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
 
@@ -63,6 +69,9 @@ public class UserControllerTest {
     private AccountStatusRepository accountStatusRepository;
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
+    private final CategoryMapper categoryMapper;
+    private final LocationMapper locationMapper;
+    private final UserMapper userMapper;
 
     @BeforeAll
     public static void initTest() {
@@ -139,7 +148,7 @@ public class UserControllerTest {
     @Order(2)
     public void createGoodsByUser(){
         Location location = new Location();
-        location.setRegionId(1L);
+        location.setRegion(new Region(1L,"Вінницька"));
         location.setSettlement("Konstantinivka");
         Category category = new Category();
         category.setName("TOOLS_AND_EQUIPMENT");
@@ -147,10 +156,10 @@ public class UserControllerTest {
                 .name("bolt")
                 .description("description")
                 .price(BigDecimal.valueOf(100.0D))
-                .location(LocationDto.fromLocation(location))
-                .category(CategoryDto.fromCategory(category))
+                .location(locationMapper.toDto(location))
+                .category(categoryMapper.toDto(category))
                 .phoneNumber("+380984757533")
-                .user(UserDto.fromUser(userTest)).build();
+                .user(userMapper.toDto(userTest)).build();
         HttpEntity<?> entity = new HttpEntity<>(goods, headersUser);
         goodsTest = template.postForObject("http://localhost:" + port + "/goods", entity, Goods.class);
         assertNotNull(goodsTest);
@@ -288,16 +297,6 @@ public class UserControllerTest {
         ResponseEntity<Location> locationResp= template.postForEntity("http://localhost:" + port + "/location/create"+"?"+st, entityLocation, Location.class);
         assertNotNull(locationResp.getBody());
         assertThat(locationResp.getBody().getSettlement()).isEqualTo("Ivanivka");
-    }
-
-    @Test
-    @Order(15)
-    public void getAmountOfNewGoodsByCategoryTest(){
-        String st ="fromDate=2000-03-11T00:00:00.937Z&toDate=3000-03-11T00:00:00.937Z";
-        HttpEntity<?> entity = new HttpEntity<>(null, headersUser);
-        ResponseEntity<String> resp= template.exchange("http://localhost:" + port + "/goods/category/total/new"+"?"+st, HttpMethod.GET, entity, String.class);
-        assertNotNull(resp.getBody());
-        assertTrue(resp.getBody().contains(goodsTest.getCategory().getName()));
     }
 
 }

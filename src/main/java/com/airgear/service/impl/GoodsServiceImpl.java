@@ -25,7 +25,6 @@ import javax.validation.Valid;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.math.BigDecimal;
-import java.util.stream.Collectors;
 
 import static com.airgear.exception.UserExceptions.userNotFound;
 
@@ -138,19 +137,6 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate) {
-        return goodsRepository.findCountNewGoodsFromPeriod(fromDate, toDate);
-    }
-
-    @Override
-    public CountDeletedGoodsDTO countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String category) {
-        Long count = category != null ?
-                goodsRepository.countByDeletedAtBetweenAndCategory(startDate, endDate, category) :
-                goodsRepository.countByDeletedAtBetween(startDate, endDate);
-        return new CountDeletedGoodsDTO(category, startDate, endDate, count);
-    }
-
-    @Override
     public List<Goods> getAllGoods() {
         return goodsRepository.findAll();
     }
@@ -179,13 +165,6 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory() {
-        List<Goods> goodsList = goodsRepository.findAll();
-        return new AmountOfGoodsByCategoryResponse(goodsList.stream()
-                .collect(Collectors.groupingBy(goods -> categoryMapper.toDto(goods.getCategory()), Collectors.counting())));
-    }
-
-    @Override
     public Page<Goods> getAllGoods(Pageable pageable) {
         return goodsRepository.findAll(pageable);
     }
@@ -207,22 +186,6 @@ public class GoodsServiceImpl implements GoodsService {
         } else {
             return goodsRepository.findAll(pageable);
         }
-    }
-
-    @Override
-    public Long getTotalNumberOfGoods() {
-        return goodsRepository.count();
-    }
-
-    @Override
-    public TotalNumberOfGoodsResponse getTotalNumberOfGoodsResponse() {
-        return new TotalNumberOfGoodsResponse(goodsRepository.count());
-    }
-
-    @Override
-    public TotalNumberOfTopGoodsResponse getTotalNumberOfTopGoodsResponse() {
-        return new TotalNumberOfTopGoodsResponse(topGoodsPlacementRepository.countAllActivePlacements());
-
     }
 
     private void checkCategory(Goods goods) {
@@ -256,12 +219,6 @@ public class GoodsServiceImpl implements GoodsService {
             return;
         }
         goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
-    }
-
-    @Override
-    public Map<CategoryDto, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate) {
-        List<Object> list = goodsRepository.findCountNewGoodsByCategoryFromPeriod(fromDate,toDate);
-        return list==null?null:list.stream().map(x->(Object[])x).collect(Collectors.toMap(x->(CategoryDto) x[0], x->(Long)x[1]));
     }
 
     @Override
