@@ -308,17 +308,14 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setGoodsStatus(goodsStatusService.getGoodsById(1L));
         goods.setCreatedAt(OffsetDateTime.now());
 
-        Location location = goods.getLocation();
-        Location existingLocation = locationRepository.findBySettlementAndRegionId(location.getSettlement(), location.getRegionId());
-        if (existingLocation != null) {
-            goods.setLocation(existingLocation);
-        } else {
-            goods.getLocation().setId(null);
-            goods.setLocation(locationRepository.save(goods.getLocation()));
-        }
-
-        goodsDto.getLocation().setId(1L);
-        goods.setLocation(locationMapper.toModel(goodsDto.getLocation()));
+            Location location = goods.getLocation();
+            Location existingLocation = locationRepository.findBySettlementAndRegionId(location.getSettlement(), location.getRegionId());
+            if (existingLocation != null) {
+                goods.setLocation(existingLocation);
+            } else {
+                goods.getLocation().setId(null);
+                goods.setLocation(locationMapper.toModel(goodsDto.getLocation()))
+            }
 
         return goodsMapper.toDto(goodsRepository.save(goods));
     }
