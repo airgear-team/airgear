@@ -9,21 +9,21 @@ import com.airgear.dto.TopGoodsPlacementDto;
 import com.airgear.dto.TotalNumberOfGoodsResponse;
 import com.airgear.dto.*;
 import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.GoodsNotFoundException;
-import com.airgear.dto.CountDeletedGoodsDTO;
+import com.airgear.mapper.CategoryMapper;
+import com.airgear.mapper.GoodsMapper;
+import com.airgear.mapper.LocationMapper;
+import com.airgear.model.User;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.Location;
 import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.repository.*;
-import com.airgear.dto.GoodsResponseDTO;
-import com.airgear.repository.CategoryRepository;
-import com.airgear.repository.GoodsRepository;
-import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.GoodsStatusService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import static com.airgear.exception.UserExceptions.userNotFound;
 
 @Service(value = "goodsService")
+@RequiredArgsConstructor
 public class GoodsServiceImpl implements GoodsService {
 
     private UserRepository userRepository;
@@ -60,6 +61,15 @@ public class GoodsServiceImpl implements GoodsService {
         this.locationRepository = locationRepository;
     }
 
+    private final UserRepository userRepository;
+    private final GoodsRepository goodsRepository;
+    private final CategoryRepository categoryRepository;
+    private final GoodsViewRepository goodsViewRepository;
+    private final GoodsStatusService goodsStatusService;
+    private final GoodsMapper goodsMapper;
+    private final CategoryMapper categoryMapper;
+    private final LocationMapper locationMapper;
+    private final TopGoodsPlacementRepository topGoodsPlacementRepository;
 
     private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
     private static final int SIMILAR_GOODS_LIMIT = 12;
@@ -68,7 +78,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Goods getGoodsById(Long id) {
         Optional<Goods> goodsOptional = goodsRepository.findById(id);
-        return goodsOptional.orElse(null); // TODO to change on GoodsExceptions.goodsNotFound()
+        return goodsOptional.orElse(null);
     }
 
     @Override
@@ -82,14 +92,13 @@ public class GoodsServiceImpl implements GoodsService {
             throw new GoodsNotFoundException("Goods was deleted");
         }
         saveGoodsView(ipAddress, user.getId(), goods);
-        return GoodsDto.fromGoods(goods);
+        return goodsMapper.toDto(goods);
     }
-
     @Override
     public void deleteGoods(Goods goods) {
         goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
         goods.setDeletedAt(OffsetDateTime.now());
-        goodsRepository.save(goods); // TODO to get Entity from DB and to delete this line (dirty checking)
+        goodsRepository.save(goods);
     }
 
     @Override
@@ -127,7 +136,7 @@ public class GoodsServiceImpl implements GoodsService {
     public GoodsDto updateGoods(String username, Long goodsId, GoodsDto updatedGoodsDto) {
         User user = userRepository.findByUsername(username);
         Goods existingGoods = getGoodsById(goodsId);
-        Goods updatedGoods = updatedGoodsDto.toGoods();
+        Goods updatedGoods = goodsMapper.toModel(updatedGoodsDto);
         if (!user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
             throw new ForbiddenException("It is not your goods");
         }
@@ -143,16 +152,16 @@ public class GoodsServiceImpl implements GoodsService {
         if (updatedGoods.getLocation() != null) {
             existingGoods.setLocation(updatedGoods.getLocation());
         }
-        return GoodsDto.fromGoods(updateGoods(existingGoods));
+        return goodsMapper.toDto(updateGoods(existingGoods));
     }
 
     @Override
-    public Set<Goods> getAllGoodsByUsername(String username) {
-        return goodsRepository.getGoodsByUserName(username);
+    public Set<GoodsDto> getAllGoodsByUsername(String username) {
+        return goodsMapper.toDtoSet(goodsRepository.getGoodsByUserName(username));
     }
 
     @Override
-    public Page<GoodsResponseDTO> listGoodsByName(Pageable pageable, String goodsName) {
+    public Page<GoodsDto> listGoodsByName(Pageable pageable, String goodsName) {
         return null;
     }
 
@@ -167,11 +176,6 @@ public class GoodsServiceImpl implements GoodsService {
                 goodsRepository.countByDeletedAtBetweenAndCategory(startDate, endDate, category) :
                 goodsRepository.countByDeletedAtBetween(startDate, endDate);
         return new CountDeletedGoodsDTO(category, startDate, endDate, count);
-    }
-
-    @Override
-    public Long getTotalNumberOfGoods() {
-        return null;
     }
 
     @Override
@@ -190,27 +194,24 @@ public class GoodsServiceImpl implements GoodsService {
             randomGoods = randomizeAndLimit(goodsRepository.findAll(), quantity);
         }
         goods.addAll(randomGoods);
-        return GoodsDto.fromGoodsList(goods);
+        return goodsMapper.toDtoList(goods);
     }
 
-    //will return number of similar goods (same category and price within limit)
     @Override
     public Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price) {
         BigDecimal lowerBound = price.multiply(BigDecimal.ONE.subtract(PRICE_VARIATION_PERCENTAGE));
         BigDecimal upperBound = price.multiply(BigDecimal.ONE.add(PRICE_VARIATION_PERCENTAGE));
 
         Page<Goods> goods = filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0, SIMILAR_GOODS_LIMIT));
-        return goods.map(GoodsDto::fromGoods);
+        return goods.map(goodsMapper::toDto);
     }
 
     @Override
     public AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory() {
         List<Goods> goodsList = goodsRepository.findAll();
         return new AmountOfGoodsByCategoryResponse(goodsList.stream()
-                .collect(Collectors.groupingBy(Goods::getCategory, Collectors.counting())));
-        // Grouping by category and quantity
+                .collect(Collectors.groupingBy(goods -> categoryMapper.toDto(goods.getCategory()), Collectors.counting())));
     }
-
 
     @Override
     public Page<Goods> getAllGoods(Pageable pageable) {
@@ -234,6 +235,11 @@ public class GoodsServiceImpl implements GoodsService {
         } else {
             return goodsRepository.findAll(pageable);
         }
+    }
+
+    @Override
+    public Long getTotalNumberOfGoods() {
+        return goodsRepository.count();
     }
 
     @Override
@@ -281,9 +287,14 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+
     public Map<Category, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate) {
         List<Object> list = goodsRepository.findCountNewGoodsByCategoryFromPeriod(fromDate, toDate);
         return list == null ? null : list.stream().map(x -> (Object[]) x).collect(Collectors.toMap(x -> (Category) x[0], x -> (Long) x[1]));
+
+    public Map<CategoryDto, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate) {
+        List<Object> list = goodsRepository.findCountNewGoodsByCategoryFromPeriod(fromDate,toDate);
+        return list==null?null:list.stream().map(x->(Object[])x).collect(Collectors.toMap(x->(CategoryDto) x[0], x->(Long)x[1]));
     }
 
     @Override
@@ -292,7 +303,7 @@ public class GoodsServiceImpl implements GoodsService {
         if (user == null) {
             throw userNotFound(username);
         }
-        Goods goods = goodsDto.toGoods();
+        Goods goods = goodsMapper.toModel(goodsDto);
         goods.setUser(user);
         goods.setGoodsStatus(goodsStatusService.getGoodsById(1L));
         goods.setCreatedAt(OffsetDateTime.now());
@@ -306,7 +317,10 @@ public class GoodsServiceImpl implements GoodsService {
             goods.setLocation(locationRepository.save(goods.getLocation()));
         }
 
-        return GoodsDto.fromGoods(goodsRepository.save(goods));
+        goodsDto.getLocation().setId(1L);
+        goods.setLocation(locationMapper.toModel(goodsDto.getLocation()));
+
+        return goodsMapper.toDto(goodsRepository.save(goods));
     }
 
     @Override
@@ -323,7 +337,7 @@ public class GoodsServiceImpl implements GoodsService {
             user.getFavoriteGoods().add(goods);
         }
         userRepository.save(user);
-        return GoodsDto.fromGoods(goods);
+        return goodsMapper.toDto(goods);
     }
 
     @Override

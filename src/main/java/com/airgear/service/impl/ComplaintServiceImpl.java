@@ -1,6 +1,7 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.ComplaintDTO;
+import com.airgear.dto.ComplaintDto;
+import com.airgear.mapper.ComplaintMapper;
 import com.airgear.model.Complaint;
 import com.airgear.model.ComplaintCategory;
 import com.airgear.model.User;
@@ -10,32 +11,26 @@ import com.airgear.repository.ComplaintRepository;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.ComplaintService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 
 @Service(value = "complaintService")
+@AllArgsConstructor
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
     private final ComplaintCategoryRepository complaintCategoryRepository;
     private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
-
-    @Autowired
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, ComplaintCategoryRepository complaintCategoryRepository, UserRepository userRepository, GoodsRepository goodsRepository) {
-        this.complaintRepository = complaintRepository;
-        this.complaintCategoryRepository = complaintCategoryRepository;
-        this.userRepository = userRepository;
-        this.goodsRepository = goodsRepository;
-    }
+    private final ComplaintMapper complaintMapper;
 
     @Override
     @Transactional
-    public Complaint save(String userName, Long goodsId, ComplaintDTO complaintDTO) {
-        Complaint newComplaint = complaintDTO.getComplaintFromDto();
+    public ComplaintDto save(String userName, Long goodsId, ComplaintDto complaintDTO) {
+        Complaint newComplaint = complaintMapper.toModel(complaintDTO);
         User user = userRepository.findByUsername(userName);
         Goods goods = goodsRepository.getReferenceById(goodsId);
         ComplaintCategory complaintCategory = complaintCategoryRepository.findByName(complaintDTO.getComplaintCategoryDTO().getName());
@@ -43,6 +38,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         newComplaint.setUser(user);
         newComplaint.setGoods(goods);
         newComplaint.setCreatedAt(OffsetDateTime.now());
-        return complaintRepository.save(newComplaint);
+        return complaintMapper.toDto(complaintRepository.save(newComplaint));
     }
 }

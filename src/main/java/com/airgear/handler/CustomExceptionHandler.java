@@ -1,5 +1,6 @@
 package com.airgear.handler;
 
+import com.airgear.exception.ChangeRoleException;
 import com.airgear.model.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,11 @@ public class CustomExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> illegalArgumentException() {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Illegal argument");
+    }
+
+    @ExceptionHandler(ChangeRoleException.class)
+    public ResponseEntity<String> changeRoleException() {
+        return ResponseEntity.status(HttpStatus.LOCKED).body("Access denied");
     }
 
 }

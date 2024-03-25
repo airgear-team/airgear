@@ -1,5 +1,6 @@
-package com.airgear.model.goods;
+package com.airgear.model.location;
 
+import com.airgear.model.region.Region;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,12 @@ public class Location {
     @Column(name = "settlement", nullable = false)
     private String settlement;
 
-    @Column(name = "region_id", nullable = false)
-    private Long regionId;
+    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id", nullable = false)
+    private Region region;
 
+    public Location(String settlement, Region region) {
+        this.settlement = settlement;
+        this.region = region;
+    }
 }

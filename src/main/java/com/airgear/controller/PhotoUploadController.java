@@ -1,6 +1,6 @@
 package com.airgear.controller;
 import com.airgear.service.impl.GoogleDriveServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -9,10 +9,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 //@RestController
+@AllArgsConstructor
 public class PhotoUploadController {
 
-    @Autowired
-    private GoogleDriveServiceImpl googleDriveTestService;
+    private final GoogleDriveServiceImpl googleDriveTestService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/uploadPhoto")
@@ -21,7 +21,6 @@ public class PhotoUploadController {
             String photoId = googleDriveTestService.uploadPhoto(photo);
             return ResponseEntity.ok("Uploaded Photo ID: " + photoId);
         } catch (IOException e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().body("Failed to upload photo: " + e.getMessage());
         }
     }

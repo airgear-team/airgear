@@ -7,19 +7,16 @@ import com.airgear.model.UserReview;
 import com.airgear.repository.UserRepository;
 import com.airgear.repository.UserReviewRepository;
 import com.airgear.service.UserReviewService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service(value = "userReviewService")
+@AllArgsConstructor
 public class UserReviewServiceImpl implements UserReviewService {
     private final UserReviewRepository userReviewRepository;
     private final UserRepository userRepository;
-
-    public UserReviewServiceImpl(UserReviewRepository userReviewRepository, UserRepository userRepository) {
-        this.userReviewRepository = userReviewRepository;
-        this.userRepository = userRepository;
-    }
 
     public UserReview createReview(UserReviewDto userReviewDto) {
         if (userReviewDto.getReviewed().getId().equals(userReviewDto.getReviewer().getId())){

@@ -1,9 +1,8 @@
 package com.airgear.service;
 
-import com.airgear.dto.ComplaintDTO;
-import com.airgear.model.Complaint;
+import com.airgear.dto.ComplaintDto;
 
 public interface ComplaintService {
 
-    Complaint save(String userName, Long goodsId, ComplaintDTO complaint);
+    ComplaintDto save(String userName, Long goodsId, ComplaintDto complaint);
 }

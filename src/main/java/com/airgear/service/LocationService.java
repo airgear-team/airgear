@@ -1,15 +1,27 @@
 package com.airgear.service;
 
-import com.airgear.model.goods.Location;
-import com.airgear.model.goods.Region;
+import com.airgear.model.location.request.SaveLocationRequest;
+import com.airgear.model.location.response.LocationResponse;
+import com.airgear.model.region.response.RegionResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
+/**
+ * Service interface for managing locations.
+ * Defines methods for handling various operations related to locations.
+ * <p>
+ *
+ * @author Oleksandr Ilchenko, Oleksandr Tuleninov
+ * @version 01
+ * @see SaveLocationRequest
+ * @see LocationResponse
+ * @see Page
+ * @see Pageable
+ */
 public interface LocationService {
 
-    Location addLocation(Location location);
-    Location getLocationBySettlement(String settlement);
-    List<Region> getAllRegions();
-    Region getRegionById(Long id);
+    LocationResponse addLocation(SaveLocationRequest request);
+
+    Page<RegionResponse> getAllRegions(Pageable pageable);
 
 }

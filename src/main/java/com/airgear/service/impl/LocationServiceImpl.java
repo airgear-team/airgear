@@ -1,54 +1,74 @@
 package com.airgear.service.impl;
 
-import com.airgear.model.goods.Location;
-import com.airgear.model.goods.Region;
+import com.airgear.exception.RegionExceptions;
+import com.airgear.model.location.Location;
+import com.airgear.model.location.request.SaveLocationRequest;
+import com.airgear.model.location.response.LocationResponse;
+import com.airgear.model.region.Region;
+import com.airgear.model.region.response.RegionResponse;
 import com.airgear.repository.LocationRepository;
 import com.airgear.repository.RegionsRepository;
 import com.airgear.service.LocationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
+/**
+ * Implementation of the {@link LocationService} interface responsible
+ * for handling location-related operations.
+ * <p>
+ *
+ * @author Oleksandr Ilchenko, Oleksandr Tuleninov
+ * @version 01
+ * @see LocationService
+ * @see RegionsRepository
+ * @see LocationRepository
+ * @see SaveLocationRequest
+ * @see LocationResponse
+ * @see Region
+ * @see Location
+ * @see Page
+ * @see Pageable
+ */
 @Service
+@Transactional
 public class LocationServiceImpl implements LocationService {
 
-    private final LocationRepository locationRepository;
     private final RegionsRepository regionsRepository;
+    private final LocationRepository locationRepository;
 
-    @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, RegionsRepository regionsRepository) {
-        this.locationRepository = locationRepository;
+    public LocationServiceImpl(RegionsRepository regionsRepository,
+                               LocationRepository locationRepository) {
         this.regionsRepository = regionsRepository;
+        this.locationRepository = locationRepository;
     }
 
     @Override
-    public List<Region> getAllRegions() {
-        return regionsRepository.findAll();
+    public LocationResponse addLocation(SaveLocationRequest request) {
+        return LocationResponse.fromLocation(save(request));
     }
 
     @Override
-    public Location getLocationBySettlement(String settlement) {
-        return locationRepository.findBySettlement(settlement);
+    @Transactional(readOnly = true)
+    public Page<RegionResponse> getAllRegions(Pageable pageable) {
+        return regionsRepository.findAll(pageable)
+                .map(RegionResponse::fromRegion);
     }
 
-    @Override
-    public Region getRegionById(Long id) {
-        return regionsRepository.getReferenceById(id);
+    private Region getRegion(long regionId) {
+        return regionsRepository.findById(regionId)
+                .orElseThrow(() -> RegionExceptions.regionNotFound(regionId));
     }
 
-    @Override
-    public Location addLocation(Location location) {
-        String settlement = location.getSettlement();
-        Location existingLocation = getLocationBySettlement(settlement);
-        if (existingLocation != null) {
-            return existingLocation;
-        } else {
-            Location locationNew = new Location();
-            locationNew.setSettlement(settlement);
-            locationNew.setRegionId(location.getRegionId());
-            locationRepository.save(locationNew);
-            return locationNew;
-        }
+    private Location save(SaveLocationRequest request) {
+        Region region = getRegion(request.region_id());
+
+        Location location = new Location(
+                request.settlement(),
+                region
+        );
+        locationRepository.save(location);
+        return location;
     }
 }

@@ -1,5 +1,6 @@
 package com.airgear.dto;
 
+import com.airgear.mapper.GoodsMapperImpl;
 import com.airgear.model.goods.TopGoodsPlacement;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +12,6 @@ import java.util.Set;
 @Data
 @Builder
 public class TopGoodsPlacementDto {
-
-    //TODO with mapstruct
     private Long id;
     private Long userId;
     private GoodsDto goods;
@@ -23,7 +22,7 @@ public class TopGoodsPlacementDto {
         return TopGoodsPlacement.builder()
                 .id(id)
                 .userId(userId)
-                .goods(goods == null ? null : goods.toGoods())
+                .goods(goods == null ? null : new GoodsMapperImpl().toModel(goods))
                 .startAt(startAt)
                 .endAt(endAt)
                 .build();
@@ -39,7 +38,7 @@ public class TopGoodsPlacementDto {
         return TopGoodsPlacementDto.builder()
                 .id(topGoodsPlacement.getId())
                 .userId(topGoodsPlacement.getUserId())
-                .goods(GoodsDto.fromGoods(topGoodsPlacement.getGoods()))
+                .goods(new GoodsMapperImpl().toDto(topGoodsPlacement.getGoods()))
                 .startAt(topGoodsPlacement.getStartAt())
                 .endAt(topGoodsPlacement.getEndAt())
                 .build();

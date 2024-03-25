@@ -2,7 +2,7 @@ package com.airgear.data.generator;
 import com.airgear.dto.UserDto;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.User;
-import com.airgear.model.goods.Location;
+import com.airgear.model.location.Location;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.GoodsService;

@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 public class LiqPayServiceImpl implements LiqPayService {
 
-    private CheckoutRepository checkoutRepository;
+    private final CheckoutRepository checkoutRepository;
     private final String TEST_PUBLIC_KEY = "sandbox_i49078650453";
     private final String TEST_PRIVATE_KEY = "sandbox_RehhVzMcNFoVDkbUSLA6DoOuXUjsJdR2IQLKPFEU";
     private final LiqPay liqPay = new LiqPay(TEST_PUBLIC_KEY, TEST_PRIVATE_KEY);
