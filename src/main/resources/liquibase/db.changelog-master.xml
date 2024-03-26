@@ -775,4 +775,13 @@
                OR goods_condition = '';
         </sql>
     </changeSet>
+
+    <changeSet id="addSendAtForMessages" author="vladyslav.haivoronskyi">
+        <addColumn tableName="messages">
+            <column name="send_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -91,6 +92,7 @@ public class MessageServiceImpl implements MessageService {
         message.setText(request.getText());
         message.setGoods(goods);
         message.setUser(user);
+        message.setSendAt(OffsetDateTime.now());
 
         return MessageResponseDTO.fromMessage(messageRepository.save(message));
     }
