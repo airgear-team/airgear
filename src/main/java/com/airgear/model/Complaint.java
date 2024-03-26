@@ -27,8 +27,6 @@ public class Complaint {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "complaint_category_id", referencedColumnName = "id")
     private ComplaintCategory complaintCategory;
 
     @ManyToOne

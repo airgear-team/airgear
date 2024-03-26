@@ -11,7 +11,7 @@ import java.time.OffsetDateTime;
 @SuperBuilder
 public class ComplaintDto {
     private UserDto user;
-    private ComplaintCategoryDto complaintCategoryDTO;
+    private String complaintCategory;
     private GoodsDto goods;
     private String description;
     private OffsetDateTime createdAt;

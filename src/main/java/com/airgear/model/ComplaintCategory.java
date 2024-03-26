@@ -1,29 +1,16 @@
 package com.airgear.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import java.util.List;
+@Getter
+@AllArgsConstructor
+public enum ComplaintCategory {
+    FRAUD ("Fraud"),
+    VIOLATION_OF_COPYRIGHT ("Violation of copyright"),
+    UNACCEPTABLE_CONTENT ("Unacceptable content");
 
-@Data
-@Entity
-@NoArgsConstructor
-@SuperBuilder
-public class ComplaintCategory {
+    private final String value;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "name")
-    @NotBlank(message = "Name cannot be blank")
-    @Size(min = 3, max = 100, message = "Name length must be between 3 and 100 characters")
-    private String name;
-
-    @OneToMany(mappedBy = "complaintCategory")
-    private List<Complaint> complaints;
 }
+

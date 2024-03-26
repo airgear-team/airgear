@@ -775,4 +775,27 @@
                OR goods_condition = '';
         </sql>
     </changeSet>
+
+    <!--Deleted a foreign key of complaint category from complaint table-->
+    <changeSet id="removeForeignKeyComplaintTable" author="alex.ilchenko">
+        <dropForeignKeyConstraint
+                baseTableName="complaint"
+                constraintName="fk_complaint_category"/>
+    </changeSet>
+
+    <!--Deleted a complaint category table-->
+    <changeSet id="dropComplaintCategoryTable" author="alex.ilchenko">
+        <dropTable tableName="complaint_category"/>
+    </changeSet>
+
+    <!--Changed complaint_category_id (BIGINT) to complaint category (VARCHAR)-->
+    <changeSet id="modifyComplaintTable" author="alex.ilchenko">
+        <addColumn tableName="complaint">
+            <column name="complaint_category" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropColumn tableName="complaint" columnName="complaint_category_id"/>
+    </changeSet>
+
 </databaseChangeLog>
