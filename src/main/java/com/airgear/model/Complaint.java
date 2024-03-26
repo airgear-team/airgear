@@ -2,6 +2,7 @@ package com.airgear.model;
 
 import com.airgear.model.goods.Goods;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
 
@@ -27,6 +29,9 @@ public class Complaint {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "complaint_category")
+    @NotNull(message = "Complaint category cannot be null")
     private ComplaintCategory complaintCategory;
 
     @ManyToOne

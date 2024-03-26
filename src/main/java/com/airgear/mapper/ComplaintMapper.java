@@ -5,7 +5,7 @@ import com.airgear.model.Complaint;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring",
-        uses = {UserMapper.class, ComplaintCategoryMapper.class, GoodsMapper.class})
+        uses = {UserMapper.class, GoodsMapper.class})
 public interface ComplaintMapper {
     ComplaintDto toDto(Complaint complaint);
 

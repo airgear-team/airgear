@@ -763,7 +763,7 @@
         <dropColumn tableName="goods" columnName="is_new"/>
         <addColumn tableName="goods">
             <column name="goods_condition" type="VARCHAR(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </addColumn>
     </changeSet>

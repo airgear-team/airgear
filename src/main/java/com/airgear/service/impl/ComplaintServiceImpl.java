@@ -1,10 +1,8 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.ComplaintDto;
-import com.airgear.mapper.ComplaintCategoryMapper;
 import com.airgear.mapper.ComplaintMapper;
 import com.airgear.model.Complaint;
-import com.airgear.model.ComplaintCategory;
 import com.airgear.model.User;
 import com.airgear.model.goods.Goods;
 import com.airgear.repository.ComplaintRepository;
@@ -25,7 +23,6 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
     private final ComplaintMapper complaintMapper;
-    private final ComplaintCategoryMapper complaintCategoryMapper;
 
     @Override
     @Transactional
@@ -33,8 +30,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         Complaint newComplaint = complaintMapper.toModel(complaintDTO);
         User user = userRepository.findByUsername(userName);
         Goods goods = goodsRepository.getReferenceById(goodsId);
-        ComplaintCategory complaintCategory = complaintCategoryMapper.stringToEnum(complaintDTO.getComplaintCategory());
-        newComplaint.setComplaintCategory(complaintCategory);
         newComplaint.setUser(user);
         newComplaint.setGoods(goods);
         newComplaint.setCreatedAt(OffsetDateTime.now());
