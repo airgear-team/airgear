@@ -784,4 +784,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="deletePhoneColumn" author="alex.ilchenko">
+        <dropColumn tableName="goods" columnName="phone"/>
+    </changeSet>
+
 </databaseChangeLog>
