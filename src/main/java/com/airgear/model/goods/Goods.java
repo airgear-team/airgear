@@ -64,8 +64,9 @@ public class Goods {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Enumerated(EnumType.STRING)
-    private GoodsVerificationStatus verificationStatus;
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private GoodsVerificationStatus goodsVerificationStatus;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "goods_goods_status",

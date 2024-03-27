@@ -783,5 +783,28 @@
             </column>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="createTableGoodsVerificationStatus" author="vitalii.kalinchyk">
+        <createTable tableName="goods_verification_status">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <insert tableName="goods_verification_status">
+            <column name="id" valueNumeric="0"/>
+            <column name="name" value="ON_REVIEW"/>
+        </insert>
+        <insert tableName="goods_verification_status">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="APPROVED"/>
+        </insert>
+        <insert tableName="goods_verification_status">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="REJECTED"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>

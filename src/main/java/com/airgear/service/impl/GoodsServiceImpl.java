@@ -12,10 +12,10 @@ import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.GoodsNotFoundException;
 import com.airgear.mapper.CategoryMapper;
 import com.airgear.mapper.GoodsMapper;
-import com.airgear.mapper.LocationMapper;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
+import com.airgear.model.goods.GoodsVerificationStatus;
 import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.model.location.Location;
 import com.airgear.repository.*;
@@ -280,6 +280,7 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = goodsMapper.toModel(goodsDto);
         goods.setUser(user);
         goods.setGoodsStatus(goodsStatusService.getGoodsById(1L));
+        goods.setGoodsVerificationStatus(GoodsVerificationStatus.ON_REVIEW);
         goods.setCreatedAt(OffsetDateTime.now());
 
         LocationDto locationDto = goodsDto.getLocation();
