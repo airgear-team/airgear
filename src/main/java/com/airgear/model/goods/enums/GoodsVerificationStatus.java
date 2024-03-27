@@ -1,4 +1,4 @@
-package com.airgear.model.goods;
+package com.airgear.model.goods.enums;
 
 /**
  * The {@code GoodsVerificationStatus} enumeration representing the status of verification of goods.

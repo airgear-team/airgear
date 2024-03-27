@@ -12,15 +12,14 @@ import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.GoodsNotFoundException;
 import com.airgear.mapper.CategoryMapper;
 import com.airgear.mapper.GoodsMapper;
-import com.airgear.mapper.LocationMapper;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.TopGoodsPlacement;
+import com.airgear.model.goods.enums.GoodsStatus;
 import com.airgear.model.location.Location;
 import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
-import com.airgear.service.GoodsStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,7 +42,6 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     private final CategoryRepository categoryRepository;
     private final GoodsViewRepository goodsViewRepository;
-    private final GoodsStatusService goodsStatusService;
     private final LocationRepository locationRepository;
     private final RegionsRepository regionsRepository;
     private final GoodsMapper goodsMapper;
@@ -67,7 +65,7 @@ public class GoodsServiceImpl implements GoodsService {
         if (goods == null) {
             throw new GoodsNotFoundException("Goods not found");
         }
-        if (!goods.getGoodsStatus().getName().equals("ACTIVE")) {
+        if (!goods.getGoodsStatus().equals(GoodsStatus.ACTIVE)) {
             throw new GoodsNotFoundException("Goods was deleted");
         }
         saveGoodsView(ipAddress, user.getId(), goods);
@@ -75,7 +73,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
     @Override
     public void deleteGoods(Goods goods) {
-        goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
+        goods.setGoodsStatus(GoodsStatus.DELETED);
         goods.setDeletedAt(OffsetDateTime.now());
         goodsRepository.save(goods);
     }
@@ -279,7 +277,7 @@ public class GoodsServiceImpl implements GoodsService {
         }
         Goods goods = goodsMapper.toModel(goodsDto);
         goods.setUser(user);
-        goods.setGoodsStatus(goodsStatusService.getGoodsById(1L));
+        goods.setGoodsStatus(GoodsStatus.ACTIVE);
         goods.setCreatedAt(OffsetDateTime.now());
 
         LocationDto locationDto = goodsDto.getLocation();

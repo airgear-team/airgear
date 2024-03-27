@@ -4,6 +4,8 @@ import com.airgear.model.Complaint;
 import com.airgear.model.GoodsView;
 import com.airgear.model.User;
 import com.airgear.model.goods.enums.GoodsCondition;
+import com.airgear.model.goods.enums.GoodsStatus;
+import com.airgear.model.goods.enums.GoodsVerificationStatus;
 import com.airgear.model.location.Location;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -67,13 +69,8 @@ public class Goods {
     @Enumerated(EnumType.STRING)
     private GoodsVerificationStatus verificationStatus;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "goods_goods_status",
-            joinColumns = {
-                    @JoinColumn(name = "goods_id")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "goods_status_id")})
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
     private GoodsStatus goodsStatus;
 
 //    @Size(min = 13, max = 13, message = "The length of the phone number must be at 13")
