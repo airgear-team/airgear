@@ -824,7 +824,7 @@
     </changeSet>
 
     <changeSet id="dropAccountStatusTable" author="vitalii.kalinchyk">
-        <sql>ALTER TABLE your_referencing_table DROP FOREIGN KEY your_fk_constraint_name</sql>
+        <sql>ALTER TABLE user DROP FOREIGN KEY FKsdwiqho2tvg6if7lrb65w4tud</sql>
         <dropColumn tableName="user" columnName="account_status_id"/>
         <dropTable tableName="account_status"/>
     </changeSet>
