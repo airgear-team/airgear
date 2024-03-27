@@ -1,9 +1,9 @@
 package com.airgear.service;
 
 import com.airgear.dto.GoodsDto;
-import com.airgear.dto.RoleDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.exception.UserUniquenessViolationException;
+import com.airgear.model.Roles;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +32,9 @@ public interface UserService {
 
     List<Map<String, Integer>> getUserGoodsCount(Pageable pageable);
 
-    UserDto appointRole(String username, RoleDto role);
+    UserDto appointRole(String username, Roles role);
 
-    UserDto removeRole(String username, RoleDto role);
+    UserDto removeRole(String username, Roles role);
 
     User addRole(String username, String role);
 
@@ -56,5 +56,5 @@ public interface UserService {
 
     void deleteAccount(String username);
 
-    void accessToRoleChange(String executor, RoleDto role);
+    void accessToRoleChange(String executor, Roles role);
 }

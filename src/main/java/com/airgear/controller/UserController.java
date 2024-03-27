@@ -1,9 +1,9 @@
 package com.airgear.controller;
 
 import com.airgear.dto.GoodsDto;
-import com.airgear.dto.RoleDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
+import com.airgear.model.Roles;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
@@ -71,7 +71,7 @@ public class UserController {
     @Validated
     public ResponseEntity<UserDto> appointRole(Authentication auth,
                                                @PathVariable String username,
-                                               @RequestBody RoleDto role) {
+                                               @RequestBody Roles role) {
         userService.accessToRoleChange(auth.getName(), role);
         return ResponseEntity.ok(userService.appointRole(username, role));
     }
@@ -80,7 +80,7 @@ public class UserController {
     @Validated
     public ResponseEntity<String> removeRole(Authentication auth,
                                              @PathVariable String username,
-                                             @RequestBody RoleDto role) {
+                                             @RequestBody Roles role) {
         userService.accessToRoleChange(auth.getName(), role);
         userService.removeRole(username, role);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

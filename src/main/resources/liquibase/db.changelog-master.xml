@@ -767,4 +767,48 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="update_roles" author="Olena.Sinkevych">
+        <addColumn tableName="user_roles">
+            <column name="role" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <update tableName="user_roles">
+            <column name="role" value="USER"/>
+            <where>role_id='1'</where>
+        </update>
+        <update tableName="user_roles">
+            <column name="role" value="MODERATOR"/>
+            <where>role_id='2'</where>
+        </update>
+        <update tableName="user_roles">
+            <column name="role" value="ADMIN"/>
+            <where>role_id=3</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="modifyUserRolesJoinTable" author="Olena.Sinkevych">
+        <dropAllForeignKeyConstraints  baseTableName="user_roles"/>
+        <dropTable  cascadeConstraints="true"
+                    tableName="role"/>
+        <dropColumn tableName="user_roles" columnName="role_id"/>
+        <addUniqueConstraint  columnNames="user_id, role"
+                              constraintName="user_role"
+                              deferrable="true"
+                              disabled="true"
+                              initiallyDeferred="true"
+                              tableName="user_roles"
+                              tablespace="A String"
+                              validate="true"/>
+        <addForeignKeyConstraint
+                baseTableName="user_roles"
+                baseColumnNames="user_id"
+                constraintName="fk_role_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+
+    </changeSet>
 </databaseChangeLog>
