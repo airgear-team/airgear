@@ -807,4 +807,23 @@
         </insert>
     </changeSet>
 
+    <changeSet id="addColumnGoodsVerificationStatus" author="vitalii.kalinchyk">
+        <dropColumn tableName="goods">
+            <column name="goods_verification_status"/>
+        </dropColumn>
+        <addColumn tableName="goods">
+            <column name="goods_verification_status" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint
+                baseTableName="goods"
+                baseColumnNames="goods_verification_status"
+                constraintName="fk_goods_verification_status_id"
+                referencedTableName="goods_verification_status"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
 </databaseChangeLog>
