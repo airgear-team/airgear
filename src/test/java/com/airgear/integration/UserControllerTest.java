@@ -1,7 +1,6 @@
 package com.airgear.integration;
 
 import com.airgear.dto.*;
-import com.airgear.model.AccountStatus;
 import com.airgear.model.AuthToken;
 import com.airgear.model.RentalCard;
 import com.airgear.model.User;
@@ -12,10 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.airgear.model.UserStatus;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
-import com.airgear.model.goods.Location;
-import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.RoleRepository;
 import com.airgear.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -60,8 +58,6 @@ public class UserControllerTest {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
-    private AccountStatusRepository accountStatusRepository;
-    @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
 
     @BeforeAll
@@ -95,13 +91,13 @@ public class UserControllerTest {
     @Test
     @Order(1)
     public void testAuthenticate() {
-        AccountStatus acStatus = accountStatusRepository.findByStatusName("ACTIVE");
-        userTest.setAccountStatus(acStatus);
+        UserStatus userStatus = UserStatus.ACTIVE;
+        userTest.setUserStatus(userStatus);
         userTest.setRoles(Stream.of(roleRepository.findRoleByName("USER")).collect(Collectors.toSet()));
-        adminTest.setAccountStatus(acStatus);
+        adminTest.setUserStatus(userStatus);
         adminTest.setRoles(Stream.of(roleRepository.findRoleByName("ADMIN")).collect(Collectors.toSet()));
         moderatorTest.setRoles(Stream.of(roleRepository.findRoleByName("MODERATOR")).collect(Collectors.toSet()));
-        moderatorTest.setAccountStatus(acStatus);
+        moderatorTest.setUserStatus(userStatus);
         userAuthenticate(userTest, headersUser,true);
         userAuthenticate(adminTest, headersAdmin, false);
         userAuthenticate(moderatorTest, headersModerator, false);
@@ -116,8 +112,8 @@ public class UserControllerTest {
             if (isRegister) {
                 user = template.postForObject("http://localhost:" + port + "/auth/register", entity, User.class);
                 assertNotNull(user.getCreatedAt());
-                assertNotNull(user.getAccountStatus());
-                Assertions.assertEquals(1L, user.getAccountStatus().getId());
+                assertNotNull(user.getUserStatus());
+                Assertions.assertEquals(UserStatus.ACTIVE, user.getUserStatus());
             }else{
                 user.setPassword(bcryptEncoder.encode(user.getPassword()));
                 user =userRepository.save(user);

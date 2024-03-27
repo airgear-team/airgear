@@ -1,5 +1,6 @@
 package com.airgear.dto;
 
+import com.airgear.model.UserStatus;
 import lombok.Builder;
 import lombok.Data;
 
@@ -26,6 +27,6 @@ public class UserDto {
     private Set<GoodsDto> goods;
     private OffsetDateTime createdAt;
     private OffsetDateTime deleteAt;
-    private AccountStatusDto accountStatus;
+    private UserStatus userStatus;
     private Set<UserReviewDto> userReviews;
 }

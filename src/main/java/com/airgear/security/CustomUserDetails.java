@@ -1,9 +1,7 @@
 package com.airgear.security;
 
-import com.airgear.config.AccountStatusConfig;
-import com.airgear.model.AccountStatus;
 import com.airgear.model.User;
-import org.springframework.security.core.GrantedAuthority;
+import com.airgear.model.UserStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.*;
@@ -13,7 +11,7 @@ public class CustomUserDetails extends org.springframework.security.core.userdet
     public CustomUserDetails(User source) {
         super(source.getUsername(),
                 source.getPassword(),
-                source.getAccountStatus().getStatusName().equals(AccountStatusConfig.ACTIVE.name()),
+                source.getUserStatus().equals(UserStatus.ACTIVE),
                 true,
                 true,
                 true,
@@ -22,9 +20,7 @@ public class CustomUserDetails extends org.springframework.security.core.userdet
 
     private static Set<SimpleGrantedAuthority> getAuthorities(User source) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        source.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-        });
+        source.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
         return authorities;
     }
 

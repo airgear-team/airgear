@@ -784,4 +784,47 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="addUserStatusTable" author="vitalii.kalinchyk">
+        <createTable tableName="user_status">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="addValuesToUserStatusTable" author="vitalii.kalinchyk">
+    <insert tableName="user_status">
+            <column name="id" valueNumeric="0"/>
+            <column name="name" value="ACTIVE"/>
+        </insert>
+        <insert tableName="user_status">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="SUSPENDED"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="moveAccountStatusToUserStatus" author="vitalii.kalinchyk">
+        <addColumn tableName="user">
+            <column name="user_status" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint
+                baseTableName="user"
+                baseColumnNames="user_status"
+                constraintName="fk_user_status_id"
+                referencedTableName="user_status"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+        <sql>UPDATE user SET user_status = account_status_id - 1 </sql>
+    </changeSet>
+
+    <changeSet id="dropAccountStatusTable" author="vitalii.kalinchyk">
+        <dropTable tableName="account_status"/>
+    </changeSet>
+
 </databaseChangeLog>
