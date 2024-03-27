@@ -829,7 +829,7 @@
     </changeSet>
 
     <changeSet id="renameStatusInGoodsToGoodsStatus" author="vitalii.kalinchyk">
-        <renameColumn tableName="goods" oldColumnName="status" newColumnName="goods_status"/>
+        <renameColumn tableName="goods" oldColumnName="status" newColumnName="goods_status" columnDataType ="BIGINT"/>
     </changeSet>
 
     <changeSet id="addForeignKeyToGoodsStatusColumn" author="vitalii.kalinchyk">
