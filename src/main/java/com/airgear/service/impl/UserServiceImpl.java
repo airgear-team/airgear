@@ -245,7 +245,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 
     @Override
-    public void deleteAccount(String username) {
+    public void deleteUser(String username) {
         User user = userRepository.findByUsername(username);
         if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> "ADMIN".equals(role.getName()))) {
             setUserStatus(username, UserStatus.SUSPENDED);

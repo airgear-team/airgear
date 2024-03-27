@@ -55,8 +55,8 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @DeleteMapping(value = "/{username}")
-    public ResponseEntity<String> deleteAccount(@PathVariable String username) {
-        userService.deleteAccount(username);
+    public ResponseEntity<String> deleteUser(@PathVariable String username) {
+        userService.deleteUser(username);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

@@ -55,7 +55,7 @@ public interface UserService {
 
     UserDto unblockUser(Long userId);
 
-    void deleteAccount(String username);
+    void deleteUser(String username);
 
     void accessToRoleChange(String executor, RoleDto role);
 }
