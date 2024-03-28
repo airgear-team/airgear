@@ -9,23 +9,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * The {@code LoggingImpl} implementation of the {@link Logging} service interface.
- * Provides methods to log information about incoming HTTP requests and outgoing HTTP responses.
- * <p>
- *
- * @author Oleksandr Tuleninov
- * @version 01
- */
 @Slf4j
 @Service
 public class LoggingImpl implements Logging {
 
-    /**
-     * Log information about the incoming HTTP request.
-     *
-     * @param request the HttpServletRequest object representing the incoming request
-     */
     @Override
     public void log(HttpServletRequest request) {
         String message = buildRequestMessage(request);
@@ -33,11 +20,6 @@ public class LoggingImpl implements Logging {
         log.info(message);
     }
 
-    /**
-     * Log information about the outgoing HTTP response.
-     *
-     * @param response the HttpServletResponse object representing the outgoing response
-     */
     @Override
     public void log(HttpServletResponse response) {
         String message = buildResponseMessage(response);

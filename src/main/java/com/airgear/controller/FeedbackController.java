@@ -16,7 +16,7 @@ import javax.validation.Valid;
 @RequestMapping("/feedback")
 public class FeedbackController {
 
-    private FeedbackService feedbackService;
+    private final FeedbackService feedbackService;
 
     @Autowired
     public FeedbackController(FeedbackService feedbackService){

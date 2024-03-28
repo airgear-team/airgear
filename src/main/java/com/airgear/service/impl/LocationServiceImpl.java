@@ -14,23 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Implementation of the {@link LocationService} interface responsible
- * for handling location-related operations.
- * <p>
- *
- * @author Oleksandr Ilchenko, Oleksandr Tuleninov
- * @version 01
- * @see LocationService
- * @see RegionsRepository
- * @see LocationRepository
- * @see SaveLocationRequest
- * @see LocationResponse
- * @see Region
- * @see Location
- * @see Page
- * @see Pageable
- */
 @Service
 @Transactional
 public class LocationServiceImpl implements LocationService {

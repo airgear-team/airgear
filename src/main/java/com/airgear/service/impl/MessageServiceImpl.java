@@ -24,14 +24,6 @@ import static com.airgear.exception.GoodsExceptions.goodsNotFound;
 import static com.airgear.exception.MessageExceptions.messageNotFound;
 import static com.airgear.exception.UserExceptions.userNotFound;
 
-/**
- * Implementation of the {@link MessageService} interface responsible
- * for handling message-related operations.
- * <p>
- *
- * @author Oleksandr Tuleninov, Vitalii Shkaraputa
- * @version 01
- */
 @Service
 @Transactional
 @AllArgsConstructor
