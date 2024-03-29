@@ -809,7 +809,7 @@
 
     <changeSet id="addColumnGoodsVerificationStatus" author="vitalii.kalinchyk">
         <dropColumn tableName="goods">
-            <column name="goods_verification_status"/>
+            <column name="verification_status"/>
         </dropColumn>
         <addColumn tableName="goods">
             <column name="goods_verification_status" type="BIGINT">
