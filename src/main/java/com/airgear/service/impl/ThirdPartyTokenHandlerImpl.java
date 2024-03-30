@@ -13,29 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import static com.airgear.security.SecurityConstantsUI.THIRD_PARTY_SERVICE;
 import static com.airgear.security.ThirdPartyService.valueOf;
 
-/**
- * Implementation of {@link ThirdPartyTokenHandler} that handles third-party tokens.
- *
- * <p>This service extracts the third-party service type and token from the HTTP request headers
- * and delegates token handling to specific handlers based on the third-party service.</p>
- *
- * <p>Supported third-party services: Google, Apple, Facebook.</p>
- *
- * @author Oleksandr Tuleninov
- * @version 1.0
- */
 @Service
 @AllArgsConstructor
 public class ThirdPartyTokenHandlerImpl implements ThirdPartyTokenHandler {
 
     private final GoogleTokenHandler googleTokenHandler;
 
-    /**
-     * Executes token handling based on the third-party service specified in the request headers.
-     *
-     * @param request The HTTP servlet request.
-     * @return User information extracted from the token.
-     */
     @Override
     public LoginUserDto execute(HttpServletRequest request) {
         String thirdPartyService = request.getHeader(THIRD_PARTY_SERVICE);

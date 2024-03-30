@@ -8,13 +8,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-/**
- * Represents a request object for saving a new message with specific fields.
- *
- * @author Oleksandr Tuleninov
- * @version 01
- */
-
 @Data
 @Setter(AccessLevel.NONE)
 @AllArgsConstructor

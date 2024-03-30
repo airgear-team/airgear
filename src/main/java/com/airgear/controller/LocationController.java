@@ -18,19 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 
-/**
- * Controller class for managing locations.
- * Handles HTTP requests related to locations, such as creation, retrieval.
- * <p>
- *
- * @author Oleksandr Ilchenko, Oleksandr Tuleninov
- * @version 01
- * @see ResponseEntity
- * @see UriComponentsBuilder
- * @see LocationService
- * @see Page
- * @see Pageable
- */
 @RestController
 @RequestMapping(Routes.LOCATION)
 public class LocationController {
