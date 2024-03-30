@@ -2,7 +2,6 @@ package com.airgear.service.impl;
 
 import com.airgear.dto.LoginUserDto;
 import com.airgear.dto.TokenResponseDTO;
-import com.airgear.dto.UserDto;
 import com.airgear.service.GoogleTokenHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

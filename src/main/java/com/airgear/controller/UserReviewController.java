@@ -16,6 +16,7 @@ import javax.validation.Valid;
 @RequestMapping("/reviews") // TODO use Routes.REVIEWS
 @AllArgsConstructor
 public class UserReviewController {
+
     private final UserReviewService userReviewService;
 
     @PostMapping("/create")

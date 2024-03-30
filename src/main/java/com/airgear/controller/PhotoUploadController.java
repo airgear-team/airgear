@@ -1,4 +1,5 @@
 package com.airgear.controller;
+
 import com.airgear.service.impl.GoogleDriveServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+//@RestController
 @AllArgsConstructor
 public class PhotoUploadController {
 

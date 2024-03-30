@@ -33,9 +33,9 @@ import java.util.Map;
 @AllArgsConstructor
 public class GoodsController {
 
-    private GoodsService goodsService;
-    private ComplaintService complaintService;
-    private RentalAgreementService rentalAgreementService;
+    private final GoodsService goodsService;
+    private final ComplaintService complaintService;
+    private final RentalAgreementService rentalAgreementService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping

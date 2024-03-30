@@ -10,11 +10,10 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public Role findByName(String name) {
         return roleRepository.findRoleByName(name);
     }
-
 }

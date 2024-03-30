@@ -22,6 +22,8 @@ import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
 import com.airgear.service.GoodsStatusService;
 import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

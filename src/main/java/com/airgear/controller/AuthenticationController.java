@@ -27,10 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 @AllArgsConstructor
 public class AuthenticationController {
 
-    private AuthenticationManager authenticationManager;
-    private TokenProvider jwtTokenUtil;
-    private UserService userService;
-    private ThirdPartyTokenHandler tokenHandler;
+    private final AuthenticationManager authenticationManager;
+    private final TokenProvider jwtTokenUtil;
+    private final UserService userService;
+    private final ThirdPartyTokenHandler tokenHandler;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> generateToken(@RequestBody LoginUserDto userDto) throws AuthenticationException {

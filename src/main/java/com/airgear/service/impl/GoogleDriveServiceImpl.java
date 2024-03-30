@@ -7,6 +7,8 @@ import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.google.api.services.drive.model.Permission;
 
@@ -19,8 +21,8 @@ import java.util.Collections;
 @AllArgsConstructor
 public class GoogleDriveServiceImpl implements UploadPhotoService {
 
-    private Drive driveService;
-    private PhotoRepository photoRepository;
+    private final Drive driveService;
+    private final PhotoRepository photoRepository;
 
     @Override
     public String uploadPhoto(MultipartFile file) throws IOException {
