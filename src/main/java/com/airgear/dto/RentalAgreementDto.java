@@ -14,7 +14,7 @@ public class RentalAgreementDto {
     private OffsetDateTime lastDate;
     private GoodsDto goods;
     private String goal;
-    private double rentalPrice;
+    private Double rentalPrice;
     private String lessorDocument;
     private String renterDocument;
     private String lessorPhone;

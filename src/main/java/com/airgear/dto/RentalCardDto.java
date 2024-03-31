@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 @Builder
 public class RentalCardDto {
 
-        private long id;
+        private Long id;
         private String lessorUsername;
         private String renterUsername;
         private OffsetDateTime firstDate;

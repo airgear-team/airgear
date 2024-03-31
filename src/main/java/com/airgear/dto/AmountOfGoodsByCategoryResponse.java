@@ -8,6 +8,5 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class AmountOfGoodsByCategoryResponse {
-
     Map<CategoryDto, Long> categoryAmounts;
 }

@@ -4,7 +4,6 @@ import com.airgear.model.location.request.SaveLocationRequest;
 import com.airgear.model.location.response.LocationResponse;
 import com.airgear.model.region.response.RegionResponse;
 import com.airgear.service.LocationService;
-import com.airgear.utils.Routes;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;

@@ -11,7 +11,7 @@ public class UserReviewDto {
     private Long id;
     private UserDto reviewer;
     private UserDto reviewed;
-    private int rating;
+    private Integer rating;
     private String comment;
     private OffsetDateTime createdAt;
 }

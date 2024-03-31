@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/reviews") // TODO use Routes.REVIEWS
+@RequestMapping("/reviews")
 @AllArgsConstructor
 public class UserReviewController {
 

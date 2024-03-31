@@ -17,8 +17,8 @@ public class SaveMessageRequestDTO {
         String text;
 
         @NotNull(message = "goods id must not be null")
-        long goodsId;
+        Long goodsId;
 
         @NotNull(message = "user id must not be null")
-        long userId;
+        Long userId;
 }

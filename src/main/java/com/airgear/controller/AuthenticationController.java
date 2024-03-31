@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/auth") // TODO використати класс шляхів Routes.AUTH
+@RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthenticationController {
 
