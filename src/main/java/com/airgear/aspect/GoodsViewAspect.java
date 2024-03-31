@@ -1,4 +1,4 @@
-package com.airgear.aspects;
+package com.airgear.aspect;
 
 import com.airgear.model.goods.Goods;
 import com.airgear.service.GoodsService;
