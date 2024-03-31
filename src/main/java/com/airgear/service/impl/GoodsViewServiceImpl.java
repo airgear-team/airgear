@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 
-@Service
+@Service("goodsViewService")
 @AllArgsConstructor
 public class GoodsViewServiceImpl implements GoodsViewService {
 
