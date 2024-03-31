@@ -8,7 +8,6 @@ import com.airgear.repository.RentalCardRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.RentalCardService;
-import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,6 @@ public class RentalCardServiceImpl implements RentalCardService {
 
     private final RentalCardRepository rentalCardRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
     private final GoodsService goodsService;
 
     @Override
