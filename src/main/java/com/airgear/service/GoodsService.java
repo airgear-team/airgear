@@ -39,8 +39,6 @@ public interface GoodsService {
 
     Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price);
 
-    void saveGoodsView(String ip, Long userId, Goods goods);
-
     GoodsDto createGoods(String username, GoodsDto goodsDto);
 
     GoodsDto addToFavorites(String username, Long goodsId);
