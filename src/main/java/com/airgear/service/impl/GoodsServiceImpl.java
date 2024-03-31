@@ -2,10 +2,8 @@ package com.airgear.service.impl;
 
 import com.airgear.exception.RegionExceptions;
 import com.airgear.model.User;
-import com.airgear.dto.AmountOfGoodsByCategoryResponse;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.TopGoodsPlacementDto;
-import com.airgear.dto.TotalNumberOfGoodsResponse;
 import com.airgear.dto.*;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.GoodsNotFoundException;
