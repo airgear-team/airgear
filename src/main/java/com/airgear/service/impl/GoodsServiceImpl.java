@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import com.airgear.exception.RegionExceptions;
 import com.airgear.model.User;
 import com.airgear.dto.AmountOfGoodsByCategoryResponse;
 import com.airgear.dto.GoodsDto;
