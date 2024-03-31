@@ -10,7 +10,6 @@ import com.airgear.service.GoodsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,9 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.io.IOException;
-import java.time.OffsetDateTime;
 import java.math.BigDecimal;
-import java.util.Map;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -83,22 +80,6 @@ public class GoodsController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/getcountnewgoods")
-    public Integer findCountNewGoodsFromPeriod(@RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
-                                               @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate) {
-        return goodsService.getNewGoodsFromPeriod(fromDate, toDate);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
-    @GetMapping("/getCountDeletedGoods")
-    public ResponseEntity<CountDeletedGoodsDTO> countDeletedGoods(
-            @RequestParam(required = false) String category,
-            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate) {
-        return ResponseEntity.ok(goodsService.countDeletedGoods(startDate, endDate, category));
-    }
-
     @GetMapping("/random-goods")
     public List<GoodsDto> getRandomGoods(
             @RequestParam(required = false, name = "category") String categoryName,
@@ -130,34 +111,6 @@ public class GoodsController {
                                                       @PathVariable Long goodsId,
                                                       @Valid @RequestBody ComplaintDto complaint) {
         return ResponseEntity.ok(complaintService.save(auth.getName(), goodsId, complaint));
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/total")
-    public ResponseEntity<TotalNumberOfGoodsResponse> totalNumberOfGoods() {
-        return ResponseEntity.ok(goodsService.getTotalNumberOfGoodsResponse());
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
-    @GetMapping("/getNumbersOfTopGoods")
-    public ResponseEntity<TotalNumberOfTopGoodsResponse> getTotalNumberOfTopGoods() {
-        return ResponseEntity.ok(goodsService.getTotalNumberOfTopGoodsResponse());
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/category/total")
-    public ResponseEntity<AmountOfGoodsByCategoryResponse> amountOfGoodsByCategory() {
-        return ResponseEntity.ok(goodsService.getAmountOfGoodsByCategory());
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/category/total/new")
-    public ResponseEntity<Map<CategoryDto, Long>> amountOfNewGoodsByCategory(
-            @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
-            @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate
-    ){
-        Map<CategoryDto, Long> categoryAmounts = goodsService.getAmountOfNewGoodsByCategory(fromDate,toDate);
-        return ResponseEntity.ok(categoryAmounts);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")

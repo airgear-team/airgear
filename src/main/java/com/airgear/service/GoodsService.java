@@ -5,10 +5,8 @@ import com.airgear.model.goods.Goods;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.Set;
 
 public interface GoodsService {
@@ -37,23 +35,9 @@ public interface GoodsService {
 
     Page<GoodsDto> listGoodsByName(Pageable pageable, String goodsName);
 
-    int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate);
-
-    CountDeletedGoodsDTO countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String category);
-
-    Long getTotalNumberOfGoods();
-
-    TotalNumberOfGoodsResponse getTotalNumberOfGoodsResponse();
-
-    AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory();
-
-    TotalNumberOfTopGoodsResponse getTotalNumberOfTopGoodsResponse();
-
     List<GoodsDto> getRandomGoods(String categoryName, int quantity);
 
     Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price);
-
-    Map<CategoryDto, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate);
 
     void saveGoodsView(String ip, Long userId, Goods goods);
 

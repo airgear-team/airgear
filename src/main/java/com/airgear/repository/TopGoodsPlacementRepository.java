@@ -13,7 +13,4 @@ public interface TopGoodsPlacementRepository extends JpaRepository<TopGoodsPlace
     @Query("SELECT t FROM TopGoodsPlacement t WHERE t.startAt <= CURRENT_TIMESTAMP AND t.endAt >= CURRENT_TIMESTAMP")
     List<TopGoodsPlacement> findAllActivePlacements();
 
-    @Query("SELECT COUNT(t) FROM TopGoodsPlacement t WHERE t.startAt <= CURRENT_TIMESTAMP AND t.endAt >= CURRENT_TIMESTAMP")
-    Long countAllActivePlacements();
-
 }
