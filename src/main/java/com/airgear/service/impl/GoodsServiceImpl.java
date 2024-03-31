@@ -1,7 +1,5 @@
 package com.airgear.service.impl;
 
-import com.airgear.exception.GoodsExceptions;
-import com.airgear.exception.RegionExceptions;
 import com.airgear.model.User;
 import com.airgear.dto.AmountOfGoodsByCategoryResponse;
 import com.airgear.dto.GoodsDto;
@@ -12,7 +10,6 @@ import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.GoodsNotFoundException;
 import com.airgear.mapper.CategoryMapper;
 import com.airgear.mapper.GoodsMapper;
-import com.airgear.mapper.LocationMapper;
 import com.airgear.model.goods.Category;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
@@ -22,8 +19,6 @@ import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
 import com.airgear.service.GoodsStatusService;
 import lombok.RequiredArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -75,6 +70,7 @@ public class GoodsServiceImpl implements GoodsService {
         saveGoodsView(ipAddress, user.getId(), goods);
         return goodsMapper.toDto(goods);
     }
+
     @Override
     public void deleteGoods(Goods goods) {
         goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
@@ -96,13 +92,6 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Goods saveGoods(@Valid Goods goods) {  // TODO to refactor this code
         checkCategory(goods);
-        Long userId = goods.getUser().getId();
-        int categoryId = goods.getCategory().getId();
-        int productCount = goodsRepository.countByUserIdAndCategoryId(userId, categoryId);
-        if (productCount >= MAX_GOODS_IN_CATEGORY_COUNT) {
-            throw GoodsExceptions.goodsLimitExceeded(categoryId);
-        }
-        goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
 
