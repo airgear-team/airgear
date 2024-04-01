@@ -22,7 +22,7 @@ public interface CheckoutDtoMapper {
     @Mapping(target = "currency", expression = "java(Checkout.Currency.valueOf(checkoutDto.getCurrency()))")
     Checkout toModel(CheckoutDto checkoutDto);
 
-    default Map<String, String> toMap(CheckoutDto checkoutDto) throws IllegalAccessException {
+    default Map<String, String> toMapRepresentationOfDtoFields(CheckoutDto checkoutDto) throws IllegalAccessException {
         Map<String, String> map = new HashMap<>();
         Field[] fields = checkoutDto.getClass().getDeclaredFields();
 

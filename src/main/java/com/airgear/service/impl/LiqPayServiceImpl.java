@@ -47,7 +47,7 @@ public class LiqPayServiceImpl implements LiqPayService {
     @Override
     public String generatePaymentLink(CheckoutDto checkoutDTO) throws IllegalAccessException {
         checkoutRepository.save(checkoutDtoMapper.toModel(checkoutDTO));
-        Map<String, String> params = checkoutDtoMapper.toMap(checkoutDTO);
+        Map<String, String> params = checkoutDtoMapper.toMapRepresentationOfDtoFields(checkoutDTO);
         return liqPay.cnb_form(params);
     }
 
