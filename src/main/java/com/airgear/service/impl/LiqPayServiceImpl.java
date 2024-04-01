@@ -1,6 +1,7 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.CheckoutDTO;
+import com.airgear.dto.CheckoutDto;
+import com.airgear.mapper.CheckoutDtoMapper;
 import com.airgear.model.goods.Goods;
 import com.airgear.repository.CheckoutRepository;
 import com.airgear.service.LiqPayService;
@@ -19,6 +20,7 @@ public class LiqPayServiceImpl implements LiqPayService {
     private final String TEST_PUBLIC_KEY = "sandbox_i49078650453";
     private final String TEST_PRIVATE_KEY = "sandbox_RehhVzMcNFoVDkbUSLA6DoOuXUjsJdR2IQLKPFEU";
     private final LiqPay liqPay = new LiqPay(TEST_PUBLIC_KEY, TEST_PRIVATE_KEY);
+    private final CheckoutDtoMapper checkoutDtoMapper;
 
     /**
      * This method creates CheckoutDTO from good with action pay (one payment).
@@ -32,8 +34,8 @@ public class LiqPayServiceImpl implements LiqPayService {
      * @return CheckoutDTO
      */
     @Override
-    public CheckoutDTO createCheckoutDtoPay(Goods goods, Authentication auth) {
-        return CheckoutDTO.builder()
+    public CheckoutDto createCheckoutDtoPay(Goods goods, Authentication auth) {
+        return CheckoutDto.builder()
                 .action("pay")
                 .amount(goods.getPrice())
                 .currency("UAH") // for other currencies we need to add currency attribute to model in future
@@ -43,9 +45,9 @@ public class LiqPayServiceImpl implements LiqPayService {
     }
 
     @Override
-    public String generatePaymentLink(CheckoutDTO checkoutDTO) throws IllegalAccessException {
-        checkoutRepository.save(checkoutDTO.toModel());
-        Map<String, String> params = checkoutDTO.toMap();
+    public String generatePaymentLink(CheckoutDto checkoutDTO) throws IllegalAccessException {
+        checkoutRepository.save(checkoutDtoMapper.toModel(checkoutDTO));
+        Map<String, String> params = checkoutDtoMapper.toMap(checkoutDTO);
         return liqPay.cnb_form(params);
     }
 

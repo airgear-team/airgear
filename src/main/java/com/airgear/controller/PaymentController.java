@@ -1,6 +1,6 @@
 package com.airgear.controller;
 
-import com.airgear.dto.CheckoutDTO;
+import com.airgear.dto.CheckoutDto;
 import com.airgear.model.goods.Goods;
 import com.airgear.service.GoodsService;
 import com.airgear.service.LiqPayService;
@@ -24,7 +24,7 @@ public class PaymentController {
     @GetMapping("/pay/{goodsId}")
     public String redirectToPaymentPage(@PathVariable Long goodsId, Authentication auth) throws IllegalAccessException {
         Goods good = goodsService.getGoodsById(goodsId);
-        CheckoutDTO checkoutDTO = liqPayService.createCheckoutDtoPay(good, auth);
+        CheckoutDto checkoutDTO = liqPayService.createCheckoutDtoPay(good, auth);
         String paymentLink = liqPayService.generatePaymentLink(checkoutDTO);
         return "redirect:" + paymentLink;
     }
