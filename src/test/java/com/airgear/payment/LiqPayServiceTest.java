@@ -1,7 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.airgear.dto.CheckoutDTO;
+import com.airgear.dto.CheckoutDto;
 import com.airgear.model.goods.Goods;
 import com.airgear.repository.CheckoutRepository;
 import com.airgear.service.impl.LiqPayServiceImpl;
@@ -35,7 +35,7 @@ public class LiqPayServiceTest {
         Authentication auth = mock(Authentication.class);
         when(auth.getName()).thenReturn("TestUser");
 
-        CheckoutDTO checkoutDTO = liqPayService.createCheckoutDtoPay(goods, auth);
+        CheckoutDto checkoutDTO = liqPayService.createCheckoutDtoPay(goods, auth);
 
         assertNotNull(checkoutDTO);
         assertEquals("pay", checkoutDTO.getAction());
@@ -47,7 +47,7 @@ public class LiqPayServiceTest {
 
     @Test
     void testGeneratePaymentLink() throws IllegalAccessException {
-        CheckoutDTO checkoutDTO = CheckoutDTO.builder()
+        CheckoutDto checkoutDTO = CheckoutDto.builder()
                 .action("pay")
                 .amount(new BigDecimal(100.00))
                 .currency("UAH")
