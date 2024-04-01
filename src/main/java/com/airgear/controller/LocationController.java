@@ -1,8 +1,8 @@
 package com.airgear.controller;
 
-import com.airgear.model.location.request.SaveLocationRequest;
-import com.airgear.model.location.response.LocationResponse;
-import com.airgear.model.region.response.RegionResponse;
+import com.airgear.dto.SaveLocationRequestDTO;
+import com.airgear.dto.LocationResponseDTO;
+import com.airgear.dto.RegionResponseDTO;
 import com.airgear.service.LocationService;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
@@ -31,11 +31,11 @@ public class LocationController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    public ResponseEntity<LocationResponse> createLocation(@RequestBody @Valid SaveLocationRequest request,
-                                                           UriComponentsBuilder ucb) {
-        LocationResponse response = locationService.addLocation(request);
+    public ResponseEntity<LocationResponseDTO> createLocation(@RequestBody @Valid SaveLocationRequestDTO request,
+                                                              UriComponentsBuilder ucb) {
+        LocationResponseDTO response = locationService.addLocation(request);
         return ResponseEntity
-                .created(ucb.path("/{id}").build(response.id()))
+                .created(ucb.path("/{id}").build(response.getId()))
                 .body(response);
     }
 
@@ -45,7 +45,7 @@ public class LocationController {
     )
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PageableAsQueryParam
-    public Page<RegionResponse> getAllRegions(@Parameter(hidden = true) Pageable pageable) {
+    public Page<RegionResponseDTO> getAllRegions(@Parameter(hidden = true) Pageable pageable) {
         return locationService.getAllRegions(pageable);
     }
 }
