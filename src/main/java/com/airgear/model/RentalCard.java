@@ -3,6 +3,7 @@ package com.airgear.model;
 import com.airgear.model.goods.Goods;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,8 +13,9 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 
-@Data
 @Entity
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RentalCard {
