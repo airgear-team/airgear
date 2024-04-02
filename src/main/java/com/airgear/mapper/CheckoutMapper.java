@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Mapper(componentModel = "spring")
-public interface CheckoutDtoMapper {
+public interface CheckoutMapper {
 
     @Mapping(target = "order_id", source = "id")
     @Mapping(target = "action", expression = "java(checkout.getAction().toString())")
