@@ -10,7 +10,6 @@ import com.airgear.exception.GoodsNotFoundException;
 import com.airgear.mapper.CategoryMapper;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.goods.Category;
-import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.TopGoodsPlacement;
 import com.airgear.model.location.Location;
@@ -37,7 +36,6 @@ public class GoodsServiceImpl implements GoodsService {
     private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
     private final CategoryRepository categoryRepository;
-    private final GoodsViewRepository goodsViewRepository;
     private final GoodsStatusService goodsStatusService;
     private final LocationRepository locationRepository;
     private final RegionsRepository regionsRepository;
@@ -65,7 +63,6 @@ public class GoodsServiceImpl implements GoodsService {
         if (!goods.getGoodsStatus().getName().equals("ACTIVE")) {
             throw new GoodsNotFoundException("Goods was deleted");
         }
-        saveGoodsView(ipAddress, user.getId(), goods);
         return goodsMapper.toDto(goods);
     }
 
@@ -205,17 +202,6 @@ public class GoodsServiceImpl implements GoodsService {
     private static List<Goods> randomizeAndLimit(List<Goods> goods, int limit) {
         Collections.shuffle(goods);
         return goods.subList(0, Math.min(goods.size(), limit));
-    }
-
-    @Override
-    public void saveGoodsView(String ip, Long userId, Goods goods) {
-        if (goodsViewRepository.existsByIpAndGoods(ip, goods)) {
-            if (userId != null && !goodsViewRepository.existsByUserIdAndGoods(userId, goods)) {
-                goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
-            }
-            return;
-        }
-        goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
     }
 
     @Override
