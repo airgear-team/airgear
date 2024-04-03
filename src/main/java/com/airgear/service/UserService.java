@@ -3,20 +3,16 @@ package com.airgear.service;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.RoleDto;
 import com.airgear.dto.UserExistDto;
-import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
-import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface UserService {
 
-    void setAccountStatus(String username, long accountStatusId);
+    void setAccountStatus(String username, Long accountStatusId);
 
     User save(UserDto user);
 
@@ -42,7 +38,7 @@ public interface UserService {
 
     Set<GoodsDto> getFavoriteGoods(Authentication auth);
 
-    void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException;
+    void checkForUserUniqueness(UserDto userDto);
 
     UserDto blockUser(Long userId);
 

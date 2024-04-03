@@ -1,7 +1,6 @@
 package com.airgear.controller;
 
 import com.airgear.dto.*;
-import com.airgear.exception.GenerateRentalAgreementException;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.RentalAgreement;
 import com.airgear.service.*;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.io.IOException;
 import java.math.BigDecimal;
 
 @Slf4j
@@ -73,11 +71,8 @@ public class GoodsController {
     @PostMapping("/download/rental/{goodsId}")
     public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId,
                                                        @Valid @RequestBody RentalAgreement rental) {
-        try {
-            return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
-        } catch (IOException e) {
-            throw new GenerateRentalAgreementException("The problem with loading the lease agreement.");
-        }
+         return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
+
     }
 
     @GetMapping("/random-goods")

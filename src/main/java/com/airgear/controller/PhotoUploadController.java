@@ -1,5 +1,6 @@
 package com.airgear.controller;
 
+import com.airgear.dto.MessageDto;
 import com.airgear.service.impl.GoogleDriveServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +18,12 @@ public class PhotoUploadController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/uploadPhoto")
-    public ResponseEntity<String> uploadPhoto(@RequestParam("photo") MultipartFile photo) {
+    public ResponseEntity<?> uploadPhoto(@RequestParam("photo") MultipartFile photo) {
         try {
             String photoId = googleDriveTestService.uploadPhoto(photo);
-            return ResponseEntity.ok("Uploaded Photo ID: " + photoId);
+            return ResponseEntity.ok(new MessageDto("Uploaded Photo ID: " + photoId));
         } catch (IOException e) {
-            return ResponseEntity.internalServerError().body("Failed to upload photo: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(new IOException("Failed to upload photo: " + e.getMessage()));
         }
     }
 }

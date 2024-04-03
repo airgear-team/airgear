@@ -3,7 +3,7 @@ package com.airgear.controller;
 import com.airgear.dto.CalendarDay;
 import com.airgear.dto.RentalCardDto;
 import com.airgear.dto.UserDto;
-import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.UserExceptions;
 import com.airgear.model.RentalCard;
 import com.airgear.service.RentalCardService;
 import com.airgear.service.UserService;
@@ -49,7 +49,7 @@ public class RentalCardController {
         if (!(user.getId().equals(existingRentalCard.getRenter().getId())
                 ||user.getId().equals(existingRentalCard.getLessor().getId())
                 || user.getRoles().stream().anyMatch(role->role.getName().equals("ADMIN")))){
-            throw new ForbiddenException("It is not your rental card");
+            throw UserExceptions.AccessDenied("It is not your rental card");
         }
         return ResponseEntity.ok(updatedRentalCard);
     }
@@ -62,7 +62,7 @@ public class RentalCardController {
         if (!(user.getId().equals(existingRentalCard.getRenter().getId())
                 ||user.getId().equals(existingRentalCard.getLessor().getId())
                 || user.getRoles().stream().anyMatch(role->role.getName().equals("ADMIN")))){
-            throw new ForbiddenException("It is not your rental card");
+            throw UserExceptions.AccessDenied("It is not your rental card");
         }
         rentalCardService.deleteRentalCard(existingRentalCard);
         return ResponseEntity.noContent().build();
