@@ -113,6 +113,6 @@ public class Goods {
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<TopGoodsPlacement> topGoodsPlacements;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private GoodsCondition goodsCondition;
 }

@@ -784,4 +784,21 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="update_goods_condition_enum_type" author="Opanasenko-Mykhailo">
+        <sql>
+            UPDATE airgeardb.goods
+            SET goods_condition =
+                    CASE
+                        WHEN goods_condition = 'NEW' THEN 0
+                        WHEN goods_condition = 'USED' THEN 1
+                        ELSE goods_condition
+                        END;
+        </sql>
+        <modifyDataType
+                tableName="goods"
+                columnName="goods_condition"
+                newDataType="INT"/>
+
+    </changeSet>
+
 </databaseChangeLog>
