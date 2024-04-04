@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
+import com.airgear.config.AccountStatusConfig;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.exception.ChangeRoleException;
@@ -15,9 +16,10 @@ import com.airgear.exception.UserExceptions;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
-import com.airgear.model.UserStatus;
-import com.airgear.model.Roles;
+import com.airgear.model.AccountStatus;
+import com.airgear.model.Role;
 import com.airgear.model.email.EmailMessage;
+import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
@@ -40,6 +42,7 @@ import static com.airgear.utils.Constants.ROLE_ADMIN_NAME;
 public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepository;
+    private final AccountStatusRepository accountStatusRepository;
     private final BCryptPasswordEncoder bcryptEncoder;
     private final UserMapper userMapper;
     private final GoodsMapper goodsMapper;
@@ -67,7 +70,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     public List<UserDto> findActiveUsers() {
         List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(user -> user.getStatus() != null && user.getStatus().equals(UserStatus.ACTIVE)).toList();
+                .filter(user -> user.getAccountStatus() != null && user.getAccountStatus().getStatusName().equals("ACTIVE")).toList();
         return userMapper.toDtoList(users);
     }
 
@@ -86,16 +89,21 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void setAccountStatus(String username, UserStatus status) {
+    public void setAccountStatus(String username, long accountStatusId) {
         User user = userRepository.findByUsername(username);
-        if (user == null || user.getStatus() == status) {
+        if (user == null || user.getAccountStatus().getId() == accountStatusId) {
             throw new ForbiddenException("User not found or was already deleted");
         }
 
-        user.setStatus(status);
-        userRepository.save(user);
-        if (status.equals(UserStatus.SUSPENDED)) {
+        AccountStatus accountStatus = accountStatusRepository.findById(accountStatusId).orElseThrow(() -> new RuntimeException("Account status not found"));
+
+        if (accountStatus.getId() == 2) {
+            user.setAccountStatus(accountStatus);
+            userRepository.save(user);
             sendFarewellEmail(Set.of(user.getEmail()));
+        } else {
+            user.setAccountStatus(accountStatus);
+            userRepository.save(user);
         }
     }
 
@@ -112,13 +120,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if(user.getPhone()!=null && userRepository.existsByPhone(user.getPhone())){
             throw new ForbiddenException("Other user with phone number exists!");
         }
-        Set<Roles> roleSet = new HashSet<>();
-        roleSet.add(Roles.USER);
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(Role.USER);
         User newUser = userMapper.toModel(user);
         newUser.setRoles(roleSet);
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         newUser.setCreatedAt(OffsetDateTime.now());
-        newUser.setStatus(UserStatus.ACTIVE);
+        newUser.setAccountStatus(accountStatusRepository.findByStatusName("ACTIVE"));
         return userRepository.save(newUser);
     }
 
@@ -130,8 +138,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User addRole(String username, String role) {
         User user = userRepository.findByUsername(username);
-        Set<Roles> roles = user.getRoles();
-        roles.add(Roles.ADMIN);
+        Set<Role> roles = user.getRoles();
+        roles.add(Role.ADMIN);
         user.setRoles(roles);
         return update(user);
     }
@@ -139,16 +147,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User deleteRole(String username, String role) {
         User user = userRepository.findByUsername(username);
-        Set<Roles> roles = user.getRoles();
-        roles.remove(Roles.ADMIN);
+        Set<Role> roles = user.getRoles();
+        roles.remove(Role.ADMIN);
         if (roles.isEmpty()) {
-            roles.add(Roles.USER);
+            roles.add(Role.USER);
         }
         return update(user);
     }
 
     @Override
-    public UserDto appointRole(String username, Roles role) {
+    public UserDto appointRole(String username, Role role) {
         User user = userRepository.findByUsername(username);
         user.getRoles().add(role);
         User updatedUser = userRepository.save(user);
@@ -156,7 +164,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public UserDto removeRole(String username, Roles role) {
+    public UserDto removeRole(String username, Role role) {
         User user = userRepository.findByUsername(username);
         user.getRoles().remove(role);
         User updatedUser = userRepository.save(user);
@@ -195,7 +203,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional
     public UserDto blockUser(Long userId) {
         User user = getUserById(userId);
-        user.setStatus(UserStatus.SUSPENDED);
+        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.INACTIVE.name()));
         return userMapper.toDto(user);
     }
 
@@ -203,7 +211,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional
     public UserDto unblockUser(Long userId) {
         User user = getUserById(userId);
-        user.setStatus(UserStatus.ACTIVE);
+        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.ACTIVE.name()));
         return userMapper.toDto(user);
     }
 
@@ -216,13 +224,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public void deleteAccount(String username) {
         User user = userRepository.findByUsername(username);
-        if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> role == Roles.ADMIN)) {
-            setAccountStatus(username, UserStatus.SUSPENDED);
+        if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> role == Role.ADMIN)) {
+            setAccountStatus(username, 2);
         } else throw new ForbiddenException("Insufficient privileges");
     }
 
     @Override
-    public void accessToRoleChange(String executor, Roles role) {
+    public void accessToRoleChange(String executor, Role role) {
         UserDto executorUser = findByUsername(executor);
         if (!executorUser.getRoles().contains(role) && role.toString().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
             throw new ChangeRoleException("Access denied");

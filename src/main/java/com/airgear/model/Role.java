@@ -2,7 +2,7 @@ package com.airgear.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Roles {
+public enum Role {
     USER,
     MODERATOR,
     ADMIN;

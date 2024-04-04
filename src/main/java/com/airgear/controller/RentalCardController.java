@@ -5,7 +5,7 @@ import com.airgear.dto.RentalCardDto;
 import com.airgear.dto.UserDto;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.model.RentalCard;
-import com.airgear.model.Roles;
+import com.airgear.model.Role;
 import com.airgear.service.RentalCardService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
@@ -49,7 +49,7 @@ public class RentalCardController {
         RentalCard existingRentalCard = rentalCardService.getRentalCardById(rentalCardId);
         if (!(user.getId().equals(existingRentalCard.getRenter().getId())
                 ||user.getId().equals(existingRentalCard.getLessor().getId())
-                || user.getRoles().stream().anyMatch(role->role== Roles.ADMIN))){
+                || user.getRoles().stream().anyMatch(role->role== Role.ADMIN))){
             throw new ForbiddenException("It is not your rental card");
         }
         return ResponseEntity.ok(updatedRentalCard);
@@ -62,7 +62,7 @@ public class RentalCardController {
         RentalCard existingRentalCard = rentalCardService.getRentalCardById(rentalCardId);
         if (!(user.getId().equals(existingRentalCard.getRenter().getId())
                 ||user.getId().equals(existingRentalCard.getLessor().getId())
-                || user.getRoles().stream().anyMatch(role->role== Roles.ADMIN))){
+                || user.getRoles().stream().anyMatch(role->role== Role.ADMIN))){
             throw new ForbiddenException("It is not your rental card");
         }
         rentalCardService.deleteRentalCard(existingRentalCard);
