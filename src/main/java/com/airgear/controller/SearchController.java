@@ -15,13 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * The {@code SearchController} for handling search operations related to goods.
- * <p>
- *
- * @author Oleksandr Tuleninov
- * @version 01
- */
 @RestController
 @RequestMapping(Routes.SEARCH)
 @AllArgsConstructor
@@ -29,13 +22,6 @@ public class SearchController {
 
     private final GoodsService goodsService;
 
-    /**
-     * Endpoint for listing goods by name.
-     *
-     * @param pageable  The pagination information.
-     * @param goodsName The name of the goods to search for.
-     * @return A Page of GoodsResponse containing goods matching the specified name.
-     */
     @GetMapping(
             value = "/{goodsName}",
             produces = MediaType.APPLICATION_JSON_VALUE

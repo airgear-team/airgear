@@ -30,8 +30,6 @@ public interface UserService {
 
     UserExistDto isUsernameExists(String username);
 
-    List<Map<String, Integer>> getUserGoodsCount(Pageable pageable);
-
     UserDto appointRole(String username, Roles role);
 
     UserDto removeRole(String username, Roles role);
@@ -42,13 +40,9 @@ public interface UserService {
 
     void markUserAsPotentiallyScam(Long userId, boolean isScam);
 
-    int countNewUsersBetweenDates(String start, String end);
-
     Set<GoodsDto> getFavoriteGoods(Authentication auth);
 
     void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException;
-
-    int countDeletedUsersBetweenDates(OffsetDateTime startDate, OffsetDateTime endDate);
 
     UserDto blockUser(Long userId);
 

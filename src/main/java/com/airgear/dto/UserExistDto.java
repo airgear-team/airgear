@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class UserExistDto {
     private String username;
-    private boolean exist;
+    private Boolean exist;
 }

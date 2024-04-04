@@ -7,6 +7,8 @@ import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.google.api.services.drive.model.Permission;
 
@@ -19,16 +21,9 @@ import java.util.Collections;
 @AllArgsConstructor
 public class GoogleDriveServiceImpl implements UploadPhotoService {
 
-    private Drive driveService;
-    private PhotoRepository photoRepository;
+    private final Drive driveService;
+    private final PhotoRepository photoRepository;
 
-    /**
-     * Uploads a photo to Google Drive and saves its web view link in the database.
-     *
-     * @param file The photo file to upload. Must not be {@code null}.
-     * @return The web view link of the uploaded photo.
-     * @throws IOException If an I/O error occurs during file upload or temporary file creation.
-     */
     @Override
     public String uploadPhoto(MultipartFile file) throws IOException {
         Path tempFile = Files.createTempFile("upload-", file.getOriginalFilename());
@@ -39,7 +34,6 @@ public class GoogleDriveServiceImpl implements UploadPhotoService {
         String mimeType = file.getContentType();
         fileMetadata.setMimeType(mimeType);
 
-        // Set shared folder
         String folderId = "1CWCmxWXB0qOk3DdYjtoEdFrbRJIQqZwU";
         fileMetadata.setParents(Collections.singletonList(folderId));
 
@@ -48,13 +42,11 @@ public class GoogleDriveServiceImpl implements UploadPhotoService {
                 .setFields("id, webViewLink")
                 .execute();
 
-        // Make the file public
         Permission permission = new Permission()
                 .setType("anyone")
                 .setRole("reader");
         driveService.permissions().create(uploadedFile.getId(), permission).execute();
 
-        // Retrieve and save the web view link
         String webViewLink = uploadedFile.getWebViewLink();
         Photo photo = new Photo();
         photo.setWebViewLink(webViewLink);

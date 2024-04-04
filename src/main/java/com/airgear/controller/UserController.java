@@ -8,8 +8,6 @@ import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,12 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import static com.airgear.utils.Constants.*;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -60,13 +54,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @GetMapping("/user-goods-count")
-    public ResponseEntity<List<Map<String, Integer>>> getTopUserGoodsCount(@RequestParam(required = false, defaultValue = "30") int limit) {
-        Pageable pageable = PageRequest.of(0, Math.min(limit, MAX_LIMIT_RECORDS_ON_PAGE));
-        return ResponseEntity.ok(userService.getUserGoodsCount(pageable));
-    }
-
     @PostMapping(value = "/{username}/roles")
     @Validated
     public ResponseEntity<UserDto> appointRole(Authentication auth,
@@ -80,18 +67,10 @@ public class UserController {
     @Validated
     public ResponseEntity<String> removeRole(Authentication auth,
                                              @PathVariable String username,
-                                             @RequestBody Roles role) {
-        userService.accessToRoleChange(auth.getName(), role);
-        userService.removeRole(username, role);
+                                             @RequestParam String role) {
+        userService.accessToRoleChange(auth.getName(), Roles.valueOf(role));
+        userService.removeRole(username, Roles.valueOf(role));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/count")
-    public ResponseEntity<?> countNewUsers(@RequestParam("start") String start,
-                                           @RequestParam("end") String end) {
-        int count = userService.countNewUsersBetweenDates(start, end);
-        return ResponseEntity.ok().body(Map.of("count", count));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -107,15 +86,6 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllActiveUsers(Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return ResponseEntity.ok(userService.findActiveUsers());
-    }
-
-    //@PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/deleted-users-for-period")
-    public ResponseEntity<?> getDeletedUsersCountForPeriod(@RequestParam("start") String start, @RequestParam("end") String end) {
-        OffsetDateTime startDate = OffsetDateTime.parse(start);
-        OffsetDateTime endDate = OffsetDateTime.parse(end);
-        int count = userService.countDeletedUsersBetweenDates(startDate, endDate);
-        return ResponseEntity.ok().body(Map.of("count", count));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")

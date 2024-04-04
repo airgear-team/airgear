@@ -767,6 +767,22 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="addDefaultGoodsCondition" author="Opanasenko-Mykhailo">
+        <sql>
+            UPDATE goods
+            SET goods_condition = 'NEW'
+            WHERE goods_condition IS NULL
+               OR goods_condition = '';
+        </sql>
+    </changeSet>
+
+    <changeSet id="addSendAtForMessages" author="vladyslav.haivoronskyi">
+        <addColumn tableName="messages">
+            <column name="send_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
     <changeSet id="update_roles" author="Olena.Sinkevych">
         <addColumn tableName="role">

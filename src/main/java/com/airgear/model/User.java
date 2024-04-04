@@ -45,10 +45,7 @@ public class User {
     @Column
     private String name;
 
-    @Column
-    private String role;
-
-    @Enumerated()
+    @Enumerated(EnumType.ORDINAL)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role_id")
     @ElementCollection(fetch = FetchType.EAGER)

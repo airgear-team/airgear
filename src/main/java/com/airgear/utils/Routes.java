@@ -1,11 +1,5 @@
 package com.airgear.utils;
 
-/**
- * The {@code Routes} class contains the routes for application.
- *
- * @author Oleksandr Tuleninov
- * @version 01
- */
 public class Routes {
 
     private Routes() {

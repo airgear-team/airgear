@@ -7,17 +7,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-/**
- * Represents a message entity with associations to goods and users.
- *
- * This class is a JPA entity mapped to the "messages" table in the database.
- * <p>
- *
- * @author Oleksandr Tuleninov
- * @version 01
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,4 +32,6 @@ public class Message {
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    private OffsetDateTime sendAt;
 }

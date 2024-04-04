@@ -90,12 +90,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 .build();
     }
 
-
-    @Override
-    public List<Map<String, Integer>> getUserGoodsCount(Pageable pageable) {
-        return userRepository.findUserGoodsCount(pageable);
-    }
-
     @Override
     public void setAccountStatus(String username, long accountStatusId) {
         User user = userRepository.findByUsername(username);
@@ -130,8 +124,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
         Set<Roles> roleSet = new HashSet<>();
         roleSet.add(Roles.USER);
-        user.setRoles(roleSet);
         User newUser = userMapper.toModel(user);
+        newUser.setRoles(roleSet);
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         newUser.setCreatedAt(OffsetDateTime.now());
         newUser.setAccountStatus(accountStatusRepository.findByStatusName("ACTIVE"));
@@ -186,13 +180,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public int countNewUsersBetweenDates(String start, String end) {
-        OffsetDateTime startDate = OffsetDateTime.parse(start);
-        OffsetDateTime endDate = OffsetDateTime.parse(end);
-        return userRepository.countByCreatedAtBetween(startDate, endDate);
-    }
-
-    @Override
     public Set<GoodsDto> getFavoriteGoods(Authentication auth) {
         UserDto user = this.findByUsername(auth.getName());
         return goodsMapper.toDtoSet(userRepository.getFavoriteGoodsByUser(user.getId()));
@@ -212,11 +199,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (phoneExists) {
             throw new UserUniquenessViolationException("Phone number already exists.");
         }
-    }
-
-    @Override
-    public int countDeletedUsersBetweenDates(OffsetDateTime start, OffsetDateTime end) {
-        return userRepository.countByDeleteAtBetween(start, end);
     }
 
     @Override

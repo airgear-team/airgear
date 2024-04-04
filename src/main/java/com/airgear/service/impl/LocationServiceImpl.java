@@ -9,40 +9,19 @@ import com.airgear.model.region.response.RegionResponse;
 import com.airgear.repository.LocationRepository;
 import com.airgear.repository.RegionsRepository;
 import com.airgear.service.LocationService;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Implementation of the {@link LocationService} interface responsible
- * for handling location-related operations.
- * <p>
- *
- * @author Oleksandr Ilchenko, Oleksandr Tuleninov
- * @version 01
- * @see LocationService
- * @see RegionsRepository
- * @see LocationRepository
- * @see SaveLocationRequest
- * @see LocationResponse
- * @see Region
- * @see Location
- * @see Page
- * @see Pageable
- */
 @Service
 @Transactional
+@AllArgsConstructor
 public class LocationServiceImpl implements LocationService {
 
-    private final RegionsRepository regionsRepository;
     private final LocationRepository locationRepository;
-
-    public LocationServiceImpl(RegionsRepository regionsRepository,
-                               LocationRepository locationRepository) {
-        this.regionsRepository = regionsRepository;
-        this.locationRepository = locationRepository;
-    }
+    private final RegionsRepository regionsRepository;
 
     @Override
     public LocationResponse addLocation(SaveLocationRequest request) {

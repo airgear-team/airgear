@@ -4,7 +4,6 @@ import com.airgear.model.location.request.SaveLocationRequest;
 import com.airgear.model.location.response.LocationResponse;
 import com.airgear.model.region.response.RegionResponse;
 import com.airgear.service.LocationService;
-import com.airgear.utils.Routes;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
@@ -13,33 +12,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 
-/**
- * Controller class for managing locations.
- * Handles HTTP requests related to locations, such as creation, retrieval.
- * <p>
- *
- * @author Oleksandr Ilchenko, Oleksandr Tuleninov
- * @version 01
- * @see ResponseEntity
- * @see UriComponentsBuilder
- * @see LocationService
- * @see Page
- * @see Pageable
- */
 @RestController
-@RequestMapping(Routes.LOCATION)
+@RequestMapping("/location")
+@AllArgsConstructor
 public class LocationController {
 
     private final LocationService locationService;
-
-    public LocationController(LocationService locationService) {
-        this.locationService = locationService;
-    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(

@@ -1,28 +1,26 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.CheckoutDTO;
+import com.airgear.dto.CheckoutDto;
+import com.airgear.mapper.CheckoutMapper;
 import com.airgear.model.goods.Goods;
 import com.airgear.repository.CheckoutRepository;
 import com.airgear.service.LiqPayService;
 import com.liqpay.LiqPay;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class LiqPayServiceImpl implements LiqPayService {
 
     private final CheckoutRepository checkoutRepository;
     private final String TEST_PUBLIC_KEY = "sandbox_i49078650453";
     private final String TEST_PRIVATE_KEY = "sandbox_RehhVzMcNFoVDkbUSLA6DoOuXUjsJdR2IQLKPFEU";
     private final LiqPay liqPay = new LiqPay(TEST_PUBLIC_KEY, TEST_PRIVATE_KEY);
-
-    @Autowired
-    public LiqPayServiceImpl(CheckoutRepository checkoutRepository) {
-        this.checkoutRepository = checkoutRepository;
-    }
+    private final CheckoutMapper checkoutMapper;
 
     /**
      * This method creates CheckoutDTO from good with action pay (one payment).
@@ -36,8 +34,8 @@ public class LiqPayServiceImpl implements LiqPayService {
      * @return CheckoutDTO
      */
     @Override
-    public CheckoutDTO createCheckoutDtoPay(Goods goods, Authentication auth) {
-        return CheckoutDTO.builder()
+    public CheckoutDto createCheckoutDtoPay(Goods goods, Authentication auth) {
+        return CheckoutDto.builder()
                 .action("pay")
                 .amount(goods.getPrice())
                 .currency("UAH") // for other currencies we need to add currency attribute to model in future
@@ -47,9 +45,9 @@ public class LiqPayServiceImpl implements LiqPayService {
     }
 
     @Override
-    public String generatePaymentLink(CheckoutDTO checkoutDTO) throws IllegalAccessException {
-        checkoutRepository.save(checkoutDTO.toModel());
-        Map<String, String> params = checkoutDTO.toMap();
+    public String generatePaymentLink(CheckoutDto checkoutDTO) throws IllegalAccessException {
+        checkoutRepository.save(checkoutMapper.toModel(checkoutDTO));
+        Map<String, String> params = checkoutMapper.toMapRepresentationOfDtoFields(checkoutDTO);
         return liqPay.cnb_form(params);
     }
 

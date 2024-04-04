@@ -2,7 +2,7 @@ package com.airgear.controller;
 
 import com.airgear.dto.FeedbackDto;
 import com.airgear.service.FeedbackService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,14 +14,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/feedback")
+@AllArgsConstructor
 public class FeedbackController {
 
-    private FeedbackService feedbackService;
-
-    @Autowired
-    public FeedbackController(FeedbackService feedbackService){
-        this.feedbackService=feedbackService;
-    }
+    private final FeedbackService feedbackService;
 
     @PostMapping("/submit")
     public ResponseEntity<Void> submitFeedback(@Valid @RequestBody FeedbackDto feedbackDTO) {

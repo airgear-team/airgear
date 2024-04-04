@@ -9,13 +9,6 @@ import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
-/**
- * UserDto class. Fields are similar to User entity.
- * Contains methods for translating entity into DTO and vice versa.
- *
- * @author Oleksandr Panchenko
- * @version 1.0
- */
 @Data
 @Builder
 @NoArgsConstructor

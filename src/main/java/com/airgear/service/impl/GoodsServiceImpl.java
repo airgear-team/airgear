@@ -1,17 +1,18 @@
 package com.airgear.service.impl;
 
+import com.airgear.exception.RegionExceptions;
+import com.airgear.model.User;
+import com.airgear.dto.GoodsDto;
+import com.airgear.dto.TopGoodsPlacementDto;
 import com.airgear.dto.*;
 import com.airgear.exception.ForbiddenException;
-import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.GoodsNotFoundException;
 import com.airgear.mapper.CategoryMapper;
 import com.airgear.mapper.GoodsMapper;
-import com.airgear.mapper.LocationMapper;
-import com.airgear.model.User;
 import com.airgear.model.goods.Category;
-import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.TopGoodsPlacement;
+import com.airgear.model.location.Location;
 import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
 import com.airgear.service.GoodsStatusService;
@@ -25,7 +26,6 @@ import javax.validation.Valid;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.math.BigDecimal;
-import java.util.stream.Collectors;
 
 import static com.airgear.exception.UserExceptions.userNotFound;
 
@@ -36,11 +36,11 @@ public class GoodsServiceImpl implements GoodsService {
     private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
     private final CategoryRepository categoryRepository;
-    private final GoodsViewRepository goodsViewRepository;
     private final GoodsStatusService goodsStatusService;
+    private final LocationRepository locationRepository;
+    private final RegionsRepository regionsRepository;
     private final GoodsMapper goodsMapper;
     private final CategoryMapper categoryMapper;
-    private final LocationMapper locationMapper;
     private final TopGoodsPlacementRepository topGoodsPlacementRepository;
 
     private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
@@ -63,9 +63,9 @@ public class GoodsServiceImpl implements GoodsService {
         if (!goods.getGoodsStatus().getName().equals("ACTIVE")) {
             throw new GoodsNotFoundException("Goods was deleted");
         }
-        saveGoodsView(ipAddress, user.getId(), goods);
         return goodsMapper.toDto(goods);
     }
+
     @Override
     public void deleteGoods(Goods goods) {
         goods.setGoodsStatus(goodsStatusService.getGoodsById(2L));
@@ -87,13 +87,6 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Goods saveGoods(@Valid Goods goods) {  // TODO to refactor this code
         checkCategory(goods);
-        Long userId = goods.getUser().getId();
-        int categoryId = goods.getCategory().getId();
-        int productCount = goodsRepository.countByUserIdAndCategoryId(userId, categoryId);
-        if (productCount >= MAX_GOODS_IN_CATEGORY_COUNT) {
-            throw GoodsExceptions.goodsLimitExceeded(categoryId);
-        }
-        goods.setCreatedAt(OffsetDateTime.now());
         return goodsRepository.save(goods);
     }
 
@@ -138,19 +131,6 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public int getNewGoodsFromPeriod(OffsetDateTime fromDate, OffsetDateTime toDate) {
-        return goodsRepository.findCountNewGoodsFromPeriod(fromDate, toDate);
-    }
-
-    @Override
-    public CountDeletedGoodsDTO countDeletedGoods(OffsetDateTime startDate, OffsetDateTime endDate, String category) {
-        Long count = category != null ?
-                goodsRepository.countByDeletedAtBetweenAndCategory(startDate, endDate, category) :
-                goodsRepository.countByDeletedAtBetween(startDate, endDate);
-        return new CountDeletedGoodsDTO(category, startDate, endDate, count);
-    }
-
-    @Override
     public List<Goods> getAllGoods() {
         return goodsRepository.findAll();
     }
@@ -179,13 +159,6 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public AmountOfGoodsByCategoryResponse getAmountOfGoodsByCategory() {
-        List<Goods> goodsList = goodsRepository.findAll();
-        return new AmountOfGoodsByCategoryResponse(goodsList.stream()
-                .collect(Collectors.groupingBy(goods -> categoryMapper.toDto(goods.getCategory()), Collectors.counting())));
-    }
-
-    @Override
     public Page<Goods> getAllGoods(Pageable pageable) {
         return goodsRepository.findAll(pageable);
     }
@@ -207,22 +180,6 @@ public class GoodsServiceImpl implements GoodsService {
         } else {
             return goodsRepository.findAll(pageable);
         }
-    }
-
-    @Override
-    public Long getTotalNumberOfGoods() {
-        return goodsRepository.count();
-    }
-
-    @Override
-    public TotalNumberOfGoodsResponse getTotalNumberOfGoodsResponse() {
-        return new TotalNumberOfGoodsResponse(goodsRepository.count());
-    }
-
-    @Override
-    public TotalNumberOfTopGoodsResponse getTotalNumberOfTopGoodsResponse() {
-        return new TotalNumberOfTopGoodsResponse(topGoodsPlacementRepository.countAllActivePlacements());
-
     }
 
     private void checkCategory(Goods goods) {
@@ -248,23 +205,6 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public void saveGoodsView(String ip, Long userId, Goods goods) {
-        if (goodsViewRepository.existsByIpAndGoods(ip, goods)) {
-            if (userId != null && !goodsViewRepository.existsByUserIdAndGoods(userId, goods)) {
-                goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
-            }
-            return;
-        }
-        goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));
-    }
-
-    @Override
-    public Map<CategoryDto, Long> getAmountOfNewGoodsByCategory(OffsetDateTime fromDate, OffsetDateTime toDate) {
-        List<Object> list = goodsRepository.findCountNewGoodsByCategoryFromPeriod(fromDate,toDate);
-        return list==null?null:list.stream().map(x->(Object[])x).collect(Collectors.toMap(x->(CategoryDto) x[0], x->(Long)x[1]));
-    }
-
-    @Override
     public GoodsDto createGoods(String username, GoodsDto goodsDto) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
@@ -274,9 +214,20 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setUser(user);
         goods.setGoodsStatus(goodsStatusService.getGoodsById(1L));
         goods.setCreatedAt(OffsetDateTime.now());
-        goodsDto.getLocation().setId(1L);
-        goods.setLocation(locationMapper.toModel(goodsDto.getLocation()));
 
+        LocationDto locationDto = goodsDto.getLocation();
+        Location existingLocation = locationRepository.findBySettlementAndRegionId(locationDto.getSettlement(), locationDto.getRegionId());
+
+        if (existingLocation != null) {
+            goods.setLocation(existingLocation);
+        } else {
+            Location newLocation = Location.builder()
+                    .settlement(locationDto.getSettlement())
+                    .region(regionsRepository.findById(locationDto.getRegionId()).orElseThrow(() -> RegionExceptions.regionNotFound(locationDto.getRegionId())))
+                    .build();
+
+            goods.setLocation(locationRepository.save(newLocation));
+        }
         return goodsMapper.toDto(goodsRepository.save(goods));
     }
 

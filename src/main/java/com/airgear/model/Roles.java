@@ -1,5 +1,14 @@
 package com.airgear.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Roles {
-    ADMIN, MODERATOR,USER;
+    USER,
+    MODERATOR,
+    ADMIN;
+
+    @JsonValue
+    public String getValue() {
+        return this.toString();
+    }
 }

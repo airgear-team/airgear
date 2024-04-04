@@ -1,11 +1,12 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.MessageDto;
+import com.airgear.mapper.MessageMapper;
 import com.airgear.model.User;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.Message;
 import com.airgear.dto.ChangeTextRequestDTO;
 import com.airgear.dto.SaveMessageRequestDTO;
-import com.airgear.dto.MessageResponseDTO;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.MessageRepository;
 import com.airgear.repository.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,14 +25,6 @@ import static com.airgear.exception.GoodsExceptions.goodsNotFound;
 import static com.airgear.exception.MessageExceptions.messageNotFound;
 import static com.airgear.exception.UserExceptions.userNotFound;
 
-/**
- * Implementation of the {@link MessageService} interface responsible
- * for handling message-related operations.
- * <p>
- *
- * @author Oleksandr Tuleninov, Vitalii Shkaraputa
- * @version 01
- */
 @Service
 @Transactional
 @AllArgsConstructor
@@ -39,22 +33,23 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final GoodsRepository goodsRepository;
     private final UserRepository userRepository;
+    private final MessageMapper messageMapper;
 
     @Override
-    public Page<MessageResponseDTO> getAllMessageByGoodsId(Pageable pageable, long goodsId) {
+    public Page<MessageDto> getAllMessageByGoodsId(Pageable pageable, long goodsId) {
         return messageRepository.findAllByGoods_Id(pageable, goodsId)
-                .map(MessageResponseDTO::fromMessage);
+                .map(messageMapper::toDto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<MessageResponseDTO> getMessageById(UUID messageId) {
+    public Optional<MessageDto> getMessageById(UUID messageId) {
         return messageRepository.findById(messageId)
-                .map(MessageResponseDTO::fromMessage);
+                .map(messageMapper::toDto);
     }
 
     @Override
-    public MessageResponseDTO create(SaveMessageRequestDTO request) {
+    public MessageDto create(SaveMessageRequestDTO request) {
         Goods goods = getGoods(request);
         User user = getUser(request);
         UUID uuid = UUID.randomUUID();
@@ -63,10 +58,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageResponseDTO changeTextMessage(UUID messageId, ChangeTextRequestDTO request) {
+    public MessageDto changeTextMessage(UUID messageId, ChangeTextRequestDTO request) {
         Message message = getMessage(messageId);
         message.setText(request.getText());
-        return MessageResponseDTO.fromMessage(message);
+        return messageMapper.toDto(message);
     }
 
     private Message getMessage(UUID messageId) {
@@ -85,14 +80,15 @@ public class MessageServiceImpl implements MessageService {
         return messageRepository.count();
     }
 
-    private MessageResponseDTO save(SaveMessageRequestDTO request, Goods goods, User user, UUID uuid) {
+    private MessageDto save(SaveMessageRequestDTO request, Goods goods, User user, UUID uuid) {
         Message message = new Message();
         message.setId(uuid);
         message.setText(request.getText());
         message.setGoods(goods);
         message.setUser(user);
+        message.setSendAt(OffsetDateTime.now());
 
-        return MessageResponseDTO.fromMessage(messageRepository.save(message));
+        return messageMapper.toDto(messageRepository.save(message));
     }
 
     private User getUser(SaveMessageRequestDTO request) {

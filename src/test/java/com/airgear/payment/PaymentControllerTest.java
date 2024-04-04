@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.airgear.controller.PaymentController;
-import com.airgear.dto.CheckoutDTO;
+import com.airgear.dto.CheckoutDto;
 import com.airgear.model.goods.Goods;
 import com.airgear.service.GoodsService;
 import com.airgear.service.LiqPayService;
@@ -44,7 +44,7 @@ public class PaymentControllerTest {
         goods.setName("Test Goods");
         when(goodsService.getGoodsById(goodsId)).thenReturn(goods);
 
-        CheckoutDTO checkoutDTO = CheckoutDTO.builder()
+        CheckoutDto checkoutDTO = CheckoutDto.builder()
                 .action("pay")
                 .amount(new BigDecimal(100.00))
                 .currency("UAH")

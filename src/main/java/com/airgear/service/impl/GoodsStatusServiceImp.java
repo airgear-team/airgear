@@ -12,7 +12,7 @@ import javax.persistence.EntityNotFoundException;
 @AllArgsConstructor
 public class GoodsStatusServiceImp implements GoodsStatusService {
 
-    private GoodsStatusRepository goodsStatusRepository;
+    private final GoodsStatusRepository goodsStatusRepository;
 
     @Override
     public GoodsStatus getGoodsById(Long id) {

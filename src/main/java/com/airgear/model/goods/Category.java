@@ -7,13 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-/**
- * The {@code Category} Represents a category entity in the database.
- * <p>
- *
- * @author Oleksandr Tuleninov
- * @version 01
- */
 @Data
 @Builder
 @NoArgsConstructor

@@ -23,6 +23,7 @@ import java.util.List;
 @RequestMapping("/rental")
 @AllArgsConstructor
 public class RentalCardController {
+
     private final RentalCardService rentalCardService;
     private final UserService userService;
 

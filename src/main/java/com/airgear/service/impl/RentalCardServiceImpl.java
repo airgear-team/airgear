@@ -3,12 +3,12 @@ package com.airgear.service.impl;
 import com.airgear.dto.CalendarDay;
 import com.airgear.dto.RentalCardDto;
 import com.airgear.dto.DayTime;
+import com.airgear.mapper.RentalCardMapper;
 import com.airgear.model.RentalCard;
 import com.airgear.repository.RentalCardRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.RentalCardService;
-import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +25,8 @@ public class RentalCardServiceImpl implements RentalCardService {
 
     private final RentalCardRepository rentalCardRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
     private final GoodsService goodsService;
+    private final RentalCardMapper rentalCardMapper;
 
     @Override
     public RentalCard getRentalCardById(Long id) {
@@ -41,7 +41,7 @@ public class RentalCardServiceImpl implements RentalCardService {
 
     @Override
     public RentalCard saveRentalCard(RentalCardDto rentalCardDto) {
-        RentalCard rentalCard = rentalCardDto.getRentalCardFromDto();
+        RentalCard rentalCard = rentalCardMapper.toModel(rentalCardDto);
         rentalCard.setRenter(userRepository.findByUsername(rentalCardDto.getRenterUsername()));
         rentalCard.setLessor(userRepository.findByUsername(rentalCardDto.getLessorUsername()));
         rentalCard.setGoods(goodsService.getGoodsById(rentalCardDto.getGoodsId()));

@@ -23,14 +23,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/auth") // TODO використати класс шляхів Routes.AUTH
+@RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthenticationController {
 
-    private AuthenticationManager authenticationManager;
-    private TokenProvider jwtTokenUtil;
-    private UserService userService;
-    private ThirdPartyTokenHandler tokenHandler;
+    private final AuthenticationManager authenticationManager;
+    private final TokenProvider jwtTokenUtil;
+    private final UserService userService;
+    private final ThirdPartyTokenHandler tokenHandler;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> generateToken(@RequestBody LoginUserDto userDto) throws AuthenticationException {
@@ -51,7 +51,8 @@ public class AuthenticationController {
             userService.checkForUserUniqueness(userDto);
             User user = userService.save(userDto);
             return ResponseEntity.ok(user);
-        } catch (UserUniquenessViolationException e) {
+        }
+         catch (UserUniquenessViolationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

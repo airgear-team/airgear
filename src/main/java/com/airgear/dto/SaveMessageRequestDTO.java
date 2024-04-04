@@ -8,13 +8,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-/**
- * Represents a request object for saving a new message with specific fields.
- *
- * @author Oleksandr Tuleninov
- * @version 01
- */
-
 @Data
 @Setter(AccessLevel.NONE)
 @AllArgsConstructor
@@ -24,8 +17,8 @@ public class SaveMessageRequestDTO {
         String text;
 
         @NotNull(message = "goods id must not be null")
-        long goodsId;
+        Long goodsId;
 
         @NotNull(message = "user id must not be null")
-        long userId;
+        Long userId;
 }
