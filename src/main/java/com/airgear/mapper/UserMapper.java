@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring",
-        uses = {GoodsMapper.class, RoleMapper.class, UserReviewMapper.class})
+        uses = {GoodsMapper.class, UserReviewMapper.class})
 public interface UserMapper {
 
     @Mapping(target = "password", ignore = true)

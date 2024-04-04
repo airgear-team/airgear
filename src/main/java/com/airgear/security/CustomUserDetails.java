@@ -21,7 +21,7 @@ public class CustomUserDetails extends org.springframework.security.core.userdet
     private static Set<SimpleGrantedAuthority> getAuthorities(User source) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         source.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toString()));
         });
         return authorities;
     }

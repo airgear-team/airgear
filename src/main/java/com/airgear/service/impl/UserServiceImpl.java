@@ -8,23 +8,20 @@ import java.util.Set;
 import java.util.stream.StreamSupport;
 
 import com.airgear.dto.GoodsDto;
-import com.airgear.dto.RoleDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.exception.ChangeRoleException;
 import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.UserExceptions;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.mapper.GoodsMapper;
-import com.airgear.mapper.RoleMapper;
 import com.airgear.mapper.UserMapper;
 import com.airgear.model.UserStatus;
+import com.airgear.model.Roles;
 import com.airgear.model.email.EmailMessage;
 import com.airgear.repository.UserRepository;
-import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
 import com.airgear.service.EmailService;
-import com.airgear.service.RoleService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -42,12 +39,10 @@ import static com.airgear.utils.Constants.ROLE_ADMIN_NAME;
 @AllArgsConstructor
 public class UserServiceImpl implements UserDetailsService, UserService {
 
-    private final RoleService roleService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bcryptEncoder;
     private final UserMapper userMapper;
     private final GoodsMapper goodsMapper;
-    private final RoleMapper roleMapper;
     private final EmailService emailService;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -60,7 +55,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toString())));
         return authorities;
     }
 
@@ -117,11 +112,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if(user.getPhone()!=null && userRepository.existsByPhone(user.getPhone())){
             throw new ForbiddenException("Other user with phone number exists!");
         }
-        Role role = roleService.findByName("USER");
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(role);
-        user.setRoles(roleMapper.toDtoSet(roleSet));
+        Set<Roles> roleSet = new HashSet<>();
+        roleSet.add(Roles.USER);
         User newUser = userMapper.toModel(user);
+        newUser.setRoles(roleSet);
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         newUser.setCreatedAt(OffsetDateTime.now());
         newUser.setStatus(UserStatus.ACTIVE);
@@ -136,8 +130,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User addRole(String username, String role) {
         User user = userRepository.findByUsername(username);
-        Set<Role> roles = user.getRoles();
-        roles.add(roleService.findByName("ADMIN"));
+        Set<Roles> roles = user.getRoles();
+        roles.add(Roles.ADMIN);
         user.setRoles(roles);
         return update(user);
     }
@@ -145,26 +139,26 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User deleteRole(String username, String role) {
         User user = userRepository.findByUsername(username);
-        Set<Role> roles = user.getRoles();
-        roles.remove(roleService.findByName("ADMIN"));
+        Set<Roles> roles = user.getRoles();
+        roles.remove(Roles.ADMIN);
         if (roles.isEmpty()) {
-            roles.add(roleService.findByName("USER"));
+            roles.add(Roles.USER);
         }
         return update(user);
     }
 
     @Override
-    public UserDto appointRole(String username, RoleDto role) {
+    public UserDto appointRole(String username, Roles role) {
         User user = userRepository.findByUsername(username);
-        user.getRoles().add(roleMapper.toModel(role));
+        user.getRoles().add(role);
         User updatedUser = userRepository.save(user);
         return userMapper.toDto(updatedUser);
     }
 
     @Override
-    public UserDto removeRole(String username, RoleDto role) {
+    public UserDto removeRole(String username, Roles role) {
         User user = userRepository.findByUsername(username);
-        user.getRoles().remove(roleMapper.toModel(role));
+        user.getRoles().remove(role);
         User updatedUser = userRepository.save(user);
         return userMapper.toDto(updatedUser);
     }
@@ -222,15 +216,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public void deleteAccount(String username) {
         User user = userRepository.findByUsername(username);
-        if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> "ADMIN".equals(role.getName()))) {
+        if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> role == Roles.ADMIN)) {
             setAccountStatus(username, UserStatus.SUSPENDED);
         } else throw new ForbiddenException("Insufficient privileges");
     }
 
     @Override
-    public void accessToRoleChange(String executor, RoleDto role) {
+    public void accessToRoleChange(String executor, Roles role) {
         UserDto executorUser = findByUsername(executor);
-        if (!executorUser.getRoles().contains(role) && role.getName().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
+        if (!executorUser.getRoles().contains(role) && role.toString().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
             throw new ChangeRoleException("Access denied");
         }
     }
