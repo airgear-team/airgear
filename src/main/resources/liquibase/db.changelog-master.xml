@@ -794,7 +794,6 @@
             UPDATE user
             SET status = CASE
                              WHEN account_status_id = 1 THEN 'ACTIVE'
-                             WHEN account_status_id = 2 THEN 'SUSPENDED'
                              ELSE 'SUSPENDED'
                 END;
         </sql>
