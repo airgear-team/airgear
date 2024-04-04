@@ -45,9 +45,9 @@ public class User {
     @Column
     private String name;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role_id")
+    @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Roles> roles;
 

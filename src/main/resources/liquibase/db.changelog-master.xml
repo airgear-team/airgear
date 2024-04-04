@@ -784,66 +784,47 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="createUserStatusField" author="vitalii.kalinchyk">
-        <addColumn tableName="user">
-            <column name="status" type="VARCHAR(255)">
+    <changeSet id="update_roles" author="Olena.Sinkevych">
+        <addColumn tableName="user_roles">
+            <column name="role" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
+        <update tableName="user_roles">
+            <column name="role" value="USER"/>
+            <where>role_id='1'</where>
+        </update>
+        <update tableName="user_roles">
+            <column name="role" value="MODERATOR"/>
+            <where>role_id='2'</where>
+        </update>
+        <update tableName="user_roles">
+            <column name="role" value="ADMIN"/>
+            <where>role_id=3</where>
+        </update>
     </changeSet>
 
-    <changeSet id="moveValuesToUserStatus" author="vitalii.kalinchyk">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="user" columnName="account_status_id"/>
-        </preConditions>
-        <sql>
-            UPDATE user
-            SET status = CASE
-            WHEN account_status_id = 1 THEN 'ACTIVE'
-            ELSE 'SUSPENDED'
-            END;
-        </sql>
-    </changeSet>
+    <changeSet id="modifyUserRolesJoinTable" author="Olena.Sinkevych">
+        <dropAllForeignKeyConstraints  baseTableName="user_roles"/>
+        <dropTable  cascadeConstraints="true"
+                    tableName="role"/>
+        <dropColumn tableName="user_roles" columnName="role_id"/>
+        <addUniqueConstraint  columnNames="user_id, role"
+                              constraintName="user_role"
+                              deferrable="true"
+                              disabled="true"
+                              initiallyDeferred="true"
+                              tableName="user_roles"
+                              tablespace="A String"
+                              validate="true"/>
+        <addForeignKeyConstraint
+                baseTableName="user_roles"
+                baseColumnNames="user_id"
+                constraintName="fk_role_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
 
-    <changeSet id="dropAccountStatusTable" author="vitalii.kalinchyk">
-        <preConditions onFail="MARK_RAN">
-            <foreignKeyConstraintExists foreignKeyTableName="user" foreignKeyName="FKsdwiqho2tvg6if7lrb65w4tud"/>
-        </preConditions>
-        <sql>ALTER TABLE user DROP FOREIGN KEY FKsdwiqho2tvg6if7lrb65w4tud</sql>
-        <dropColumn tableName="user" columnName="account_status_id"/>
-        <dropTable tableName="account_status"/>
     </changeSet>
-
-    <changeSet id="update_roles" author="Olena.Sinkevych">
-        <addColumn tableName="role">
-            <column name="role_new" type="BIGINT">
-            </column>
-        </addColumn>
-        <update tableName="role">
-            <column name="role_new" value='0'/>
-            <where>id='1'</where>
-        </update>
-        <update tableName="role">
-            <column name="role_new" value='1'/>
-            <where>id='2'</where>
-        </update>
-        <update tableName="role">
-            <column name="role_new" value='2'/>
-            <where>id=3</where>
-        </update>
-        <update tableName="role">
-            <column name="id" value='0'/>
-            <where>role_new='0'</where>
-        </update>
-        <update tableName="role">
-            <column name="id" value='1'/>
-            <where>role_new='1'</where>
-        </update>
-        <update tableName="role">
-            <column name="id" value='2'/>
-            <where>role_new=2</where>
-        </update>
-        <dropColumn tableName="role" columnName="role_new"/>
-    </changeSet>
-
 </databaseChangeLog>
