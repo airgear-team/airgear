@@ -12,6 +12,7 @@ import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.TopGoodsPlacement;
+import com.airgear.model.goods.enums.GoodsVerificationStatus;
 import com.airgear.model.location.Location;
 import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
@@ -213,6 +214,7 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = goodsMapper.toModel(goodsDto);
         goods.setUser(user);
         goods.setGoodsStatus(goodsStatusService.getGoodsById(1L));
+        goods.setVerificationStatus(GoodsVerificationStatus.ON_REVIEW);
         goods.setCreatedAt(OffsetDateTime.now());
 
         LocationDto locationDto = goodsDto.getLocation();
