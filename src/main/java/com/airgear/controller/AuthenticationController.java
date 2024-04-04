@@ -51,8 +51,7 @@ public class AuthenticationController {
             userService.checkForUserUniqueness(userDto);
             User user = userService.save(userDto);
             return ResponseEntity.ok(user);
-        }
-         catch (UserUniquenessViolationException e) {
+        } catch (UserUniquenessViolationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

@@ -1,5 +1,6 @@
 package com.airgear.dto;
 
+import com.airgear.model.goods.enums.GoodsCondition;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,4 +18,5 @@ public class GoodsDto {
     private CategoryDto category;
     private String phoneNumber;
     private UserDto user;
+    private GoodsCondition goodsCondition;
 }
