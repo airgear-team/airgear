@@ -784,4 +784,25 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="moveAccountStatusToUserStatus" author="vitalii.kalinchyk">
+        <addColumn tableName="user">
+            <column name="user_status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            UPDATE user
+            SET status = CASE
+                             WHEN account_status_id = 1 THEN 'ACTIVE'
+                             ELSE 'SUSPENDED'
+                END;
+        </sql>
+    </changeSet>
+
+    <changeSet id="dropAccountStatusTable" author="vitalii.kalinchyk">
+        <sql>ALTER TABLE user DROP FOREIGN KEY FKsdwiqho2tvg6if7lrb65w4tud</sql>
+        <dropColumn tableName="user" columnName="account_status_id"/>
+        <dropTable tableName="account_status"/>
+    </changeSet>
+
 </databaseChangeLog>
