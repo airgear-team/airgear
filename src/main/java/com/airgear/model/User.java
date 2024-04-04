@@ -67,9 +67,8 @@ public class User {
     @Column(name = "last_activity")
     private OffsetDateTime lastActivity;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "account_status_id")
-    private AccountStatus accountStatus;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

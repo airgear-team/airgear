@@ -6,6 +6,7 @@ import com.airgear.dto.UserExistDto;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
+import com.airgear.model.UserStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
@@ -16,7 +17,7 @@ import java.util.Set;
 
 public interface UserService {
 
-    void setAccountStatus(String username, long accountStatusId);
+    void setAccountStatus(String username, UserStatus status);
 
     User save(UserDto user);
 
