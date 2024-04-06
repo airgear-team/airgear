@@ -1,11 +1,13 @@
 package com.airgear.service.impl;
 
 import com.airgear.exception.RegionExceptions;
+import com.airgear.mapper.LocationMapper;
+import com.airgear.mapper.RegionMapper;
 import com.airgear.model.location.Location;
-import com.airgear.model.location.request.SaveLocationRequest;
-import com.airgear.model.location.response.LocationResponse;
+import com.airgear.dto.SaveLocationRequestDTO;
+import com.airgear.dto.LocationResponseDTO;
 import com.airgear.model.region.Region;
-import com.airgear.model.region.response.RegionResponse;
+import com.airgear.dto.RegionResponseDTO;
 import com.airgear.repository.LocationRepository;
 import com.airgear.repository.RegionsRepository;
 import com.airgear.service.LocationService;
@@ -22,32 +24,25 @@ public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
     private final RegionsRepository regionsRepository;
+    private final LocationMapper locationMapper;
+    private final RegionMapper regionMapper;
 
     @Override
-    public LocationResponse addLocation(SaveLocationRequest request) {
-        return LocationResponse.fromLocation(save(request));
+    public LocationResponseDTO addLocation(SaveLocationRequestDTO request) {
+        Location location = locationMapper.toEntity(request);
+        location = locationRepository.save(location);
+        return locationMapper.toLocationResponseDTO(location);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<RegionResponse> getAllRegions(Pageable pageable) {
+    public Page<RegionResponseDTO> getAllRegions(Pageable pageable) {
         return regionsRepository.findAll(pageable)
-                .map(RegionResponse::fromRegion);
+                .map(regionMapper::toRegionResponseDTO);
     }
 
     private Region getRegion(long regionId) {
         return regionsRepository.findById(regionId)
                 .orElseThrow(() -> RegionExceptions.regionNotFound(regionId));
-    }
-
-    private Location save(SaveLocationRequest request) {
-        Region region = getRegion(request.region_id());
-
-        Location location = new Location(
-                request.settlement(),
-                region
-        );
-        locationRepository.save(location);
-        return location;
     }
 }
