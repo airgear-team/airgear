@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
-import com.airgear.config.AccountStatusConfig;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.exception.ChangeRoleException;
@@ -16,10 +15,9 @@ import com.airgear.exception.UserExceptions;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
-import com.airgear.model.AccountStatus;
 import com.airgear.model.Role;
+import com.airgear.model.UserStatus;
 import com.airgear.model.email.EmailMessage;
-import com.airgear.repository.AccountStatusRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
@@ -42,7 +40,6 @@ import static com.airgear.utils.Constants.ROLE_ADMIN_NAME;
 public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepository;
-    private final AccountStatusRepository accountStatusRepository;
     private final BCryptPasswordEncoder bcryptEncoder;
     private final UserMapper userMapper;
     private final GoodsMapper goodsMapper;
@@ -70,7 +67,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     public List<UserDto> findActiveUsers() {
         List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(user -> user.getAccountStatus() != null && user.getAccountStatus().getStatusName().equals("ACTIVE")).toList();
+                .filter(user -> user.getStatus() != null && user.getStatus().equals(UserStatus.ACTIVE)).toList();
         return userMapper.toDtoList(users);
     }
 
@@ -89,21 +86,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void setAccountStatus(String username, long accountStatusId) {
+    public void setAccountStatus(String username, UserStatus status) {
         User user = userRepository.findByUsername(username);
-        if (user == null || user.getAccountStatus().getId() == accountStatusId) {
+        if (user == null || user.getStatus().equals(status)) {
             throw new ForbiddenException("User not found or was already deleted");
         }
 
-        AccountStatus accountStatus = accountStatusRepository.findById(accountStatusId).orElseThrow(() -> new RuntimeException("Account status not found"));
+        user.setStatus(status);
+        userRepository.save(user);
 
-        if (accountStatus.getId() == 2) {
-            user.setAccountStatus(accountStatus);
-            userRepository.save(user);
+        if (status.equals(UserStatus.SUSPENDED)) {
             sendFarewellEmail(Set.of(user.getEmail()));
-        } else {
-            user.setAccountStatus(accountStatus);
-            userRepository.save(user);
         }
     }
 
@@ -126,7 +119,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         newUser.setRoles(roleSet);
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         newUser.setCreatedAt(OffsetDateTime.now());
-        newUser.setAccountStatus(accountStatusRepository.findByStatusName("ACTIVE"));
+        newUser.setStatus(UserStatus.ACTIVE);
         return userRepository.save(newUser);
     }
 
@@ -203,7 +196,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional
     public UserDto blockUser(Long userId) {
         User user = getUserById(userId);
-        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.INACTIVE.name()));
+        user.setStatus(UserStatus.SUSPENDED);
         return userMapper.toDto(user);
     }
 
@@ -211,7 +204,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional
     public UserDto unblockUser(Long userId) {
         User user = getUserById(userId);
-        user.setAccountStatus(accountStatusRepository.findByStatusName(AccountStatusConfig.ACTIVE.name()));
+        user.setStatus(UserStatus.ACTIVE);
         return userMapper.toDto(user);
     }
 
@@ -225,7 +218,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void deleteAccount(String username) {
         User user = userRepository.findByUsername(username);
         if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> role == Role.ADMIN)) {
-            setAccountStatus(username, 2);
+            setAccountStatus(username, UserStatus.SUSPENDED);
         } else throw new ForbiddenException("Insufficient privileges");
     }
 
