@@ -829,6 +829,52 @@
                 referencedColumnNames="id"
                 onDelete="CASCADE"
                 onUpdate="CASCADE"/>
+    </changeSet>
 
+    <changeSet id="createUserStatusField" author="vitalii.kalinchyk">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user" columnName="status"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="user">
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="moveValuesToUserStatus" author="vitalii.kalinchyk">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="user" columnName="account_status_id"/>
+        </preConditions>
+        <sql>
+            UPDATE user
+            SET status = CASE
+                             WHEN account_status_id = 1 THEN 'ACTIVE'
+                             ELSE 'SUSPENDED'
+                END;
+        </sql>
+    </changeSet>
+
+    <changeSet id="dropAccountStatusForeignKey" author="vitalii.kalinchyk">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="user" foreignKeyName="FKsdwiqho2tvg6if7lrb65w4tud"/>
+        </preConditions>
+        <sql>ALTER TABLE user DROP FOREIGN KEY FKsdwiqho2tvg6if7lrb65w4tud</sql>
+    </changeSet>
+
+    <changeSet id="dropAccountStatusField" author="vitalii.kalinchyk">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="user" columnName="account_status_id"/>
+        </preConditions>
+        <dropColumn tableName="user" columnName="account_status_id"/>
+    </changeSet>
+
+    <changeSet id="dropAccountStatusTable" author="vitalii.kalinchyk">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="account_status"/>
+        </preConditions>
+        <dropTable tableName="account_status"/>
     </changeSet>
 </databaseChangeLog>
