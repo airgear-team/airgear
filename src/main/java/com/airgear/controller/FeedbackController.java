@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/feedback")
+@RequestMapping("/feedbacks")
 @AllArgsConstructor
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @PostMapping("/submit")
+    @PostMapping
     public ResponseEntity<Void> submitFeedback(@Valid @RequestBody FeedbackDto feedbackDTO) {
         feedbackService.createFeedback(feedbackDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
