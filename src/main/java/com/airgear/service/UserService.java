@@ -1,17 +1,14 @@
 package com.airgear.service;
 
 import com.airgear.dto.GoodsDto;
-import com.airgear.dto.RoleDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.exception.UserUniquenessViolationException;
+import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
-import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface UserService {
@@ -30,9 +27,9 @@ public interface UserService {
 
     UserExistDto isUsernameExists(String username);
 
-    UserDto appointRole(String username, RoleDto role);
+    UserDto appointRole(String username, Role role);
 
-    UserDto removeRole(String username, RoleDto role);
+    UserDto removeRole(String username, Role role);
 
     User addRole(String username, String role);
 
@@ -50,5 +47,5 @@ public interface UserService {
 
     void deleteAccount(String username);
 
-    void accessToRoleChange(String executor, RoleDto role);
+    void accessToRoleChange(String executor, Role role);
 }

@@ -1,5 +1,6 @@
 package com.airgear.dto;
 
+import com.airgear.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,10 +20,10 @@ public class UserDto {
     private String email;
     private String phone;
     private String name;
-    private Set<RoleDto> roles;
+    private Set<Role> roles;
     private Set<GoodsDto> goods;
     private OffsetDateTime createdAt;
     private OffsetDateTime deleteAt;
-    private AccountStatusDto accountStatus;
+    private AccountStatusDto status;
     private Set<UserReviewDto> userReviews;
 }
