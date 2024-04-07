@@ -4,6 +4,7 @@ import com.airgear.model.Complaint;
 import com.airgear.model.GoodsView;
 import com.airgear.model.User;
 import com.airgear.model.goods.enums.GoodsCondition;
+import com.airgear.model.goods.enums.GoodsStatus;
 import com.airgear.model.goods.enums.GoodsVerificationStatus;
 import com.airgear.model.location.Location;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -69,14 +70,8 @@ public class Goods {
     @Enumerated(EnumType.STRING)
     private GoodsVerificationStatus verificationStatus;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "goods_goods_status",
-            joinColumns = {
-                    @JoinColumn(name = "goods_id")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "goods_status_id")})
-    private GoodsStatus goodsStatus;
+    @Enumerated(EnumType.STRING)
+    private GoodsStatus status;
 
     @Pattern(regexp = "^\\+\\d{1,3}\\s?\\(?\\d{1,4}\\)?[\\s.-]?\\d{1,4}[\\s.-]?\\d{1,4}$", message = "The phone number must be in the format +380XXXXXXXXX")
     @JoinColumn(name = "phone")

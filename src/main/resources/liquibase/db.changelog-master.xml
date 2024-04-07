@@ -877,4 +877,43 @@
         </preConditions>
         <dropTable tableName="account_status"/>
     </changeSet>
+
+    <changeSet id="AddStatusFieldToGoodsTable" author="vitalii.kalinchyk">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="goods" columnName="status"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="goods">
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="moveGoodsStatusToFieldGoodsStatusInGoods" author="vitalii.kalinchyk">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="goods_goods_status" />
+                <tableExists tableName="goods_status" />
+            </and>
+        </preConditions>
+        <sql>UPDATE goods g JOIN goods_goods_status ggs ON g.id = ggs.goods_id
+            JOIN goods_status gs ON ggs.goods_status_id = gs.id
+            SET g.status = gs.name</sql>
+    </changeSet>
+
+    <changeSet id="dropGoodsGoodsStatusTable" author="vitalii.kalinchyk">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="goods_goods_status"/>
+        </preConditions>
+        <dropTable tableName="goods_goods_status"/>
+    </changeSet>
+
+    <changeSet id="dropGoodsStatusTable" author="vitalii.kalinchyk">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="goods_status"/>
+        </preConditions>
+        <dropTable tableName="goods_status"/>
+    </changeSet>
 </databaseChangeLog>
