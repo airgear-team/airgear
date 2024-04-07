@@ -13,9 +13,9 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Deposit {
+public class WeekendsPrice {
 
-    private BigDecimal depositAmount;
-    private Currency depositCurrency;
-    private PriceType depositPriceType;
+    private BigDecimal weekendsPriceAmount;
+    private Currency weekendsPricecurrency;
+    private PriceType weekendsPriceType;
 }

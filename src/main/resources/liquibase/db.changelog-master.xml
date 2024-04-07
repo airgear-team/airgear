@@ -916,4 +916,17 @@
         </preConditions>
         <dropTable tableName="goods_status"/>
     </changeSet>
+
+    <changeSet id="deleteColumnPrice" author="vladyslav.haivoronskyi">
+        <dropColumn tableName="goods" columnName="price"/>
+    </changeSet>
+    <changeSet id="deleteColumnAmountAndCurrency" author="vladyslav.haivoronskyi">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="goods" columnName="amount"/>
+            <columnExists tableName="goods" columnName="currency"/>
+        </preConditions>
+        <dropColumn tableName="goods" columnName="amount"/>
+        <dropColumn tableName="goods" columnName="currency"/>
+    </changeSet>
+
 </databaseChangeLog>

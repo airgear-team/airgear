@@ -37,7 +37,7 @@ public class LiqPayServiceImpl implements LiqPayService {
     public CheckoutDto createCheckoutDtoPay(Goods goods, Authentication auth) {
         return CheckoutDto.builder()
                 .action("pay")
-                .amount(goods.getPrice())
+                .amount(goods.getPrice().getPriceAmount())
                 .currency("UAH") // for other currencies we need to add currency attribute to model in future
                 .description(auth.getName() + " rented " + goods.getName() + ". Action: pay")
                 .version(3)
