@@ -3,6 +3,7 @@ package com.airgear.service.impl;
 import com.airgear.dto.CalendarDay;
 import com.airgear.dto.RentalCardDto;
 import com.airgear.dto.DayTime;
+import com.airgear.exception.RentalExceptions;
 import com.airgear.mapper.RentalCardMapper;
 import com.airgear.model.RentalCard;
 import com.airgear.repository.RentalCardRepository;
@@ -56,7 +57,7 @@ public class RentalCardServiceImpl implements RentalCardService {
     }
     private void checkDays(RentalCard rentalCard){
         if(rentalCard.getDuration()==null&&rentalCard.getLastDate()==null){
-            throw new RuntimeException("Don't fill duration or last day in rental card!");
+            throw RentalExceptions.badPeriod();
         }
         else if(rentalCard.getDuration()==null){
             rentalCard.setDuration(ChronoUnit.DAYS);

@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import com.airgear.exception.RentalExceptions;
 import com.airgear.model.RentalAgreement;
 import com.airgear.model.goods.Goods;
 import com.airgear.service.GoodsService;
@@ -24,16 +25,20 @@ public class RentalAgreementServiceImpl implements RentalAgreementService {
     private final GoodsService goodsService;
 
     @Override
-    public ResponseEntity<FileSystemResource> generateRentalAgreementResponse(RentalAgreement rental, Long goodsId) throws IOException {
+    public ResponseEntity<FileSystemResource> generateRentalAgreementResponse(RentalAgreement rental, Long goodsId){
         Goods goods = goodsService.getGoodsById(goodsId);
         rental.setGoods(goods);
-        File pdfFile = this.generateRentalAgreementPdf(rental);
+        try {
+            File pdfFile = generateRentalAgreementPdf(rental);
+            FileSystemResource resource = new FileSystemResource(pdfFile);
+            return ResponseEntity.ok()
+                    .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                    .header("Content-disposition", "attachment; filename=" + pdfFile.getName())
+                    .body(resource);
+        } catch (IOException e) {
+            throw RentalExceptions.badFile();
+        }
 
-        FileSystemResource resource = new FileSystemResource(pdfFile);
-        return ResponseEntity.ok()
-                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
-                .header("Content-disposition", "attachment; filename=" + pdfFile.getName())
-                .body(resource);
     }
 
     private File generateRentalAgreementPdf(RentalAgreement rental) throws IOException {

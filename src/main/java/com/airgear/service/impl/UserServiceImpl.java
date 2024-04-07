@@ -9,10 +9,7 @@ import java.util.stream.StreamSupport;
 
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.UserExistDto;
-import com.airgear.exception.ChangeRoleException;
-import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.UserExceptions;
-import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
 import com.airgear.model.Role;
@@ -28,7 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,10 +41,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final GoodsMapper goodsMapper;
     private final EmailService emailService;
 
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username){
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("Invalid username or password.");
+            throw UserExceptions.userNotFoundAuthorized(username);
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
     }
@@ -89,7 +85,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void setAccountStatus(String username, UserStatus status) {
         User user = userRepository.findByUsername(username);
         if (user == null || user.getStatus().equals(status)) {
-            throw new ForbiddenException("User not found or was already deleted");
+            throw UserExceptions.userNotFound(username);
         }
 
         user.setStatus(status);
@@ -110,9 +106,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User save(UserDto user) {
-        if(user.getPhone()!=null && userRepository.existsByPhone(user.getPhone())){
-            throw new ForbiddenException("Other user with phone number exists!");
-        }
+        checkForUserUniqueness(user);
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(Role.USER);
         User newUser = userMapper.toModel(user);
@@ -175,20 +169,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         UserDto user = this.findByUsername(auth.getName());
         return goodsMapper.toDtoSet(userRepository.getFavoriteGoodsByUser(user.getId()));
     }
-    // TODO to use this method inside the "public User save(UserDto user)" method for better performance
-    public void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException {
-        boolean usernameExists = userRepository.existsByUsername(userDto.getUsername());
-        boolean emailExists = userRepository.existsByEmail(userDto.getEmail());
-        boolean phoneExists = userRepository.existsByPhone(userDto.getPhone());
 
-        if (usernameExists) {
-            throw new UserUniquenessViolationException("Username already exists.");
+    public void checkForUserUniqueness(UserDto userDto){
+        if (userRepository.existsByUsername(userDto.getUsername())) {
+            throw UserExceptions.userUniqueness("Username", userDto.getUsername());
         }
-        if (emailExists) {
-            throw new UserUniquenessViolationException("Email already exists.");
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            throw UserExceptions.userUniqueness("Email", userDto.getEmail());
         }
-        if (phoneExists) {
-            throw new UserUniquenessViolationException("Phone number already exists.");
+        if (userRepository.existsByPhone(userDto.getPhone())) {
+            throw UserExceptions.userUniqueness("Phone number", userDto.getPhone());
         }
     }
 
@@ -219,14 +209,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = userRepository.findByUsername(username);
         if (user.getUsername().equals(username) || user.getRoles().stream().anyMatch(role -> role == Role.ADMIN)) {
             setAccountStatus(username, UserStatus.SUSPENDED);
-        } else throw new ForbiddenException("Insufficient privileges");
+        } else throw UserExceptions.AccessDenied("delete account");
     }
 
     @Override
     public void accessToRoleChange(String executor, Role role) {
         UserDto executorUser = findByUsername(executor);
         if (!executorUser.getRoles().contains(role) && role.toString().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
-            throw new ChangeRoleException("Access denied");
+            throw UserExceptions.AccessDenied("change role");
         }
     }
 }

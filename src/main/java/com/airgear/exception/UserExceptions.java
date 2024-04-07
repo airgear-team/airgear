@@ -16,4 +16,20 @@ public class UserExceptions {
     public static ResponseStatusException userNotFound(String username) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with username '" + username + "' was not found");
     }
+
+    public static ResponseStatusException userNotFoundAuthorized(String username) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User with username '" + username + "' was not found");
+    }
+
+    public static ResponseStatusException userUniqueness(String name, String value) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with "+name+" '" + value + "' already exists");
+    }
+
+    public static ResponseStatusException userDataNotFound(String name, String value) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, name+": " + value + "' was not found");
+    }
+
+    public static ResponseStatusException AccessDenied(String name) {
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied: " + name);
+    }
 }
