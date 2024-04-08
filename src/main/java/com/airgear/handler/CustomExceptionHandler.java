@@ -1,9 +1,9 @@
 package com.airgear.handler;
 
-import com.airgear.exception.ChangeRoleException;
 import com.airgear.model.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,6 +14,11 @@ import java.util.Date;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ErrorResponse badToken(Exception ex, HttpServletRequest request) {
+        return new ErrorResponse(new Date(), HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), request.getRequestURI());
+    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -29,11 +34,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> illegalArgumentException() {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Illegal argument");
-    }
-
-    @ExceptionHandler(ChangeRoleException.class)
-    public ResponseEntity<String> changeRoleException() {
-        return ResponseEntity.status(HttpStatus.LOCKED).body("Access denied");
     }
 
 }
