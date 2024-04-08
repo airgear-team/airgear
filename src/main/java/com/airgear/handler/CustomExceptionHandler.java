@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.MethodNotAllowedException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.file.AccessDeniedException;
@@ -18,6 +19,11 @@ public class CustomExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ErrorResponse badToken(Exception ex, HttpServletRequest request) {
         return new ErrorResponse(new Date(), HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(value = MethodNotAllowedException.class)
+    public ErrorResponse handleMethodNotAllowedExceptionException(MethodNotAllowedException ex, HttpServletRequest request) {
+        return new ErrorResponse(new Date(), HttpStatus.METHOD_NOT_ALLOWED.value(), ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(Exception.class)
