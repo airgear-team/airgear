@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.LoginUserDto;
+import com.airgear.dto.SignInDto;
 import com.airgear.security.ThirdPartyService;
 import com.airgear.service.GoogleTokenHandler;
 import com.airgear.service.ThirdPartyTokenHandler;
@@ -20,7 +20,7 @@ public class ThirdPartyTokenHandlerImpl implements ThirdPartyTokenHandler {
     private final GoogleTokenHandler googleTokenHandler;
 
     @Override
-    public LoginUserDto execute(HttpServletRequest request) {
+    public SignInDto execute(HttpServletRequest request) {
         String thirdPartyService = request.getHeader(THIRD_PARTY_SERVICE);
         ThirdPartyService service = valueOf(thirdPartyService);
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);

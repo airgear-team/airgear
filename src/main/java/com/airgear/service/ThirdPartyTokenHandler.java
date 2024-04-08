@@ -1,12 +1,11 @@
 package com.airgear.service;
 
-import com.airgear.dto.LoginUserDto;
-import com.airgear.dto.UserDto;
+import com.airgear.dto.SignInDto;
 
 import javax.servlet.http.HttpServletRequest;
 
 public interface ThirdPartyTokenHandler {
 
-    LoginUserDto execute(HttpServletRequest request);
+    SignInDto execute(HttpServletRequest request);
     
 }

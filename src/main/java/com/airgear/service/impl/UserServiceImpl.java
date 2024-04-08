@@ -21,6 +21,7 @@ import com.airgear.model.email.EmailMessage;
 import com.airgear.repository.UserRepository;
 import com.airgear.model.User;
 import com.airgear.dto.UserDto;
+import com.airgear.security.CustomUserDetails;
 import com.airgear.service.EmailService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
@@ -45,12 +46,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final GoodsMapper goodsMapper;
     private final EmailService emailService;
 
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
+        return new CustomUserDetails(user);
     }
 
     private Set<SimpleGrantedAuthority> getAuthority(User user) {
