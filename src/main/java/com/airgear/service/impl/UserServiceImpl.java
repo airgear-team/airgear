@@ -122,6 +122,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         validateUniqueFields(request);
         User user = save(request);
         return UserDto.builder()
+                .id(user.getId())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .name(user.getName())

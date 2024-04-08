@@ -13,8 +13,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -41,8 +43,13 @@ public class AuthenticationController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto register(@RequestBody @Valid SaveUserDto request) {
-        return userService.create(request);
+    public ResponseEntity<UserDto> register(@RequestBody @Valid SaveUserDto request,
+                                            UriComponentsBuilder ucb) {
+        UserDto response = userService.create(request);
+
+        return ResponseEntity
+                .created(ucb.path("/auth/{id}").build(response.getId()))
+                .body(response);
     }
 
     @GetMapping(

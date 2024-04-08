@@ -2,16 +2,15 @@ package com.airgear.service;
 
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.SaveUserDto;
+import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.Role;
 import com.airgear.model.User;
-import com.airgear.dto.UserDto;
 import com.airgear.model.UserStatus;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public interface UserService {
