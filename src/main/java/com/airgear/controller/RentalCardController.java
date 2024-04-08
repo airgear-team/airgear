@@ -45,7 +45,7 @@ public class RentalCardController {
             Authentication auth,
             @PathVariable Long rentalCardId,
             @Valid @RequestBody RentalCardDto updatedRentalCard) {
-        UserDto user = userService.findByUsername(auth.getName());
+        UserDto user = userService.getUserByEmail(auth.getName());
         RentalCard existingRentalCard = rentalCardService.getRentalCardById(rentalCardId);
         if (!(user.getId().equals(existingRentalCard.getRenter().getId())
                 ||user.getId().equals(existingRentalCard.getLessor().getId())
@@ -58,7 +58,7 @@ public class RentalCardController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{rentalCardId}")
     public ResponseEntity<String> deleteRentalCard(Authentication auth, @PathVariable Long rentalCardId){
-        UserDto user = userService.findByUsername(auth.getName());
+        UserDto user = userService.getUserByEmail(auth.getName());
         RentalCard existingRentalCard = rentalCardService.getRentalCardById(rentalCardId);
         if (!(user.getId().equals(existingRentalCard.getRenter().getId())
                 ||user.getId().equals(existingRentalCard.getLessor().getId())

@@ -9,7 +9,7 @@ import java.util.*;
 public class CustomUserDetails extends org.springframework.security.core.userdetails.User {
 
     public CustomUserDetails(User source) {
-        super(source.getUsername(),
+        super(source.getEmail(),
                 source.getPassword(),
                 source.getStatus().equals(UserStatus.ACTIVE),
                 true,
