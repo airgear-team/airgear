@@ -34,7 +34,7 @@ public class GoodsViewAspect {
 
     private Long getUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userService.findByUsername(auth.getName()).getId();
+        return userService.getUserByEmail(auth.getName()).getId();
     }
 
     private String getRemoteAddr() {

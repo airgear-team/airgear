@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 @Aspect
 @Component
@@ -20,14 +21,14 @@ public class UserActivityAspect {
 
     @Before("execution(* com.airgear.controller.*Controller.*(..))")
     public void logUserActivity() {
-        String username = getCurrentUsername();
+        String email = getCurrentUsername();
         OffsetDateTime currentTime = OffsetDateTime.now();
 
-        User user = userRepository.findByUsername(username);
-        if (user != null) {
+        Optional<User> userDB = userRepository.findByEmail(email);
+        userDB.ifPresent(user -> {
             user.setLastActivity(currentTime);
             userRepository.save(user);
-        }
+        });
     }
 
     private String getCurrentUsername() {

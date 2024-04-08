@@ -1,57 +1,70 @@
 package com.airgear.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.airgear.service.impl.UserServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Resource(name = "userService")
-    private UserDetailsService userDetailsService;
+    @Value("${jwt.signing.key}")
+    private String secret;
 
-    @Autowired
-    private PasswordEncoderConfig encoder;
+    @Value("${jwt.authorities.key}")
+    public String authoritiesKey;
 
-    @Autowired
-    private UnauthorizedEntryPoint unauthorizedEntryPoint;
+    private final UserServiceImpl userService;
+
+    private final PasswordEncoder encoder;
+
+    private final ObjectMapper objectMapper;
+
+    public WebSecurityConfig(UserServiceImpl userService,
+                             PasswordEncoder encoder,
+                             ObjectMapper objectMapper) {
+        this.userService = userService;
+        this.encoder = encoder;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(encoder.encoder());
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService).passwordEncoder(encoder);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors()
+        http.authorizeRequests()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .antMatchers(getPermitAllUrls()).permitAll()
                 .and()
-                .httpBasic()
+                .addFilter(jwtAuthenticationFilter())
+                .addFilter(jwtAuthorizationFilter())
+                .exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .and()
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(getPermitAllUrls()).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
     }
 
     private String[] getPermitAllUrls() {
@@ -66,16 +79,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         permitAllUrls.add("/auth/test");
         return permitAllUrls.toArray(new String[permitAllUrls.size()]);
     }
- 
+
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public JwtAuthenticationFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtAuthenticationFilter();
+    private JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        var filter = new JWTAuthenticationFilter(authenticationManager(), objectMapper);
+        filter.setFilterProcessesUrl("/auth");
+        return filter;
     }
 
+    private JWTAuthorizationFilter jwtAuthorizationFilter() throws Exception {
+        return new JWTAuthorizationFilter(authenticationManager(), secret, authoritiesKey);
+    }
+
+    private CorsConfigurationSource corsConfigurationSource() {
+        var source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        return source;
+    }
 }

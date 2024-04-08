@@ -13,7 +13,15 @@ public class UserExceptions {
         throw new ResponseStatusException(HttpStatus.LOCKED, "User with name '" + userName + "' is blocked");
     }
 
-    public static ResponseStatusException userNotFound(String username) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with username '" + username + "' was not found");
+    public static ResponseStatusException userNotFound(String email) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with email '" + email + "' was not found");
+    }
+
+    public static ResponseStatusException duplicateEmail(String email) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email " + email + " already taken");
+    }
+
+    public static ResponseStatusException duplicatePhone(String phone) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone " + phone + " already taken");
     }
 }

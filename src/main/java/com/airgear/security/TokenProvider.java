@@ -1,5 +1,6 @@
 package com.airgear.security;
 
+import com.airgear.model.AuthToken;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,19 +56,21 @@ public class TokenProvider implements Serializable {
         return expiration.before(new Date());
     }
 
-    public String generateToken(Authentication authentication) {
-        log.info("authentication.getName : {}", authentication.getName());
-        String authorities = authentication.getAuthorities().stream()
+    public AuthToken generateToken(CustomUserDetails userDetails) {
+        log.info("authentication.getName : {}", userDetails.getUsername());
+        String authorities = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY*1000))
-                .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
-                .compact();
+        return new AuthToken(
+                Jwts.builder()
+                        .setSubject(userDetails.getUsername())
+                        .claim(AUTHORITIES_KEY, authorities)
+                        .setIssuedAt(new Date(System.currentTimeMillis()))
+                        .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
+                        .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
+                        .compact()
+        );
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
