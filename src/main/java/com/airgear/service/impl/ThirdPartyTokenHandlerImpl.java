@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.airgear.security.SecurityConstantsUI.THIRD_PARTY_SERVICE;
+import static com.airgear.security.SecurityConstants.THIRD_PARTY_SERVICE;
 import static com.airgear.security.ThirdPartyService.valueOf;
 
 @Service

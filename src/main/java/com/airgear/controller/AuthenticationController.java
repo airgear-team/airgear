@@ -1,6 +1,6 @@
 package com.airgear.controller;
 
-import com.airgear.dto.SaveUserDto;
+import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.SignInDto;
 import com.airgear.dto.UserDto;
 import com.airgear.model.AuthToken;
@@ -30,7 +30,11 @@ public class AuthenticationController {
     private final UserService userService;
     private final ThirdPartyTokenHandler tokenHandler;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            value = "/authenticate",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(schema = @Schema(implementation = SignInDto.class)))
     public AuthToken login(@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -43,7 +47,7 @@ public class AuthenticationController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDto> register(@RequestBody @Valid SaveUserDto request,
+    public ResponseEntity<UserDto> register(@RequestBody @Valid SaveUserRequestDto request,
                                             UriComponentsBuilder ucb) {
         UserDto response = userService.create(request);
 
@@ -53,6 +57,7 @@ public class AuthenticationController {
     }
 
     @GetMapping(
+            value = "/service",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public AuthToken generateTokenFromThirdPartyService(HttpServletRequest request) {

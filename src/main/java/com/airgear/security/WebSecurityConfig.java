@@ -72,9 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         permitAllUrls.add("/v3/api-docs/**");
         permitAllUrls.add("/swagger-ui/**");
         permitAllUrls.add("/swagger-ui.html");
-        permitAllUrls.add("/auth/authenticate");
-        permitAllUrls.add("/auth/service/authenticate");
         permitAllUrls.add("/auth/register");
+        permitAllUrls.add("/auth/service");
         permitAllUrls.add("/goods/random-goods");
         permitAllUrls.add("/auth/test");
         return permitAllUrls.toArray(new String[permitAllUrls.size()]);
@@ -88,7 +87,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         var filter = new JWTAuthenticationFilter(authenticationManager(), objectMapper);
-        filter.setFilterProcessesUrl("/auth");
+        filter.setFilterProcessesUrl("/auth/authenticate");
         return filter;
     }
 
