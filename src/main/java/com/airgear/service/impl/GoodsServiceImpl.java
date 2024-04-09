@@ -1,15 +1,15 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.GoodsDto;
+import com.airgear.dto.LocationDto;
+import com.airgear.dto.TopGoodsPlacementDto;
+import com.airgear.exception.CategoryExceptions;
+import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.RegionExceptions;
 import com.airgear.exception.UserExceptions;
-import com.airgear.model.User;
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.TopGoodsPlacementDto;
-import com.airgear.dto.*;
-import com.airgear.exception.ForbiddenException;
-import com.airgear.exception.GoodsNotFoundException;
 import com.airgear.mapper.CategoryMapper;
 import com.airgear.mapper.GoodsMapper;
+import com.airgear.model.User;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.TopGoodsPlacement;
@@ -24,9 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.*;
-import java.math.BigDecimal;
 
 import static com.airgear.exception.UserExceptions.userNotFound;
 
@@ -57,11 +57,8 @@ public class GoodsServiceImpl implements GoodsService {
     public GoodsDto getGoodsById(String ipAddress, String email, Long goodsId) {
         User user = getUser(email);
         Goods goods = getGoodsById(goodsId);
-        if (goods == null) {
-            throw new GoodsNotFoundException("Goods not found");
-        }
-        if (!goods.getStatus().equals(GoodsStatus.ACTIVE)) {
-            throw new GoodsNotFoundException("Goods was deleted");
+        if (goods == null||!goods.getStatus().equals(GoodsStatus.ACTIVE)) {
+            throw GoodsExceptions.goodsNotFound(goodsId);
         }
         return goodsMapper.toDto(goods);
     }
@@ -79,7 +76,7 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = getGoodsById(goodsId);
 
         if (!user.getId().equals(goods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
-            throw new ForbiddenException("It is not your goods");
+            throw UserExceptions.AccessDenied("It is not your goods");
         }
         deleteGoods(goods);
     }
@@ -103,7 +100,7 @@ public class GoodsServiceImpl implements GoodsService {
         Goods existingGoods = getGoodsById(goodsId);
         Goods updatedGoods = goodsMapper.toModel(updatedGoodsDto);
         if (!user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
-            throw new ForbiddenException("It is not your goods");
+            throw UserExceptions.AccessDenied("It is not your goods");
         }
         if (updatedGoods.getName() != null) {
             existingGoods.setName(updatedGoods.getName());
@@ -188,7 +185,7 @@ public class GoodsServiceImpl implements GoodsService {
             if (category != null)
                 goods.setCategory(category);
             else
-                throw new RuntimeException("not correct category for good with id: " + goods.getId());
+                throw CategoryExceptions.categoryNotFound(goods.getCategory().getName());
         }
     }
 
@@ -233,7 +230,7 @@ public class GoodsServiceImpl implements GoodsService {
         User user = getUser(email);
         Goods goods = getGoodsById(goodsId);
         if (goods == null) {
-            throw new GoodsNotFoundException("Goods not found");
+            throw GoodsExceptions.goodsNotFound(goodsId);
         }
 
         if (user.getFavoriteGoods().contains(goods)) {
@@ -261,10 +258,10 @@ public class GoodsServiceImpl implements GoodsService {
             throw userNotFound(topGoodsPlacement.getUserId());
         }
         if (goods == null) {
-            throw new GoodsNotFoundException("Goods not found");
+            throw GoodsExceptions.goodsNotFound(topGoodsPlacement.getGoods().getId());
         }
         if (!topGoodsPlacement.getUserId().equals(goods.getUser().getId()) && !userOptional.get().getRoles().contains("ADMIN")) {
-            throw new ForbiddenException("It is not your goods");
+            throw UserExceptions.AccessDenied("It is not your goods");
         }
         return TopGoodsPlacementDto.toDto(topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
                 .userId(topGoodsPlacement.getUserId())

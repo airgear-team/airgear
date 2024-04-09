@@ -1,7 +1,8 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.UserReviewDto;
-import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.UserExceptions;
+import com.airgear.exception.UserReviewExceptions;
 import com.airgear.model.User;
 import com.airgear.model.UserReview;
 import com.airgear.repository.UserRepository;
@@ -20,16 +21,16 @@ public class UserReviewServiceImpl implements UserReviewService {
 
     public UserReview createReview(UserReviewDto userReviewDto) {
         if (userReviewDto.getReviewed().getId().equals(userReviewDto.getReviewer().getId())){
-            throw new ForbiddenException("Reviewer can't set review for himself!");
+            throw UserReviewExceptions.reviewerNotReviewed(userReviewDto.getReviewer().getId());
         }
         User reviewer = userRepository.findById(userReviewDto.getReviewer().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Reviewer not found"));
+                .orElseThrow(() -> UserExceptions.userNotFound(userReviewDto.getReviewer().getId()));
 
         User reviewedUser = userRepository.findById(userReviewDto.getReviewed().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Reviewed user not found"));
+                .orElseThrow(() -> UserExceptions.userNotFound(userReviewDto.getReviewed().getId()));
 
         if(userReviewRepository.countByReviewedAndByReviewer(reviewedUser, reviewer)>0){
-            throw new ForbiddenException("Reviewer can do only one review!");
+            throw UserReviewExceptions.onlyOneReview(reviewer.getId());
         }
 
         UserReview userReview = new UserReview();

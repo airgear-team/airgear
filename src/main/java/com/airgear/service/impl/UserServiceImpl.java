@@ -4,10 +4,7 @@ import com.airgear.dto.GoodsDto;
 import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
-import com.airgear.exception.ChangeRoleException;
-import com.airgear.exception.ForbiddenException;
 import com.airgear.exception.UserExceptions;
-import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
 import com.airgear.model.Role;
@@ -74,23 +71,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional(readOnly = true)
     public UserDto getUserByEmail(String email) {
         User user = getUser(email);
-        return UserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .name(user.getName())
-                .roles(user.getRoles())
-                .createdAt(user.getCreatedAt())
-                .deleteAt(user.getDeleteAt())
-                .status(user.getStatus())
-                .build();
+        return userMapper.toDto(user);
     }
 
     @Override
-    public UserExistDto isEmailExists(String username) {
+    public UserExistDto isEmailExists(String email) {
         return UserExistDto.builder()
-                .username(username)
-                .exist(userRepository.existsByEmail(username))
+                .username(email)
+                .exist(userRepository.existsByEmail(email))
                 .build();
     }
 
@@ -106,7 +94,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void setAccountStatus(String email, UserStatus status) {
         User user = getUser(email);
         if (user == null || user.getStatus().equals(status)) {
-            throw new ForbiddenException("User not found or was already deleted");
+            throw UserExceptions.userNotFound(email);
         }
 
         user.setStatus(status);
@@ -121,15 +109,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserDto create(SaveUserRequestDto request) {
         validateUniqueFields(request);
         User user = save(request);
-        return UserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .name(user.getName())
-                .roles(user.getRoles())
-                .status(user.getStatus())
-                .createdAt(user.getCreatedAt())
-                .build();
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -183,20 +163,19 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException {
+    public void checkForUserUniqueness(UserDto userDto){
         boolean emailExists = userRepository.existsByEmail(userDto.getEmail());
         boolean phoneExists = userRepository.existsByPhone(userDto.getPhone());
 
         if (emailExists) {
-            throw new UserUniquenessViolationException("Email already exists.");
+            throw UserExceptions.duplicateEmail(userDto.getEmail());
         }
         if (phoneExists) {
-            throw new UserUniquenessViolationException("Phone number already exists.");
+            throw UserExceptions.duplicatePhone(userDto.getPhone());
         }
     }
 
     @Override
-    @Transactional
     public UserDto blockUser(Long userId) {
         User user = getUserById(userId);
         user.setStatus(UserStatus.SUSPENDED);
@@ -204,7 +183,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    @Transactional
     public UserDto unblockUser(Long userId) {
         User user = getUserById(userId);
         user.setStatus(UserStatus.ACTIVE);
@@ -219,7 +197,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public void deleteAccount(String email) {
         User user = getUser(email);
-
         user.setStatus(UserStatus.SUSPENDED);
     }
 
@@ -227,7 +204,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void accessToRoleChange(String executor, Role role) {
         User executorUser = getUser(executor);
         if (!executorUser.getRoles().contains(role) && role.toString().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
-            throw new ChangeRoleException("Access denied");
+            throw UserExceptions.AccessDenied("change role");
         }
     }
 
