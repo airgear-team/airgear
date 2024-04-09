@@ -920,4 +920,8 @@
     <changeSet id="dropUsernameColumnInUser" author="Oleksandr Tuleninov">
         <sql>ALTER TABLE user DROP COLUMN username;</sql>
     </changeSet>
+
+    <changeSet id="dropMessagesTable" author="Oleksandr Tuleninov">
+        <sql>DROP TABLE messages</sql>
+    </changeSet>
 </databaseChangeLog>
