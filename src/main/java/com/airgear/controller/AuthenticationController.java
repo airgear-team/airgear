@@ -30,7 +30,11 @@ public class AuthenticationController {
     private final UserService userService;
     private final ThirdPartyTokenHandler tokenHandler;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            value = "/authenticate",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(schema = @Schema(implementation = SignInDto.class)))
     public AuthToken login(@AuthenticationPrincipal CustomUserDetails userDetails) {

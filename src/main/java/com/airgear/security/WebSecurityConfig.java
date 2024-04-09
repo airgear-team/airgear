@@ -87,7 +87,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         var filter = new JWTAuthenticationFilter(authenticationManager(), objectMapper);
-        filter.setFilterProcessesUrl("/auth");
+        filter.setFilterProcessesUrl("/auth/authenticate");
         return filter;
     }
 
