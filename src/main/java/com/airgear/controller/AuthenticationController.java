@@ -1,6 +1,6 @@
 package com.airgear.controller;
 
-import com.airgear.dto.SaveUserDto;
+import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.SignInDto;
 import com.airgear.dto.UserDto;
 import com.airgear.model.AuthToken;
@@ -43,7 +43,7 @@ public class AuthenticationController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDto> register(@RequestBody @Valid SaveUserDto request,
+    public ResponseEntity<UserDto> register(@RequestBody @Valid SaveUserRequestDto request,
                                             UriComponentsBuilder ucb) {
         UserDto response = userService.create(request);
 
@@ -53,6 +53,7 @@ public class AuthenticationController {
     }
 
     @GetMapping(
+            value = "/service",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public AuthToken generateTokenFromThirdPartyService(HttpServletRequest request) {

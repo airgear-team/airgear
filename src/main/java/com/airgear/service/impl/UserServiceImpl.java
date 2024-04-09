@@ -1,7 +1,7 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.GoodsDto;
-import com.airgear.dto.SaveUserDto;
+import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.exception.ChangeRoleException;
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public UserDto create(SaveUserDto request) {
+    public UserDto create(SaveUserRequestDto request) {
         validateUniqueFields(request);
         User user = save(request);
         return UserDto.builder()
@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
     }
 
-    private void validateUniqueFields(SaveUserDto request) {
+    private void validateUniqueFields(SaveUserRequestDto request) {
         String email = request.getEmail();
         if (userRepository.existsByEmail(email)) {
             throw UserExceptions.duplicateEmail(email);
@@ -242,7 +242,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
     }
 
-    private User save(SaveUserDto request) {
+    private User save(SaveUserRequestDto request) {
         var user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
