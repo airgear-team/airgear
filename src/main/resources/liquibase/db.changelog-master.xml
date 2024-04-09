@@ -916,4 +916,8 @@
         </preConditions>
         <dropTable tableName="goods_status"/>
     </changeSet>
+
+    <changeSet id="dropUsernameColumnInUser" author="Oleksandr Tuleninov">
+        <sql>ALTER TABLE user DROP COLUMN username;</sql>
+    </changeSet>
 </databaseChangeLog>

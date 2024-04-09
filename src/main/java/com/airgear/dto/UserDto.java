@@ -15,9 +15,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
+
     private Long id;
-    private String username;
-    private String password;
     private String email;
     private String phone;
     private String name;
@@ -27,4 +26,5 @@ public class UserDto {
     private OffsetDateTime deleteAt;
     private UserStatus status;
     private Set<UserReviewDto> userReviews;
+
 }

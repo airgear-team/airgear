@@ -4,14 +4,17 @@ import com.airgear.dto.CalendarDay;
 import com.airgear.dto.RentalCardDto;
 import com.airgear.dto.DayTime;
 import com.airgear.exception.RentalExceptions;
+import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.RentalCardMapper;
 import com.airgear.model.RentalCard;
+import com.airgear.model.User;
 import com.airgear.repository.RentalCardRepository;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.GoodsService;
 import com.airgear.service.RentalCardService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,6 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class RentalCardServiceImpl implements RentalCardService {
 
@@ -43,8 +47,8 @@ public class RentalCardServiceImpl implements RentalCardService {
     @Override
     public RentalCard saveRentalCard(RentalCardDto rentalCardDto) {
         RentalCard rentalCard = rentalCardMapper.toModel(rentalCardDto);
-        rentalCard.setRenter(userRepository.findByUsername(rentalCardDto.getRenterUsername()));
-        rentalCard.setLessor(userRepository.findByUsername(rentalCardDto.getLessorUsername()));
+        rentalCard.setRenter(getUser(rentalCardDto.getRenterUsername()));
+        rentalCard.setLessor(getUser(rentalCardDto.getLessorUsername()));
         rentalCard.setGoods(goodsService.getGoodsById(rentalCardDto.getGoodsId()));
         rentalCard.setCreatedAt(OffsetDateTime.now());
         checkDays(rentalCard);
@@ -117,5 +121,10 @@ public class RentalCardServiceImpl implements RentalCardService {
             setTime.add(new DayTime(localTimeStart, localTimeEnd, true));
         }
         return setTime;
+    }
+
+    private User getUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> UserExceptions.userNotFound(email));
     }
 }

@@ -1,14 +1,15 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.GoodsDto;
+import com.airgear.dto.LocationDto;
+import com.airgear.dto.TopGoodsPlacementDto;
+import com.airgear.exception.CategoryExceptions;
 import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.RegionExceptions;
 import com.airgear.exception.UserExceptions;
-import com.airgear.model.User;
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.TopGoodsPlacementDto;
-import com.airgear.dto.*;
 import com.airgear.mapper.CategoryMapper;
 import com.airgear.mapper.GoodsMapper;
+import com.airgear.model.User;
 import com.airgear.model.goods.Category;
 import com.airgear.model.goods.Goods;
 import com.airgear.model.goods.TopGoodsPlacement;
@@ -23,9 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.*;
-import java.math.BigDecimal;
 
 import static com.airgear.exception.UserExceptions.userNotFound;
 
@@ -53,8 +54,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public GoodsDto getGoodsById(String ipAddress, String username, Long goodsId) {
-        User user = userRepository.findByUsername(username);
+    public GoodsDto getGoodsById(String ipAddress, String email, Long goodsId) {
+        User user = getUser(email);
         Goods goods = getGoodsById(goodsId);
         if (goods == null||!goods.getStatus().equals(GoodsStatus.ACTIVE)) {
             throw GoodsExceptions.goodsNotFound(goodsId);
@@ -70,8 +71,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public void deleteGoods(String username, Long goodsId) {
-        User user = userRepository.findByUsername(username);
+    public void deleteGoods(String email, Long goodsId) {
+        User user = getUser(email);
         Goods goods = getGoodsById(goodsId);
 
         if (!user.getId().equals(goods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
@@ -94,8 +95,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public GoodsDto updateGoods(String username, Long goodsId, GoodsDto updatedGoodsDto) {
-        User user = userRepository.findByUsername(username);
+    public GoodsDto updateGoods(String email, Long goodsId, GoodsDto updatedGoodsDto) {
+        User user = getUser(email);
         Goods existingGoods = getGoodsById(goodsId);
         Goods updatedGoods = goodsMapper.toModel(updatedGoodsDto);
         if (!user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
@@ -184,7 +185,7 @@ public class GoodsServiceImpl implements GoodsService {
             if (category != null)
                 goods.setCategory(category);
             else
-                throw GoodsExceptions.goodsDataNotFound("category", goods.getCategory().getName());
+                throw CategoryExceptions.categoryNotFound(goods.getCategory().getName());
         }
     }
 
@@ -201,11 +202,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public GoodsDto createGoods(String username, GoodsDto goodsDto) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw userNotFound(username);
-        }
+    public GoodsDto createGoods(String email, GoodsDto goodsDto) {
+        User user = getUser(email);
         Goods goods = goodsMapper.toModel(goodsDto);
         goods.setUser(user);
         goods.setStatus(GoodsStatus.ACTIVE);
@@ -228,8 +226,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public GoodsDto addToFavorites(String username, Long goodsId) {
-        User user = userRepository.findByUsername(username);
+    public GoodsDto addToFavorites(String email, Long goodsId) {
+        User user = getUser(email);
         Goods goods = getGoodsById(goodsId);
         if (goods == null) {
             throw GoodsExceptions.goodsNotFound(goodsId);
@@ -270,5 +268,10 @@ public class GoodsServiceImpl implements GoodsService {
                 .goods(goods)
                 .startAt(topGoodsPlacement.getStartAt())
                 .endAt(topGoodsPlacement.getEndAt()).build()));
+    }
+
+    private User getUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> UserExceptions.userNotFound(email));
     }
 }

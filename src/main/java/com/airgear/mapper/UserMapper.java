@@ -11,7 +11,6 @@ import java.util.List;
         uses = {GoodsMapper.class, UserReviewMapper.class})
 public interface UserMapper {
 
-    @Mapping(target = "password", ignore = true)
     @Mapping(target = "goods", ignore = true)
     UserDto toDto(User user);
 
