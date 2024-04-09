@@ -1,7 +1,7 @@
 package com.airgear.service;
 
 import com.airgear.dto.GoodsDto;
-import com.airgear.dto.SaveUserDto;
+import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.exception.UserUniquenessViolationException;
@@ -17,7 +17,7 @@ public interface UserService {
 
     void setAccountStatus(String email, UserStatus status);
 
-    UserDto create(SaveUserDto request);
+    UserDto create(SaveUserRequestDto request);
 
     User update(User user);
 
