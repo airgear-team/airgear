@@ -4,7 +4,6 @@ import com.airgear.dto.GoodsDto;
 import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
-import com.airgear.exception.UserUniquenessViolationException;
 import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.model.UserStatus;
@@ -41,7 +40,7 @@ public interface UserService {
 
     Set<GoodsDto> getFavoriteGoods(Authentication auth);
 
-    void checkForUserUniqueness(UserDto userDto) throws UserUniquenessViolationException;
+    void checkForUserUniqueness(UserDto userDto);
 
     UserDto blockUser(Long userId);
 
