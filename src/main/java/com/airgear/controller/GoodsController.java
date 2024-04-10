@@ -1,8 +1,6 @@
 package com.airgear.controller;
 
 import com.airgear.dto.*;
-import com.airgear.model.goods.Goods;
-import com.airgear.model.RentalAgreement;
 import com.airgear.service.*;
 import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
@@ -70,7 +68,7 @@ public class GoodsController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/download/rental/{goodsId}")
     public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId,
-                                                       @Valid @RequestBody RentalAgreement rental){
+                                                       @Valid @RequestBody RentalAgreementDto rental){
          return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
 
     }
@@ -92,7 +90,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/filter")
-    public Page<Goods> filterGoods(
+    public Page<GoodsDto> filterGoods(
             @RequestParam(name = "category", required = false) String categoryName,
             @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
             @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,

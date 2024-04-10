@@ -3,6 +3,7 @@ package com.airgear.service.impl;
 import com.airgear.dto.UserReviewDto;
 import com.airgear.exception.UserExceptions;
 import com.airgear.exception.UserReviewExceptions;
+import com.airgear.mapper.UserReviewMapper;
 import com.airgear.model.User;
 import com.airgear.model.UserReview;
 import com.airgear.repository.UserRepository;
@@ -12,14 +13,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service(value = "userReviewService")
 @AllArgsConstructor
 public class UserReviewServiceImpl implements UserReviewService {
+
     private final UserReviewRepository userReviewRepository;
     private final UserRepository userRepository;
+    private final UserReviewMapper userReviewMapper;
 
-    public UserReview createReview(UserReviewDto userReviewDto) {
+    public UserReviewDto createReview(UserReviewDto userReviewDto) {
         if (userReviewDto.getReviewed().getId().equals(userReviewDto.getReviewer().getId())){
             throw UserReviewExceptions.reviewerNotReviewed(userReviewDto.getReviewer().getId());
         }
@@ -46,18 +50,21 @@ public class UserReviewServiceImpl implements UserReviewService {
         reviewedUser.setRating(averageRating);
         userRepository.save(reviewedUser);
 
-        return userReview;
+        return userReviewMapper.toDto(userReview);
     }
-    public void updateReview(UserReview userReview) {
-        userReviewRepository.save(userReview);
-    }
-
-    public void deleteReview(UserReview userReview) {
-        userReviewRepository.delete(userReview);
+    public void updateReview(UserReviewDto userReview) {
+        userReviewRepository.save(userReviewMapper.toModel(userReview));
     }
 
-    public List<UserReview> getReviewsForUser(User user) {
-        return userReviewRepository.findByReviewedUser(user);
+    public void deleteReview(UserReviewDto userReview) {
+        userReviewRepository.delete(userReviewMapper.toModel(userReview));
+    }
+
+    public List<UserReviewDto> getReviewsForUser(User user) {
+        return userReviewRepository.findByReviewedUser(user)
+                .stream()
+                .map(userReviewMapper::toDto)
+                .collect(Collectors.toList());
     }
 
 }

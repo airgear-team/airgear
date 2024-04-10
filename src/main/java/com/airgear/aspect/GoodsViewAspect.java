@@ -1,6 +1,6 @@
 package com.airgear.aspect;
 
-import com.airgear.model.goods.Goods;
+import com.airgear.dto.GoodsDto;
 import com.airgear.service.GoodsService;
 import com.airgear.service.GoodsViewService;
 import com.airgear.service.UserService;
@@ -28,7 +28,7 @@ public class GoodsViewAspect {
         goodsViewService.saveGoodsView(getRemoteAddr(), getUserId(), getGoods(goodsId));
     }
 
-    private Goods getGoods(Long goodsId) {
+    private GoodsDto getGoods(Long goodsId) {
         return goodsService.getGoodsById(goodsId);
     }
 
