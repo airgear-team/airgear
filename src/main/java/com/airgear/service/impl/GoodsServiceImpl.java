@@ -7,7 +7,6 @@ import com.airgear.exception.CategoryExceptions;
 import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.RegionExceptions;
 import com.airgear.exception.UserExceptions;
-import com.airgear.mapper.CategoryMapper;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.User;
 import com.airgear.model.goods.Category;
@@ -40,27 +39,24 @@ public class GoodsServiceImpl implements GoodsService {
     private final LocationRepository locationRepository;
     private final RegionsRepository regionsRepository;
     private final GoodsMapper goodsMapper;
-    private final CategoryMapper categoryMapper;
     private final TopGoodsPlacementRepository topGoodsPlacementRepository;
 
-    private final int MAX_GOODS_IN_CATEGORY_COUNT = 3;
     private static final int SIMILAR_GOODS_LIMIT = 12;
     private static final BigDecimal PRICE_VARIATION_PERCENTAGE = new BigDecimal("0.15");
 
     @Override
-    public Goods getGoodsById(Long id) {
+    public GoodsDto getGoodsById(Long id) {
         Optional<Goods> goodsOptional = goodsRepository.findById(id);
-        return goodsOptional.orElse(null);
+        return goodsOptional.map(goodsMapper::toDto).orElse(null);
     }
 
     @Override
     public GoodsDto getGoodsById(String ipAddress, String email, Long goodsId) {
-        User user = getUser(email);
-        Goods goods = getGoodsById(goodsId);
+        GoodsDto goods = getGoodsById(goodsId);
         if (goods == null||!goods.getStatus().equals(GoodsStatus.ACTIVE)) {
             throw GoodsExceptions.goodsNotFound(goodsId);
         }
-        return goodsMapper.toDto(goods);
+        return goods;
     }
 
     @Override
@@ -73,7 +69,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void deleteGoods(String email, Long goodsId) {
         User user = getUser(email);
-        Goods goods = getGoodsById(goodsId);
+        Goods goods = goodsMapper.toModel(getGoodsById(goodsId));
 
         if (!user.getId().equals(goods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
             throw UserExceptions.AccessDenied("It is not your goods");
@@ -97,7 +93,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsDto updateGoods(String email, Long goodsId, GoodsDto updatedGoodsDto) {
         User user = getUser(email);
-        Goods existingGoods = getGoodsById(goodsId);
+        Goods existingGoods = goodsMapper.toModel(getGoodsById(goodsId));
         Goods updatedGoods = goodsMapper.toModel(updatedGoodsDto);
         if (!user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
             throw UserExceptions.AccessDenied("It is not your goods");
@@ -151,8 +147,7 @@ public class GoodsServiceImpl implements GoodsService {
         BigDecimal lowerBound = price.multiply(BigDecimal.ONE.subtract(PRICE_VARIATION_PERCENTAGE));
         BigDecimal upperBound = price.multiply(BigDecimal.ONE.add(PRICE_VARIATION_PERCENTAGE));
 
-        Page<Goods> goods = filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0, SIMILAR_GOODS_LIMIT));
-        return goods.map(goodsMapper::toDto);
+        return filterGoods(categoryName, lowerBound, upperBound, PageRequest.of(0, SIMILAR_GOODS_LIMIT));
     }
 
     @Override
@@ -161,21 +156,22 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<Goods> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
+    public Page<GoodsDto> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
         Category category = convertStringToCategory(categoryName);
 
         if (category != null && minPrice != null && maxPrice != null) {
-            return goodsRepository.findByCategoryAndPriceBetween(category, minPrice, maxPrice, pageable);
+            return goodsRepository.findByCategoryAndPriceBetween(category, minPrice, maxPrice, pageable)
+                                  .map(goodsMapper::toDto);
         } else if (minPrice != null && maxPrice != null) {
-            return goodsRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+            return goodsRepository.findByPriceBetween(minPrice, maxPrice, pageable).map(goodsMapper::toDto);
         } else if (minPrice != null) {
-            return goodsRepository.findByPriceGreaterThan(minPrice, pageable);
+            return goodsRepository.findByPriceGreaterThan(minPrice, pageable).map(goodsMapper::toDto);
         } else if (maxPrice != null) {
-            return goodsRepository.findByPriceLessThan(maxPrice, pageable);
+            return goodsRepository.findByPriceLessThan(maxPrice, pageable).map(goodsMapper::toDto);
         } else if (category != null) {
-            return goodsRepository.findByCategory(category, pageable);
+            return goodsRepository.findByCategory(category, pageable).map(goodsMapper::toDto);
         } else {
-            return goodsRepository.findAll(pageable);
+            return goodsRepository.findAll(pageable).map(goodsMapper::toDto);
         }
     }
 
@@ -228,7 +224,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsDto addToFavorites(String email, Long goodsId) {
         User user = getUser(email);
-        Goods goods = getGoodsById(goodsId);
+        Goods goods = goodsMapper.toModel(getGoodsById(goodsId));
         if (goods == null) {
             throw GoodsExceptions.goodsNotFound(goodsId);
         }
@@ -252,7 +248,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto) {
         TopGoodsPlacement topGoodsPlacement = topGoodsPlacementDto.toModel();
-        Goods goods = getGoodsById(topGoodsPlacement.getGoods().getId());
+        Goods goods = goodsMapper.toModel(getGoodsById(topGoodsPlacement.getGoods().getId()));
         Optional<User> userOptional = userRepository.findById(topGoodsPlacement.getUserId());
         if (userOptional.isEmpty()) {
             throw userNotFound(topGoodsPlacement.getUserId());

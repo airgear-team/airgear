@@ -5,6 +5,7 @@ import com.airgear.dto.RentalCardDto;
 import com.airgear.dto.DayTime;
 import com.airgear.exception.RentalExceptions;
 import com.airgear.exception.UserExceptions;
+import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.RentalCardMapper;
 import com.airgear.model.RentalCard;
 import com.airgear.model.User;
@@ -32,6 +33,7 @@ public class RentalCardServiceImpl implements RentalCardService {
     private final UserRepository userRepository;
     private final GoodsService goodsService;
     private final RentalCardMapper rentalCardMapper;
+    private final GoodsMapper goodsMapper;
 
     @Override
     public RentalCard getRentalCardById(Long id) {
@@ -49,7 +51,7 @@ public class RentalCardServiceImpl implements RentalCardService {
         RentalCard rentalCard = rentalCardMapper.toModel(rentalCardDto);
         rentalCard.setRenter(getUser(rentalCardDto.getRenterUsername()));
         rentalCard.setLessor(getUser(rentalCardDto.getLessorUsername()));
-        rentalCard.setGoods(goodsService.getGoodsById(rentalCardDto.getGoodsId()));
+        rentalCard.setGoods(goodsMapper.toModel(goodsService.getGoodsById(rentalCardDto.getGoodsId())));
         rentalCard.setCreatedAt(OffsetDateTime.now());
         checkDays(rentalCard);
         return rentalCardRepository.save(rentalCard);
