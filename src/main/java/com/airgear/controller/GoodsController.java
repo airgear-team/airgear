@@ -32,7 +32,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
-    public ResponseEntity<GoodsDto> createGoods(Authentication auth, @RequestBody GoodsDto goods) {
+    public ResponseEntity<GoodsDto> createGoods(Authentication auth, @Valid @RequestBody GoodsDto goods) {
         return ResponseEntity.ok(goodsService.createGoods(auth.getName(), goods));
     }
 
