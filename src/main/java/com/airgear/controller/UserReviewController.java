@@ -1,7 +1,6 @@
 package com.airgear.controller;
 
 import com.airgear.dto.UserReviewDto;
-import com.airgear.model.UserReview;
 import com.airgear.service.UserReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +19,8 @@ public class UserReviewController {
     private final UserReviewService userReviewService;
 
     @PostMapping("/create")
-    public ResponseEntity<UserReview> createReview(@Valid @RequestBody UserReviewDto userReviewDto) { // TODO use UserReview DTO
-        UserReview createdReview = userReviewService.createReview(userReviewDto);
+    public ResponseEntity<UserReviewDto> createReview(@Valid @RequestBody UserReviewDto userReviewDto) {
+        UserReviewDto createdReview = userReviewService.createReview(userReviewDto);
         return ResponseEntity.ok(createdReview);
     }
 }

@@ -8,8 +8,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface RentalCardMapper {
 
-    @Mapping(target = "lessor.username", source = "lessorUsername")
-    @Mapping(target = "renter.username", source = "renterUsername")
+    @Mapping(target = "lessor.email", source = "lessorUsername")
+    @Mapping(target = "renter.email", source = "renterUsername")
     @Mapping(target = "goods.id", source = "goodsId")
     RentalCard toModel(RentalCardDto rentalCardDto);
 }

@@ -68,7 +68,7 @@ public class EmailServiceImpl implements EmailService {
 
     public void sendWelcomeEmail(User user) {
         String recipientAddress = user.getEmail();
-        String username = user.getUsername();
+        String username = user.getName();
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper;

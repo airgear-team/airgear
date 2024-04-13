@@ -5,7 +5,10 @@ import static org.mockito.Mockito.*;
 
 import com.airgear.controller.PaymentController;
 import com.airgear.dto.CheckoutDto;
-import com.airgear.model.goods.Goods;
+import com.airgear.dto.GoodsDto;
+import com.airgear.model.goods.Price;
+import com.airgear.model.goods.enums.Currency;
+import com.airgear.model.goods.enums.PriceType;
 import com.airgear.service.GoodsService;
 import com.airgear.service.LiqPayService;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,14 +42,14 @@ public class PaymentControllerTest {
     @Test
     void testRedirectToPaymentPage() throws IllegalAccessException {
         Long goodsId = 123L;
-        Goods goods = new Goods();
-        goods.setPrice(new BigDecimal(100.00));
+        GoodsDto goods = GoodsDto.builder().build();
+        goods.setPrice(new Price(BigDecimal.valueOf(100.00), Currency.UAH, PriceType.NEGOTIATED_PRICE));
         goods.setName("Test Goods");
         when(goodsService.getGoodsById(goodsId)).thenReturn(goods);
 
         CheckoutDto checkoutDTO = CheckoutDto.builder()
                 .action("pay")
-                .amount(new BigDecimal(100.00))
+                .amount(BigDecimal.valueOf(100.00))
                 .currency("UAH")
                 .description("Test description")
                 .version(3)

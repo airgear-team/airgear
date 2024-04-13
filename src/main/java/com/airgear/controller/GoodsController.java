@@ -1,9 +1,6 @@
 package com.airgear.controller;
 
 import com.airgear.dto.*;
-import com.airgear.exception.GenerateRentalAgreementException;
-import com.airgear.model.goods.Goods;
-import com.airgear.model.RentalAgreement;
 import com.airgear.service.*;
 import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
@@ -20,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.io.IOException;
 import java.math.BigDecimal;
 
 @Slf4j
@@ -72,12 +68,9 @@ public class GoodsController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/download/rental/{goodsId}")
     public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId,
-                                                       @Valid @RequestBody RentalAgreement rental) {
-        try {
-            return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
-        } catch (IOException e) {
-            throw new GenerateRentalAgreementException("The problem with loading the lease agreement.");
-        }
+                                                       @Valid @RequestBody RentalAgreementDto rental){
+         return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
+
     }
 
     @GetMapping("/random-goods")
@@ -97,7 +90,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/filter")
-    public Page<Goods> filterGoods(
+    public Page<GoodsDto> filterGoods(
             @RequestParam(name = "category", required = false) String categoryName,
             @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
             @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,

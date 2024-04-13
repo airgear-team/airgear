@@ -1,3 +1,4 @@
+/*
 package com.airgear.data.generator;
 import com.airgear.dto.UserDto;
 import com.airgear.model.goods.Goods;
@@ -27,11 +28,13 @@ public class GenerateDataService implements CommandLineRunner {
 
     private final Random random = new Random();
 
-    /**
+    */
+/**
      * Entry point for the Spring Boot application to run this service.
      * It clears existing users and goods from the database and then generates new data.
      * @param args Command line arguments (not used).
-     */
+     *//*
+
     @Override
     public void run(String... args) {
         clearUsersAndGoods();
@@ -43,10 +46,12 @@ public class GenerateDataService implements CommandLineRunner {
         userRepository.deleteAll();
     }
 
-    /**
+    */
+/**
      * Generates a specified number of users and a random number of goods for each user.
      * @param numberOfUsers The number of users to generate.
-     */
+     *//*
+
     public void generateUsersAndGoods(int numberOfUsers) {
         for (int i = 0; i < numberOfUsers; i++) {
             User savedUser = generateUserById(i);
@@ -55,11 +60,13 @@ public class GenerateDataService implements CommandLineRunner {
         }
     }
 
-    /**
+    */
+/**
      * Generates and saves a user based on a given identifier.
      * @param i The identifier used to generate unique user details.
      * @return The saved user.
-     */
+     *//*
+
     private User generateUserById(int i) {
         UserDto userDto = UserDto.builder()
                 .username("username" + i)
@@ -68,14 +75,16 @@ public class GenerateDataService implements CommandLineRunner {
                 .phone(generateUniquePhoneNumber())
                 .name("user name " + i).build();
 
-        return userService.save(userDto);
+        return userService.create(userDto);
     }
 
-    /**
+    */
+/**
      * Generates and saves a specified number of goods for a given user.
      * @param user The user for whom to generate goods.
      * @param numberOfGoods The number of goods to generate for the user.
-     */
+     *//*
+
     private void generateGoodsForUser(User user, int numberOfGoods) {
         for (int i = 0; i < numberOfGoods; i++) {
             Goods goods = new Goods();
@@ -92,3 +101,4 @@ public class GenerateDataService implements CommandLineRunner {
         return "555" + (1000 + random.nextInt(9000));
     }
 }
+*/

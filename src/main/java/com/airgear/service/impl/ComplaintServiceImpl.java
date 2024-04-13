@@ -1,6 +1,7 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.ComplaintDto;
+import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.ComplaintMapper;
 import com.airgear.model.Complaint;
 import com.airgear.model.ComplaintCategory;
@@ -29,9 +30,10 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     @Transactional
-    public ComplaintDto save(String userName, Long goodsId, ComplaintDto complaintDTO) {
+    public ComplaintDto save(String email, Long goodsId, ComplaintDto complaintDTO) {
         Complaint newComplaint = complaintMapper.toModel(complaintDTO);
-        User user = userRepository.findByUsername(userName);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> UserExceptions.userNotFound(email));
         Goods goods = goodsRepository.getReferenceById(goodsId);
         ComplaintCategory complaintCategory = complaintCategoryRepository.findByName(complaintDTO.getComplaintCategoryDTO().getName());
         newComplaint.setComplaintCategory(complaintCategory);
