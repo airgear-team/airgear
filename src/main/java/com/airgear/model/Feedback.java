@@ -28,6 +28,10 @@ public class Feedback {
     @Size(max = 1000)
     private String message;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FeedbackType feedbackType;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;

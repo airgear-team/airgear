@@ -920,4 +920,12 @@
     <changeSet id="dropUsernameColumnInUser" author="Oleksandr Tuleninov">
         <sql>ALTER TABLE user DROP COLUMN username;</sql>
     </changeSet>
+
+    <changeSet id="addFeedbackType" author="Opanasenko-Mykhailo">
+        <addColumn tableName="feedback">
+            <column name="feedback_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
