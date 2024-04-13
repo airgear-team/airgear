@@ -1,7 +1,5 @@
 package com.airgear.dto;
 
-import com.airgear.model.goods.Price;
-import com.airgear.model.goods.WeekendsPrice;
 import com.airgear.model.goods.enums.GoodsCondition;
 import com.airgear.model.goods.enums.GoodsStatus;
 import lombok.Builder;
@@ -13,8 +11,9 @@ public class GoodsDto {
     private Long id;
     private String name;
     private String description;
-    private Price price;
-    private WeekendsPrice weekendsPrice;
+    private PriceDto price;
+    private WeekendsPriceDto weekendsPrice;
+    private DepositDto deposit;
     private LocationDto location;
     private CategoryDto category;
     private String phoneNumber;
