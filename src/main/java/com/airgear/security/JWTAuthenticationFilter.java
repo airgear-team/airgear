@@ -38,7 +38,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         var authToken = new UsernamePasswordAuthenticationToken(
-                credentials.getUsername(),
+                credentials.getEmail(),
                 credentials.getPassword()
         );
 

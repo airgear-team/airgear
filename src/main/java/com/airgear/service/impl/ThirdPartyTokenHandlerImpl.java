@@ -44,7 +44,7 @@ public class ThirdPartyTokenHandlerImpl implements ThirdPartyTokenHandler {
     private CustomUserDetails getCustomUserDetails(SignInDto user) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
+                        user.getEmail(),
                         user.getPassword()
                 )
         );
