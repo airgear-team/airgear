@@ -20,7 +20,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
@@ -47,10 +46,12 @@ public class Goods {
     @Size(min = 10, max = 1000, message = "Description length must be between 10 and 1000 characters")
     private String description;
 
-    @NotNull(message = "Price cannot be null")
-    private BigDecimal price;
+    @Embedded
+    @NotNull(message = "price cannot be null")
+    private Price price;
 
-    private BigDecimal weekendsPrice;
+    @Embedded
+    private WeekendsPrice weekendsPrice;
 
     @ManyToOne
     @JoinColumn(name = "location_id")

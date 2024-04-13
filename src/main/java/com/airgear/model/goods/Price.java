@@ -7,15 +7,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Deposit {
+public class Price {
 
-    private BigDecimal depositAmount;
-    private Currency depositCurrency;
-    private PriceType depositPriceType;
+    @NotNull(message = "priceAmount cannot be null")
+    private BigDecimal priceAmount;
+    @NotNull(message = "priceCurrency cannot be null")
+    private Currency priceCurrency;
+    @NotNull(message = "priceType cannot be null")
+    private PriceType priceType;
 }
