@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface GoodsService {
 
-    Goods getGoodsById(Long id);
+    GoodsDto getGoodsById(Long id);
 
     GoodsDto getGoodsById(String ipAddress, String username, Long goodsId);
 
@@ -31,7 +31,7 @@ public interface GoodsService {
 
     Page<Goods> getAllGoods(Pageable pageable);
 
-    Page<Goods> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+    Page<GoodsDto> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
     Page<GoodsDto> listGoodsByName(Pageable pageable, String goodsName);
 

@@ -16,6 +16,6 @@ import java.math.BigDecimal;
 public class WeekendsPrice {
 
     private BigDecimal weekendsPriceAmount;
-    private Currency weekendsPricecurrency;
+    private Currency weekendsPriceCurrency;
     private PriceType weekendsPriceType;
 }

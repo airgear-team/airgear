@@ -1,8 +1,8 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.CheckoutDto;
+import com.airgear.dto.GoodsDto;
 import com.airgear.mapper.CheckoutMapper;
-import com.airgear.model.goods.Goods;
 import com.airgear.repository.CheckoutRepository;
 import com.airgear.service.LiqPayService;
 import com.liqpay.LiqPay;
@@ -34,7 +34,7 @@ public class LiqPayServiceImpl implements LiqPayService {
      * @return CheckoutDTO
      */
     @Override
-    public CheckoutDto createCheckoutDtoPay(Goods goods, Authentication auth) {
+    public CheckoutDto createCheckoutDtoPay(GoodsDto goods, Authentication auth) {
         return CheckoutDto.builder()
                 .action("pay")
                 .amount(goods.getPrice().getPriceAmount())

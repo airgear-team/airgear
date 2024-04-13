@@ -8,5 +8,5 @@ import java.util.Set;
 public interface EmailService {
     String sendMail(EmailMessage emailMessage, Set<String> addresses);
 
-    public void sendWelcomeEmail(User user);
+    void sendWelcomeEmail(User user);
 }

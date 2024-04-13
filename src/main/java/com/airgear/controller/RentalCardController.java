@@ -3,7 +3,7 @@ package com.airgear.controller;
 import com.airgear.dto.CalendarDay;
 import com.airgear.dto.RentalCardDto;
 import com.airgear.dto.UserDto;
-import com.airgear.exception.ForbiddenException;
+import com.airgear.exception.UserExceptions;
 import com.airgear.model.RentalCard;
 import com.airgear.model.Role;
 import com.airgear.service.RentalCardService;
@@ -45,12 +45,12 @@ public class RentalCardController {
             Authentication auth,
             @PathVariable Long rentalCardId,
             @Valid @RequestBody RentalCardDto updatedRentalCard) {
-        UserDto user = userService.findByUsername(auth.getName());
+        UserDto user = userService.getUserByEmail(auth.getName());
         RentalCard existingRentalCard = rentalCardService.getRentalCardById(rentalCardId);
         if (!(user.getId().equals(existingRentalCard.getRenter().getId())
                 ||user.getId().equals(existingRentalCard.getLessor().getId())
                 || user.getRoles().stream().anyMatch(role->role== Role.ADMIN))){
-            throw new ForbiddenException("It is not your rental card");
+            throw UserExceptions.AccessDenied("It is not your rental card");
         }
         return ResponseEntity.ok(updatedRentalCard);
     }
@@ -58,12 +58,12 @@ public class RentalCardController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{rentalCardId}")
     public ResponseEntity<String> deleteRentalCard(Authentication auth, @PathVariable Long rentalCardId){
-        UserDto user = userService.findByUsername(auth.getName());
+        UserDto user = userService.getUserByEmail(auth.getName());
         RentalCard existingRentalCard = rentalCardService.getRentalCardById(rentalCardId);
         if (!(user.getId().equals(existingRentalCard.getRenter().getId())
                 ||user.getId().equals(existingRentalCard.getLessor().getId())
                 || user.getRoles().stream().anyMatch(role->role== Role.ADMIN))){
-            throw new ForbiddenException("It is not your rental card");
+            throw UserExceptions.AccessDenied("It is not your rental card");
         }
         rentalCardService.deleteRentalCard(existingRentalCard);
         return ResponseEntity.noContent().build();

@@ -1,5 +1,6 @@
 package com.airgear.dto;
 
+import com.airgear.model.FeedbackType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,6 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FeedbackDto {
-    @NotNull
-    private UserDto user;
-
     @NotBlank
     @Size(max = 255, message = "The size of the title should not exceed 255 characters")
     private String title;
@@ -22,4 +20,7 @@ public class FeedbackDto {
     @NotBlank
     @Size(max = 1000, message = "The size of the message should not exceed 1000 characters")
     private String message;
+
+    @NotNull
+    private FeedbackType feedbackType;
 }

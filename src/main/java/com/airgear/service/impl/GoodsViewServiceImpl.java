@@ -1,5 +1,7 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.GoodsDto;
+import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.GoodsView;
 import com.airgear.model.goods.Goods;
 import com.airgear.repository.GoodsViewRepository;
@@ -14,9 +16,11 @@ import java.time.OffsetDateTime;
 public class GoodsViewServiceImpl implements GoodsViewService {
 
     private final GoodsViewRepository goodsViewRepository;
+    private final GoodsMapper goodsMapper;
 
     @Override
-    public void saveGoodsView(String ip, Long userId, Goods goods) {
+    public void saveGoodsView(String ip, Long userId, GoodsDto goodsDto) {
+        Goods goods = goodsMapper.toModel(goodsDto);
         if (goodsViewRepository.existsByIpAndGoods(ip, goods)) {
             if (userId != null && !goodsViewRepository.existsByUserIdAndGoods(userId, goods)) {
                 goodsViewRepository.save(new GoodsView(userId, ip, OffsetDateTime.now(), goods));

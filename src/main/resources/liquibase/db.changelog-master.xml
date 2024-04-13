@@ -917,9 +917,17 @@
         <dropTable tableName="goods_status"/>
     </changeSet>
 
+    <changeSet id="dropUsernameColumnInUser" author="Oleksandr Tuleninov">
+        <sql>ALTER TABLE user DROP COLUMN username;</sql>
+    </changeSet>
+
     <changeSet id="deleteColumnPrice" author="vladyslav.haivoronskyi">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="goods" columnName="price"/>
+        </preConditions>
         <dropColumn tableName="goods" columnName="price"/>
     </changeSet>
+
     <changeSet id="deleteColumnAmountAndCurrency" author="vladyslav.haivoronskyi">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="goods" columnName="amount"/>
@@ -927,6 +935,21 @@
         </preConditions>
         <dropColumn tableName="goods" columnName="amount"/>
         <dropColumn tableName="goods" columnName="currency"/>
+    </changeSet>
+
+    <changeSet id="dropCategoryFieldInGoods" author="Oleksandr Tuleninov">
+        <preConditions>
+            <columnExists tableName="goods" columnName="category"/>
+        </preConditions>
+        <dropColumn tableName="goods" columnName="category"/>
+    </changeSet>
+
+    <changeSet id="addFeedbackType" author="Opanasenko-Mykhailo">
+        <addColumn tableName="feedback">
+            <column name="feedback_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

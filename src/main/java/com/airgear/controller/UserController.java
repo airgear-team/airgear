@@ -36,9 +36,9 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    public ResponseEntity<UserDto> getUserByUserName(@PathVariable String username) {
-        return ResponseEntity.ok(userService.findByUsername(username));
+    @RequestMapping(value = "/{email}", method = RequestMethod.GET)
+    public ResponseEntity<UserDto> getUserByUserName(@PathVariable String email) {
+        return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
@@ -48,37 +48,37 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @DeleteMapping(value = "/{username}")
-    public ResponseEntity<String> deleteAccount(@PathVariable String username) {
-        userService.deleteAccount(username);
+    @DeleteMapping(value = "/{email}")
+    public ResponseEntity<String> deleteAccount(@PathVariable String email) {
+        userService.deleteAccount(email);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping(value = "/{username}/roles")
+    @PostMapping(value = "/{email}/roles")
     @Validated
     public ResponseEntity<UserDto> appointRole(Authentication auth,
-                                               @PathVariable String username,
+                                               @PathVariable String email,
                                                @RequestBody Role role) {
         userService.accessToRoleChange(auth.getName(), role);
-        return ResponseEntity.ok(userService.appointRole(username, role));
+        return ResponseEntity.ok(userService.appointRole(email, role));
     }
 
-    @DeleteMapping(value = "/{username}/roles")
+    @DeleteMapping(value = "/{email}/roles")
     @Validated
     public ResponseEntity<String> removeRole(Authentication auth,
-                                             @PathVariable String username,
+                                             @PathVariable String email,
                                              @RequestBody Role role) {
         userService.accessToRoleChange(auth.getName(), role);
-        userService.removeRole(username, role);
+        userService.removeRole(email, role);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{username}/isExists")
-    public ResponseEntity<UserExistDto> isUsernameExists(Authentication auth,
-                                                         @PathVariable String username) {
+    @GetMapping("/{email}/isExists")
+    public ResponseEntity<UserExistDto> isEmailExists(Authentication auth,
+                                                      @PathVariable String email) {
         log.info("auth name : {}", auth.getName());
-        return ResponseEntity.ok(userService.isUsernameExists(username));
+        return ResponseEntity.ok(userService.isEmailExists(email));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

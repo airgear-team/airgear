@@ -29,17 +29,13 @@ public class User {
     private Long id;
 
     @Column
-    private String username;
+    private String email;
 
     @Column
     @JsonIgnore
     private String password;
 
     @Column
-    private String email;
-
-    @Column
-    //@Pattern(regexp = "^\\+380\\d{9}$", message = "the phones must be in the format +380XXXXXXXXX")
     private String phone;
 
     @Column
