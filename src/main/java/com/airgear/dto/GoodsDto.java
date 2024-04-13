@@ -1,10 +1,10 @@
 package com.airgear.dto;
 
 import com.airgear.model.goods.enums.GoodsCondition;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Data
 @Builder
@@ -18,5 +18,6 @@ public class GoodsDto {
     private CategoryDto category;
     private String phoneNumber;
     private UserDto user;
+    private Set<UserDto> usersAddedToFavorite;
     private GoodsCondition goodsCondition;
 }
