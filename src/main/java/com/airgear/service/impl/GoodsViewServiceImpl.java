@@ -3,7 +3,7 @@ package com.airgear.service.impl;
 import com.airgear.dto.GoodsDto;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.GoodsView;
-import com.airgear.model.goods.Goods;
+import com.airgear.model.Goods;
 import com.airgear.repository.GoodsViewRepository;
 import com.airgear.service.GoodsViewService;
 import lombok.AllArgsConstructor;

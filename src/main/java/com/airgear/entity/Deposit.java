@@ -1,7 +1,7 @@
-package com.airgear.model.goods;
+package com.airgear.entity;
 
-import com.airgear.model.goods.enums.Currency;
-import com.airgear.model.goods.enums.PriceType;
+import com.airgear.model.Currency;
+import com.airgear.model.PriceType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

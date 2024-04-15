@@ -1,7 +1,7 @@
 package com.airgear.service.impl;
 
 import com.airgear.model.User;
-import com.airgear.model.email.EmailMessage;
+import com.airgear.entity.EmailMessage;
 import com.airgear.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.airgear.security;
 
-import com.airgear.model.AuthToken;
+import com.airgear.entity.AuthToken;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

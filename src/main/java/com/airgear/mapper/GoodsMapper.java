@@ -1,7 +1,7 @@
 package com.airgear.mapper;
 
 import com.airgear.dto.GoodsDto;
-import com.airgear.model.goods.Goods;
+import com.airgear.model.Goods;
 import org.mapstruct.Mapper;
 
 import java.util.List;

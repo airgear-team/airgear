@@ -10,7 +10,7 @@ import com.airgear.mapper.UserMapper;
 import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.model.UserStatus;
-import com.airgear.model.email.EmailMessage;
+import com.airgear.entity.EmailMessage;
 import com.airgear.repository.UserRepository;
 import com.airgear.security.CustomUserDetails;
 import com.airgear.service.EmailService;

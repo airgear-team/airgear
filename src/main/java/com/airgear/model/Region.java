@@ -1,4 +1,4 @@
-package com.airgear.model.region;
+package com.airgear.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

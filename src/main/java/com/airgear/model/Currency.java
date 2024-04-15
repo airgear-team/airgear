@@ -1,4 +1,4 @@
-package com.airgear.model.goods.enums;
+package com.airgear.model;
 
 public enum Currency {
     UAH,

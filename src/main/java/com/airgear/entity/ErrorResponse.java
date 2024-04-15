@@ -1,4 +1,4 @@
-package com.airgear.model;
+package com.airgear.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.airgear.dto;
 
-import com.airgear.model.goods.enums.GoodsCondition;
-import com.airgear.model.goods.enums.GoodsStatus;
+import com.airgear.model.GoodsCondition;
+import com.airgear.model.GoodsStatus;
 import lombok.Builder;
 import lombok.Data;
 

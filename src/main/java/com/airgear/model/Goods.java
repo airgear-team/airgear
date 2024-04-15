@@ -1,12 +1,6 @@
-package com.airgear.model.goods;
+package com.airgear.model;
 
-import com.airgear.model.Complaint;
-import com.airgear.model.GoodsView;
-import com.airgear.model.User;
-import com.airgear.model.goods.enums.GoodsCondition;
-import com.airgear.model.goods.enums.GoodsStatus;
-import com.airgear.model.goods.enums.GoodsVerificationStatus;
-import com.airgear.model.location.Location;
+import com.airgear.entity.Deposit;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

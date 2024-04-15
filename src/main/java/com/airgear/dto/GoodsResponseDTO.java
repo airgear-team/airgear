@@ -1,6 +1,6 @@
 package com.airgear.dto;
 
-import com.airgear.model.location.Location;
+import com.airgear.model.Location;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

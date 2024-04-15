@@ -1,6 +1,5 @@
 package com.airgear.model;
 
-import com.airgear.model.goods.Goods;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

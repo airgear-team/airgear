@@ -1,7 +1,7 @@
 package com.airgear.controller;
 
 
-import com.airgear.model.email.EmailsRequestStructure;
+import com.airgear.entity.EmailsRequestStructure;
 import com.airgear.service.impl.EmailServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

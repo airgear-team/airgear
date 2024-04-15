@@ -1,4 +1,4 @@
-package com.airgear.model;
+package com.airgear.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

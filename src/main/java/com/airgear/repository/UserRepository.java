@@ -1,7 +1,7 @@
 package com.airgear.repository;
 
 import com.airgear.model.User;
-import com.airgear.model.goods.Goods;
+import com.airgear.model.Goods;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

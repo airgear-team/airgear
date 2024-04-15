@@ -3,7 +3,7 @@ package com.airgear.controller;
 import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.SignInDto;
 import com.airgear.dto.UserDto;
-import com.airgear.model.AuthToken;
+import com.airgear.entity.AuthToken;
 import com.airgear.security.CustomUserDetails;
 import com.airgear.security.TokenProvider;
 import com.airgear.service.ThirdPartyTokenHandler;

@@ -1,7 +1,7 @@
 package com.airgear.dto;
 
 import com.airgear.mapper.GoodsMapperImpl;
-import com.airgear.model.goods.TopGoodsPlacement;
+import com.airgear.model.TopGoodsPlacement;
 import lombok.Builder;
 import lombok.Data;
 

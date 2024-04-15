@@ -6,7 +6,7 @@ import com.airgear.mapper.ComplaintMapper;
 import com.airgear.model.Complaint;
 import com.airgear.model.ComplaintCategory;
 import com.airgear.model.User;
-import com.airgear.model.goods.Goods;
+import com.airgear.model.Goods;
 import com.airgear.repository.ComplaintCategoryRepository;
 import com.airgear.repository.ComplaintRepository;
 import com.airgear.repository.GoodsRepository;

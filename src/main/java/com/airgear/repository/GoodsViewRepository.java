@@ -1,7 +1,7 @@
 package com.airgear.repository;
 
 import com.airgear.model.GoodsView;
-import com.airgear.model.goods.Goods;
+import com.airgear.model.Goods;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
