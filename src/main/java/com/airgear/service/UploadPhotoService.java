@@ -5,5 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface UploadPhotoService {
-    String uploadPhoto(MultipartFile file) throws IOException;
+    String uploadPhoto(MultipartFile file, Long userId, Long goodsId) throws IOException;
 }
