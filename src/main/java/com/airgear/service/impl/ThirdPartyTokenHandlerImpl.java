@@ -1,7 +1,7 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.SignInDto;
-import com.airgear.security.CustomUserDetails;
+import com.airgear.model.CustomUserDetails;
 import com.airgear.security.ThirdPartyService;
 import com.airgear.service.GoogleTokenHandler;
 import com.airgear.service.ThirdPartyTokenHandler;

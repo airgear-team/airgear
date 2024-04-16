@@ -1,6 +1,6 @@
 package com.airgear.service;
 
-import com.airgear.security.CustomUserDetails;
+import com.airgear.model.CustomUserDetails;
 
 import javax.servlet.http.HttpServletRequest;
 
