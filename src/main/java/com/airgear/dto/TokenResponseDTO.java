@@ -7,6 +7,11 @@ import lombok.Setter;
 @Data
 @Setter(AccessLevel.NONE)
 public class TokenResponseDTO {
-    String sub;
-    String email;
+
+    private String sub;
+
+    private String email;
+
+    private String name;
+
 }
