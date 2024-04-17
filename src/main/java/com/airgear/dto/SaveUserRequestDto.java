@@ -15,6 +15,7 @@ public class SaveUserRequestDto {
 
     @Email(message = "email must be a valid email string")
     @NotNull(message = "email must not be null")
+    @Size(max = 255, message = "Email is too long, it must be no more than 255 characters long.")
     private String email;
 
     @NotBlank(message = "Password must not be blank")
