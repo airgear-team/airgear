@@ -23,7 +23,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager,
                                    ObjectMapper objectMapper) {
         setAuthenticationManager(authenticationManager);
-        setUsernameParameter("username");
+        setUsernameParameter("login");
         this.objectMapper = objectMapper;
     }
 
@@ -38,7 +38,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         var authToken = new UsernamePasswordAuthenticationToken(
-                credentials.getEmail(),
+                credentials.getLogin(),
                 credentials.getPassword()
         );
 

@@ -1,5 +1,6 @@
 package com.airgear.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SignInDto {
 
-    private String email;
+    @JsonAlias({"email"})
+    private String login;
 
     private String password;
 
