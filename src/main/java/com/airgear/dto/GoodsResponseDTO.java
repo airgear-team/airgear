@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter(AccessLevel.NONE)
 @AllArgsConstructor
 public class GoodsResponseDTO {
-    Long id;
-    String name;
-    String description;
-    Double price;
-    Location location;
-    Long userId;
+    private Long id;
+    private String name;
+    private String description;
+    private Double price;
+    private Location location;
+    private Long userId;
 }

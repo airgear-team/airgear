@@ -9,7 +9,7 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 public class DayTime {
-    LocalTime timeFrom;
-    LocalTime timeTo;
-    Boolean free;
+    private LocalTime timeFrom;
+    private LocalTime timeTo;
+    private Boolean free;
 }

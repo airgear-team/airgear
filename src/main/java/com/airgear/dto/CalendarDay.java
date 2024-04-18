@@ -13,9 +13,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CalendarDay {
-    LocalDate date;
-    Boolean free;
-    Long goodsId;
+    private LocalDate date;
+    private Boolean free;
+    private Long goodsId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    Set<DayTime> listTime;
+    private Set<DayTime> listTime;
 }
