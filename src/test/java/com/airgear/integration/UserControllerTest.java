@@ -2,7 +2,7 @@
 //
 //import com.airgear.dto.*;
 //import com.airgear.model.AccountStatus;
-//import com.airgear.model.AuthToken;
+//import com.airgear.entity.AuthToken;
 //import com.airgear.model.RentalCard;
 //import com.airgear.model.User;
 //import java.math.BigDecimal;
@@ -12,8 +12,8 @@
 //import java.util.stream.Collectors;
 //import java.util.stream.Stream;
 //
-//import com.airgear.model.goods.Category;
-//import com.airgear.model.goods.Goods;
+//import com.airgear.model.Category;
+//import com.airgear.model.Goods;
 //import com.airgear.model.goods.Location;
 //import com.airgear.repository.AccountStatusRepository;
 //import com.airgear.repository.RoleRepository;

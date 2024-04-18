@@ -1,7 +1,7 @@
 package com.airgear.mapper;
 
 import com.airgear.dto.LocationDto;
-import com.airgear.model.location.Location;
+import com.airgear.model.Location;
 import com.airgear.dto.SaveLocationRequestDTO;
 import com.airgear.dto.LocationResponseDTO;
 import org.mapstruct.Mapper;

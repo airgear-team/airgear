@@ -1,6 +1,6 @@
 package com.airgear.repository;
 
-import com.airgear.model.goods.TopGoodsPlacement;
+import com.airgear.model.TopGoodsPlacement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

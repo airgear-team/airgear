@@ -2,7 +2,7 @@ package com.airgear.mapper;
 
 
 import com.airgear.dto.DepositDto;
-import com.airgear.model.goods.Deposit;
+import com.airgear.entity.Deposit;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

@@ -1,7 +1,7 @@
 package com.airgear.service;
 
 import com.airgear.dto.*;
-import com.airgear.model.goods.Goods;
+import com.airgear.model.Goods;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,7 +1,7 @@
 package com.airgear.mapper;
 
 import com.airgear.dto.RegionDto;
-import com.airgear.model.region.Region;
+import com.airgear.model.Region;
 import com.airgear.dto.RegionResponseDTO;
 import org.mapstruct.Mapper;
 

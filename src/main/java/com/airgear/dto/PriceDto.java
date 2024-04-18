@@ -1,7 +1,7 @@
 package com.airgear.dto;
 
-import com.airgear.model.goods.enums.Currency;
-import com.airgear.model.goods.enums.PriceType;
+import com.airgear.model.Currency;
+import com.airgear.model.PriceType;
 import lombok.Builder;
 import lombok.Data;
 

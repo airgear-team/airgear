@@ -1,7 +1,7 @@
 package com.airgear.service;
 
 import com.airgear.model.User;
-import com.airgear.model.email.EmailMessage;
+import com.airgear.entity.EmailMessage;
 
 import java.util.Set;
 

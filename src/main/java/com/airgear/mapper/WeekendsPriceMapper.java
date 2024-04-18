@@ -1,7 +1,7 @@
 package com.airgear.mapper;
 
 import com.airgear.dto.WeekendsPriceDto;
-import com.airgear.model.goods.WeekendsPrice;
+import com.airgear.model.WeekendsPrice;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

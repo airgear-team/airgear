@@ -10,9 +10,9 @@ import com.airgear.mapper.UserMapper;
 import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.model.UserStatus;
-import com.airgear.model.email.EmailMessage;
+import com.airgear.entity.EmailMessage;
 import com.airgear.repository.UserRepository;
-import com.airgear.security.CustomUserDetails;
+import com.airgear.model.CustomUserDetails;
 import com.airgear.service.EmailService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
@@ -46,7 +46,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = getUser(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User with email '" + email + "' not found"));
 
         return new CustomUserDetails(user);
     }

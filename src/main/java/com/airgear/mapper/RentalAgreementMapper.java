@@ -1,7 +1,7 @@
 package com.airgear.mapper;
 
 import com.airgear.dto.RentalAgreementDto;
-import com.airgear.model.RentalAgreement;
+import com.airgear.entity.RentalAgreement;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
