@@ -1,7 +1,6 @@
 package com.airgear.controller;
 
 import com.airgear.dto.GoodsDto;
-import com.airgear.utils.Routes;
 import com.airgear.service.GoodsService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(Routes.SEARCH)
+@RequestMapping("/search")
 @AllArgsConstructor
 public class SearchController {
 
