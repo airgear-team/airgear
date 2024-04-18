@@ -187,12 +187,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.liqpay</groupId>
-            <artifactId>liqpay-sdk</artifactId>
-            <version>0.8-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.bithub7</groupId>
             <artifactId>airgear.model</artifactId>
             <version>v1.1.7</version>
