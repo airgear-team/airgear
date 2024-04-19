@@ -1,9 +1,11 @@
 package com.airgear.service;
 
+import com.airgear.dto.ImagesSaveResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 public interface UploadPhotoService {
-    String uploadPhoto(MultipartFile file, Long userId, Long goodsId) throws IOException;
+    String uploadImage(MultipartFile image, Long userId, Long goodsId) throws IOException;
+    ImagesSaveResponse uploadImages(MultipartFile[] images, Long userId, Long goodsId);
 }

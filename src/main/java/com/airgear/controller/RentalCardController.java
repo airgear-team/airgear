@@ -73,8 +73,7 @@ public class RentalCardController {
     @GetMapping("/calendar/{goodsId}")
     public ResponseEntity<List<CalendarDay>> getCalendarForGoods(@PathVariable Long goodsId,
                                                                  @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
-                                                                 @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate
-    ){
+                                                                 @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate){
         List<CalendarDay> list = rentalCardService.getCalendarForGoods(goodsId,fromDate,toDate);
         return ResponseEntity.ok(list);
     }

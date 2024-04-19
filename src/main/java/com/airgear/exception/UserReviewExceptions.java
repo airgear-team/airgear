@@ -11,4 +11,5 @@ public class UserReviewExceptions {
     public static ResponseStatusException onlyOneReview(Long reviewerId) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reviewer with id: "+reviewerId+" can do only one review!");
     }
+
 }

@@ -21,10 +21,7 @@ public class SearchController {
 
     private final GoodsService goodsService;
 
-    @GetMapping(
-            value = "/{goodsName}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = "/{goodsName}")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PageableAsQueryParam
     public Page<GoodsDto> listGoodsByName(@Parameter(hidden = true) Pageable pageable,

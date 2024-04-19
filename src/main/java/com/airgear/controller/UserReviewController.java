@@ -24,4 +24,3 @@ public class UserReviewController {
         return ResponseEntity.ok(createdReview);
     }
 }
-
