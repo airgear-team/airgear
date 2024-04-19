@@ -15,16 +15,19 @@ public class SaveUserRequestDto {
 
     @Email(message = "email must be a valid email string")
     @NotNull(message = "email must not be null")
+    @Size(max = 255, message = "Email is too long, it must be no more than 255 characters long.")
     private String email;
 
-    @NotBlank(message = "password must not be blank")
-    @Size(min = 8, message = "password's length must be at least 8")
+    @NotBlank(message = "Password must not be blank")
+    @Size(min = 8, message = "Password is too short, it must be at least 8 characters long.")
+    @Size(max = 50, message = "Password is too long, it must be no more than 50 characters long.")
     private String password;
 
-    @Pattern(regexp = "^\\+380\\d{9}$", message = "phones must be in the format +380XXXXXXXXX")
+    @Pattern(regexp = "^\\+\\d{10,12}$", message = "phones must be in the format +XXXXXXXXXXXX")
     private String phone;
 
     @NotBlank(message = "name must not be blank")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]{2,50}$", message = "The name should contain between 2 and 50 characters, only Latin and Cyrillic characters, and should not contain special characters.")
     private String name;
 
 }
