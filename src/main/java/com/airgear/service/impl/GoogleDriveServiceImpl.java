@@ -19,12 +19,13 @@ import java.util.Collections;
 
 //@Service
 @AllArgsConstructor
-public class GoogleDriveServiceImpl implements UploadPhotoService {
+public class GoogleDriveServiceImpl
+        // implements UploadPhotoService
+{
 
     private final Drive driveService;
     private final PhotoRepository photoRepository;
 
-    @Override
     public String uploadPhoto(MultipartFile file) throws IOException {
         Path tempFile = Files.createTempFile("upload-", file.getOriginalFilename());
         file.transferTo(tempFile.toFile());
