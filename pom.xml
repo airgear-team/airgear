@@ -189,7 +189,7 @@
         <dependency>
             <groupId>com.github.bithub7</groupId>
             <artifactId>airgear.model</artifactId>
-            <version>v1.1.7</version>
+            <version>v1.1.9</version>
         </dependency>
 
     </dependencies>
