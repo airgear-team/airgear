@@ -2,11 +2,14 @@ package com.airgear.service.impl;
 
 import com.airgear.dto.ImagesSaveResponse;
 import com.airgear.exception.ImageExceptions;
-import com.airgear.service.UploadPhotoService;
+import com.airgear.service.ImageService;
 import com.airgear.utils.DirectoryPathUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +19,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class UploadPhotoServiceImpl implements UploadPhotoService {
+public class ImageServiceImpl implements ImageService {
 
     private static final long MAX_FILE_SIZE_IN_BYTES = 10485760;
     private static final String IMAGE_EXTENSIONS_PNG = "image/png";
@@ -38,6 +41,19 @@ public class UploadPhotoServiceImpl implements UploadPhotoService {
             }
         }
         return new ImagesSaveResponse(imageUrls);
+    }
+
+    @Override
+    public FileSystemResource downloadImage(Long userId, Long goodsId, String imageId) {
+        String imagePath = DirectoryPathUtil.getBasePath() + "\\"+USER_DIR_NAME+"\\" + userId + "\\"+GOODS_DIR_NAME+"\\" + goodsId + "\\" + imageId;
+        log.info("image path : {}", imagePath);
+        File file = new File(imagePath);
+        if (file.exists()) {
+           return new FileSystemResource(file);
+        } else {
+            ImageExceptions.imageNotFound(userId, goodsId, imageId);
+            return new FileSystemResource("");
+        }
     }
 
     @Override
@@ -85,4 +101,5 @@ public class UploadPhotoServiceImpl implements UploadPhotoService {
         }
         return "";
     }
+
 }
