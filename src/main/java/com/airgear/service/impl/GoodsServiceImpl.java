@@ -3,10 +3,7 @@ package com.airgear.service.impl;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.LocationDto;
 import com.airgear.dto.TopGoodsPlacementDto;
-import com.airgear.exception.CategoryExceptions;
-import com.airgear.exception.GoodsExceptions;
-import com.airgear.exception.RegionExceptions;
-import com.airgear.exception.UserExceptions;
+import com.airgear.exception.*;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.User;
 import com.airgear.model.Category;
@@ -206,17 +203,12 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setCreatedAt(OffsetDateTime.now());
 
         LocationDto locationDto = goodsDto.getLocation();
-        Location existingLocation = locationRepository.findBySettlementAndRegionId(locationDto.getSettlement(), locationDto.getRegionId());
+        Location existingLocation = locationRepository.findByUniqueSettlementID(locationDto.getUniqueId());
 
         if (existingLocation != null) {
             goods.setLocation(existingLocation);
         } else {
-            Location newLocation = Location.builder()
-                    .settlement(locationDto.getSettlement())
-                    .region(regionsRepository.findById(locationDto.getRegionId()).orElseThrow(() -> RegionExceptions.regionNotFound(locationDto.getRegionId())))
-                    .build();
-
-            goods.setLocation(locationRepository.save(newLocation));
+            LocationException.locationNotFound(locationDto.getUniqueId());
         }
         return goodsMapper.toDto(goodsRepository.save(goods));
     }

@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface LocationMapper {
-    @Mapping(target = "regionId", source = "region.id")
+    @Mapping(source = "uniqueSettlementID", target = "uniqueId")
     LocationDto toDto(Location location);
 
     @Mapping(target = "region", ignore = true)
