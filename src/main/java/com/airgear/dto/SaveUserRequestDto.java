@@ -27,7 +27,7 @@ public class SaveUserRequestDto {
     private String phone;
 
     @NotBlank(message = "name must not be blank")
-    @Pattern(regexp = "^[a-zA-Zа-яА-Я]{2,50}$", message = "The name should contain between 2 and 50 characters, only Latin and Cyrillic characters, and should not contain special characters.")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+(?:\\s[a-zA-Zа-яА-Я]+){0,49}$", message = "The name should contain between 2 and 50 characters, only Latin and Cyrillic characters, and should not contain special characters.")
     private String name;
 
 }
