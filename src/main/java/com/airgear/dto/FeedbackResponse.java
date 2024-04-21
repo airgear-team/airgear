@@ -1,5 +1,6 @@
 package com.airgear.dto;
 
+import com.airgear.model.FeedbackType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,7 @@ public class FeedbackResponse {
     private String message;
 
     private OffsetDateTime createdAt;
+
+    private FeedbackType feedbackType;
 
 }

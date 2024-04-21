@@ -5,7 +5,6 @@ import com.airgear.dto.FeedbackSaveRequest;
 import com.airgear.service.FeedbackService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,10 +21,7 @@ public class FeedbackController {
     private final FeedbackService feedbackService;
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<FeedbackResponse> create(@AuthenticationPrincipal String email,
                                                    @RequestBody @Valid FeedbackSaveRequest request,
