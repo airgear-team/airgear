@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 public class LocationDto {
-    private Integer uniqueId;
+    private Integer locationId;
     private String settlement;
     private RegionDto region;
 }
