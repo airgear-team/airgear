@@ -4,13 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.airgear.controller.PaymentController;
-import com.airgear.dto.CheckoutDto;
 import com.airgear.dto.GoodsDto;
 import com.airgear.model.Price;
 import com.airgear.model.Currency;
 import com.airgear.model.PriceType;
 import com.airgear.service.GoodsService;
-import com.airgear.service.LiqPayService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

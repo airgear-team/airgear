@@ -12,11 +12,11 @@ import javax.validation.constraints.PositiveOrZero;
 public class SaveLocationRequestDTO {
         @NotNull(message = "the settlement must not be null")
         @Setter(AccessLevel.NONE)
-        String settlement;
+        private String settlement;
 
         @NotBlank(message = "the region id must not be blank")
         @PositiveOrZero(message = "the region id must be positive or zero")
         @Setter(AccessLevel.NONE)
-        Long regionId;
+        private Long regionId;
 }
 

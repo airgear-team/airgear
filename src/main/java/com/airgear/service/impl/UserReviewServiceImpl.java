@@ -52,6 +52,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 
         return userReviewMapper.toDto(userReview);
     }
+
     public void updateReview(UserReviewDto userReview) {
         userReviewRepository.save(userReviewMapper.toModel(userReview));
     }

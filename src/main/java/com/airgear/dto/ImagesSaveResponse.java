@@ -1,13 +1,18 @@
 package com.airgear.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegionResponseDTO {
-    private Long id;
-    private String region;
+public class ImagesSaveResponse {
+
+    private List<String> images;
+
 }

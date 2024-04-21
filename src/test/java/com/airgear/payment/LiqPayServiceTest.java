@@ -1,10 +1,8 @@
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.airgear.dto.CheckoutDto;
 import com.airgear.model.Goods;
 import com.airgear.repository.CheckoutRepository;
-import com.airgear.service.impl.LiqPayServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

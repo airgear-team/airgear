@@ -8,4 +8,5 @@ public class LocationException {
     public static ResponseStatusException locationNotFound(Long locationId) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Location with id " + locationId + " not found");
     }
+
 }

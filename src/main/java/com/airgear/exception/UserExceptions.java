@@ -5,7 +5,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class UserExceptions {
 
-    public static ResponseStatusException userNotFound(long userId) {
+    public static ResponseStatusException userNotFound(Long userId) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id '" + userId + "' was not found");
     }
 
@@ -24,4 +24,5 @@ public class UserExceptions {
     public static ResponseStatusException AccessDenied(String name) {
         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied: " + name);
     }
+
 }
