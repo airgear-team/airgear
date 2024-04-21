@@ -1,18 +1,22 @@
 package com.airgear.service;
 
-import com.airgear.dto.FeedbackDto;
+import com.airgear.dto.FeedbackResponse;
+import com.airgear.dto.FeedbackSaveRequest;
 import com.airgear.model.Feedback;
-import org.springframework.security.core.Authentication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 public interface FeedbackService {
-    List<Feedback> getAllFeedback();
 
-    Feedback getFeedbackById(Long id);
+    FeedbackResponse create(String email, FeedbackSaveRequest request);
 
-    Feedback createFeedback(String email, @Valid FeedbackDto feedbackDTO);
+    Page<FeedbackResponse> list(Pageable pageable);
 
-    void deleteFeedback(Long id);
+    Optional<FeedbackResponse> getById(long id);
+
+    void deleteFeedback(long id);
+
 }

@@ -24,8 +24,6 @@
         <springdoc-openapi.version>1.6.15</springdoc-openapi.version>
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-
-
     </properties>
 
     <repositories>
@@ -189,7 +187,7 @@
         <dependency>
             <groupId>com.github.bithub7</groupId>
             <artifactId>airgear.model</artifactId>
-            <version>v1.1.7</version>
+            <version>v1.1.10</version>
         </dependency>
 
     </dependencies>
