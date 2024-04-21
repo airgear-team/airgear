@@ -1,18 +1,23 @@
 package com.airgear.service;
 
-import com.airgear.dto.CalendarDay;
-import com.airgear.dto.RentalCardDto;
-import com.airgear.model.RentalCard;
+import com.airgear.dto.CalendarDayResponse;
+import com.airgear.dto.RentalCardChangeDurationRequest;
+import com.airgear.dto.RentalCardResponse;
+import com.airgear.dto.RentalCardSaveRequest;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface RentalCardService {
 
-    RentalCard getRentalCardById(Long id);
-    void deleteRentalCard(RentalCard rentalCard);
-    RentalCard saveRentalCard(RentalCardDto rentalCard);
-    RentalCard updateRentalCard(RentalCardDto rentalCard);
+    RentalCardResponse create(RentalCardSaveRequest request);
 
-    List<CalendarDay> getCalendarForGoods(Long goodsId, OffsetDateTime fromDate, OffsetDateTime toDate);
+    List<CalendarDayResponse> getCalendarForGoods(long goodsId, OffsetDateTime fromDate, OffsetDateTime toDate);
+
+    RentalCardResponse getById(long id);
+
+    RentalCardResponse changeDurationById(long id, RentalCardChangeDurationRequest request);
+
+    void deleteById(long id);
+
 }

@@ -12,10 +12,15 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CalendarDay {
-    private LocalDate date;
-    private Boolean free;
-    private Long goodsId;
+public class CalendarDayResponse {
+
+    LocalDate date;
+
+    Boolean isFree;
+
+    Long goodsId;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Set<DayTime> listTime;
+    Set<DayTimeResponse> listTime;
+
 }

@@ -8,8 +8,12 @@ import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
-public class DayTime {
-    private LocalTime timeFrom;
-    private LocalTime timeTo;
-    private Boolean free;
+public class DayTimeResponse {
+
+    LocalTime timeFrom;
+
+    LocalTime timeTo;
+
+    Boolean isFree;
+
 }
