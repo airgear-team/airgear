@@ -4,7 +4,6 @@ import com.airgear.dto.GoodsDto;
 import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
-import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.model.UserStatus;
 import org.springframework.security.core.Authentication;
@@ -28,14 +27,6 @@ public interface UserService {
 
     UserExistDto isEmailExists(String username);
 
-    UserDto appointRole(String username, Role role);
-
-    UserDto removeRole(String username, Role role);
-
-    User addRole(String email, String role);
-
-    User deleteRole(String email, String role);
-
     void markUserAsPotentiallyScam(Long userId, boolean isScam);
 
     Set<GoodsDto> getFavoriteGoods(Authentication auth);
@@ -48,5 +39,4 @@ public interface UserService {
 
     void deleteAccount(String email);
 
-    void accessToRoleChange(String executor, Role role);
 }

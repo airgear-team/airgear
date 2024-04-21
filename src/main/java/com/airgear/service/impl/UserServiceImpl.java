@@ -4,15 +4,15 @@ import com.airgear.dto.GoodsDto;
 import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
+import com.airgear.entity.EmailMessage;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
+import com.airgear.model.CustomUserDetails;
 import com.airgear.model.Role;
 import com.airgear.model.User;
 import com.airgear.model.UserStatus;
-import com.airgear.entity.EmailMessage;
 import com.airgear.repository.UserRepository;
-import com.airgear.model.CustomUserDetails;
 import com.airgear.service.EmailService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
@@ -30,8 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.StreamSupport;
-
-import static com.airgear.utils.Constants.ROLE_ADMIN_NAME;
 
 @Service(value = "userService")
 @Transactional
@@ -119,40 +117,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public UserDto appointRole(String email, Role role) {
-        User user = getUser(email);
-        user.getRoles().add(role);
-        return userMapper.toDto(user);
-    }
-
-    @Override
-    public UserDto removeRole(String email, Role role) {
-        User user = getUser(email);
-        user.getRoles().remove(role);
-        return userMapper.toDto(user);
-    }
-
-    @Override
-    public User addRole(String email, String role) {
-        User user = getUser(email);
-        Set<Role> roles = user.getRoles();
-        roles.add(Role.ADMIN);
-        user.setRoles(roles);
-        return update(user);
-    }
-
-    @Override
-    public User deleteRole(String email, String role) {
-        User user = getUser(email);
-        Set<Role> roles = user.getRoles();
-        roles.remove(Role.ADMIN);
-        if (roles.isEmpty()) {
-            roles.add(Role.USER);
-        }
-        return update(user);
-    }
-
-    @Override
     public void markUserAsPotentiallyScam(Long userId, boolean isScam) {
         userRepository.updateIsPotentiallyScamStatus(userId, isScam);
     }
@@ -199,14 +163,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void deleteAccount(String email) {
         User user = getUser(email);
         user.setStatus(UserStatus.SUSPENDED);
-    }
-
-    @Override
-    public void accessToRoleChange(String executor, Role role) {
-        User executorUser = getUser(executor);
-        if (!executorUser.getRoles().contains(role) && role.toString().equalsIgnoreCase(ROLE_ADMIN_NAME)) {
-            throw UserExceptions.AccessDenied("change role");
-        }
     }
 
     private void validateUniqueFields(SaveUserRequestDto request) {

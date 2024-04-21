@@ -3,7 +3,6 @@ package com.airgear.controller;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
-import com.airgear.model.Role;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,25 +49,6 @@ public class UserController {
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<String> deleteAccount(@PathVariable String email) {
         userService.deleteAccount(email);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @PostMapping(value = "/{email}/roles")
-    @Validated
-    public ResponseEntity<UserDto> appointRole(Authentication auth,
-                                               @PathVariable String email,
-                                               @RequestBody Role role) {
-        userService.accessToRoleChange(auth.getName(), role);
-        return ResponseEntity.ok(userService.appointRole(email, role));
-    }
-
-    @DeleteMapping(value = "/{email}/roles")
-    @Validated
-    public ResponseEntity<String> removeRole(Authentication auth,
-                                             @PathVariable String email,
-                                             @RequestBody Role role) {
-        userService.accessToRoleChange(auth.getName(), role);
-        userService.removeRole(email, role);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
