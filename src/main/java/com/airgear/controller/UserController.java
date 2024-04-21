@@ -7,7 +7,6 @@ import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -45,13 +44,6 @@ public class UserController {
         return ResponseEntity.ok(goodsService.getAllGoodsByUsername(username));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @DeleteMapping(value = "/{email}")
-    public ResponseEntity<String> deleteAccount(@PathVariable String email) {
-        userService.deleteAccount(email);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{email}/isExists")
     public ResponseEntity<UserExistDto> isEmailExists(Authentication auth,
@@ -72,17 +64,5 @@ public class UserController {
     public Set<GoodsDto> getFavoriteGoods (Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return userService.getFavoriteGoods(auth);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
-    @PatchMapping(value = "/{userId}/block")
-    public ResponseEntity<UserDto> blockUser (@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.blockUser(userId));
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @PatchMapping(value = "/{userId}/unblock")
-    public ResponseEntity<UserDto> unblockUser (@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.unblockUser(userId));
     }
 }

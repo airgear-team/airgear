@@ -23,14 +23,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE user SET account_status_id = :accountStatusId WHERE id = :userId", nativeQuery = true)
-    int setAccountStatusId(@Param("accountStatusId") long accountStatusId, @Param("userId") long userId);
-
-    @Modifying
-    @Transactional
     @Query("UPDATE User u SET u.isPotentiallyScam = :isScam WHERE u.id = :userId")
     void updateIsPotentiallyScamStatus(@Param("userId") Long userId, @Param("isScam") boolean isScam);
 
     @Query("Select fg FROM User user join  user.favoriteGoods fg where user.id = :userId")
     Set<Goods> getFavoriteGoodsByUser(Long userId);
+
 }

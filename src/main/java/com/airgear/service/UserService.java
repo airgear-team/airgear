@@ -5,7 +5,6 @@ import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.model.User;
-import com.airgear.model.UserStatus;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -13,11 +12,7 @@ import java.util.Set;
 
 public interface UserService {
 
-    void setAccountStatus(String email, UserStatus status);
-
     UserDto create(SaveUserRequestDto request);
-
-    User update(User user);
 
     List<UserDto> findAll();
 
@@ -31,12 +26,6 @@ public interface UserService {
 
     Set<GoodsDto> getFavoriteGoods(Authentication auth);
 
-    void checkForUserUniqueness(UserDto userDto);
-
-    UserDto blockUser(Long userId);
-
-    UserDto unblockUser(Long userId);
-
-    void deleteAccount(String email);
+    User update(User user);
 
 }
