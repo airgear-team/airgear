@@ -8,6 +8,7 @@ import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.RegionExceptions;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
+import com.airgear.mapper.TopGoodsPlacementMapper;
 import com.airgear.model.User;
 import com.airgear.model.Category;
 import com.airgear.model.Goods;
@@ -40,6 +41,7 @@ public class GoodsServiceImpl implements GoodsService {
     private final RegionsRepository regionsRepository;
     private final GoodsMapper goodsMapper;
     private final TopGoodsPlacementRepository topGoodsPlacementRepository;
+    private final TopGoodsPlacementMapper topGoodsPlacementMapper;
 
     private static final int SIMILAR_GOODS_LIMIT = 12;
     private static final BigDecimal PRICE_VARIATION_PERCENTAGE = new BigDecimal("0.15");
@@ -247,7 +249,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto) {
-        TopGoodsPlacement topGoodsPlacement = topGoodsPlacementDto.toModel();
+        TopGoodsPlacement topGoodsPlacement = topGoodsPlacementMapper.toModel(topGoodsPlacementDto);
         Goods goods = goodsMapper.toModel(getGoodsById(topGoodsPlacement.getGoods().getId()));
         Optional<User> userOptional = userRepository.findById(topGoodsPlacement.getUserId());
         if (userOptional.isEmpty()) {
@@ -259,7 +261,7 @@ public class GoodsServiceImpl implements GoodsService {
         if (!topGoodsPlacement.getUserId().equals(goods.getUser().getId()) && !userOptional.get().getRoles().contains("ADMIN")) {
             throw UserExceptions.AccessDenied("It is not your goods");
         }
-        return TopGoodsPlacementDto.toDto(topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
+        return topGoodsPlacementMapper.toDto(topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
                 .userId(topGoodsPlacement.getUserId())
                 .goods(goods)
                 .startAt(topGoodsPlacement.getStartAt())
