@@ -4,6 +4,7 @@ import com.airgear.dto.*;
 import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.RentalCardExceptions;
 import com.airgear.exception.UserExceptions;
+import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.RentalCardMapper;
 import com.airgear.model.Goods;
 import com.airgear.model.RentalCard;
