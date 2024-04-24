@@ -21,7 +21,7 @@ public class UserDto {
     private String phone;
     private String name;
     private Set<Role> roles;
-    private Set<GoodsDto> goods;
+    private Set<GoodsCreateRequest> goods;
     private OffsetDateTime createdAt;
     private OffsetDateTime deleteAt;
     private UserStatus status;

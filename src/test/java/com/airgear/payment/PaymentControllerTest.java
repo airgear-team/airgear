@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.airgear.controller.PaymentController;
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.GoodsCreateRequest;
 import com.airgear.model.Price;
 import com.airgear.model.Currency;
 import com.airgear.model.PriceType;
@@ -40,7 +40,7 @@ public class PaymentControllerTest {
     @Test
     void testRedirectToPaymentPage() throws IllegalAccessException {
         Long goodsId = 123L;
-        GoodsDto goods = GoodsDto.builder().build();
+        GoodsCreateRequest goods = GoodsCreateRequest.builder().build();
         goods.setPrice(new Price(BigDecimal.valueOf(100.00), Currency.UAH, PriceType.NEGOTIATED_PRICE));
         goods.setName("Test Goods");
         when(goodsService.getGoodsById(goodsId)).thenReturn(goods);

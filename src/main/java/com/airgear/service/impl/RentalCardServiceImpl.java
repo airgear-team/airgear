@@ -51,7 +51,7 @@ public class RentalCardServiceImpl implements RentalCardService {
         RentalCard rentalCard = rentalCardMapper.toModel(rentalCardDto);
         rentalCard.setRenter(getUser(rentalCardDto.getRenterUsername()));
         rentalCard.setLessor(getUser(rentalCardDto.getLessorUsername()));
-        rentalCard.setGoods(goodsMapper.toModel(goodsService.getGoodsById(rentalCardDto.getGoodsId())));
+        rentalCard.setGoods(goodsMapper.toModelRequest(goodsService.getGoodsById(rentalCardDto.getGoodsId())));
         rentalCard.setCreatedAt(OffsetDateTime.now());
         checkDays(rentalCard);
         return rentalCardRepository.save(rentalCard);

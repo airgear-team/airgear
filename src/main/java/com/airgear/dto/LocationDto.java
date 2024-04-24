@@ -1,7 +1,4 @@
 package com.airgear.dto;
-
-import com.airgear.model.Region;
-import com.airgear.model.SettlementType;
 import lombok.Builder;
 import lombok.Data;
 

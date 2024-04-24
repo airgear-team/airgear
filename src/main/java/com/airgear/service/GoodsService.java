@@ -11,9 +11,9 @@ import java.util.Set;
 
 public interface GoodsService {
 
-    GoodsDto getGoodsById(Long id);
+    GoodsCreateRequest getGoodsById(Long id);
 
-    GoodsDto getGoodsById(String ipAddress, String username, Long goodsId);
+    GoodsCreateRequest getGoodsById(String ipAddress, String username, Long goodsId);
 
     void deleteGoods(Goods goods);
 
@@ -23,25 +23,25 @@ public interface GoodsService {
 
     Goods updateGoods(Goods goods);
 
-    GoodsDto updateGoods(String username, Long goodsId, GoodsDto updatedGoods);
+    GoodsCreateRequest updateGoods(String username, Long goodsId, GoodsCreateRequest updatedGoods);
 
-    Set<GoodsDto> getAllGoodsByUsername(String username);
+    Set<GoodsCreateRequest> getAllGoodsByUsername(String username);
 
     List<Goods> getAllGoods();
 
     Page<Goods> getAllGoods(Pageable pageable);
 
-    Page<GoodsDto> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+    Page<GoodsCreateRequest> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
-    Page<GoodsDto> listGoodsByName(Pageable pageable, String goodsName);
+    Page<GoodsCreateRequest> listGoodsByName(Pageable pageable, String goodsName);
 
-    List<GoodsDto> getRandomGoods(String categoryName, int quantity);
+    List<GoodsCreateRequest> getRandomGoods(String categoryName, int quantity);
 
-    Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price);
+    Page<GoodsCreateRequest> getSimilarGoods(String categoryName, BigDecimal price);
 
-    GoodsDto createGoods(String username, GoodsDto goodsDto);
+    GoodsCreateResponse createGoods(String username, GoodsCreateRequest goodsCreateRequest);
 
-    GoodsDto addToFavorites(String username, Long goodsId);
+    GoodsCreateRequest addToFavorites(String username, Long goodsId);
 
     List<Goods> getTopGoodsPlacements();
 

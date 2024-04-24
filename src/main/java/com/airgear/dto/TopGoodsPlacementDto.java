@@ -14,7 +14,7 @@ import java.util.Set;
 public class TopGoodsPlacementDto {
     private Long id;
     private Long userId;
-    private GoodsDto goods;
+    private GoodsCreateRequest goods;
     private OffsetDateTime startAt;
     private OffsetDateTime endAt;
 
@@ -22,7 +22,7 @@ public class TopGoodsPlacementDto {
         return TopGoodsPlacement.builder()
                 .id(id)
                 .userId(userId)
-                .goods(goods == null ? null : new GoodsMapperImpl().toModel(goods))
+                .goods(goods == null ? null : new GoodsMapperImpl().toModelRequest(goods))
                 .startAt(startAt)
                 .endAt(endAt)
                 .build();
@@ -38,7 +38,7 @@ public class TopGoodsPlacementDto {
         return TopGoodsPlacementDto.builder()
                 .id(topGoodsPlacement.getId())
                 .userId(topGoodsPlacement.getUserId())
-                .goods(new GoodsMapperImpl().toDto(topGoodsPlacement.getGoods()))
+                .goods(new GoodsMapperImpl().toDtoRequest(topGoodsPlacement.getGoods()))
                 .startAt(topGoodsPlacement.getStartAt())
                 .endAt(topGoodsPlacement.getEndAt())
                 .build();

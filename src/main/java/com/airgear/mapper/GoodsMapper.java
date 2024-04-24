@@ -1,6 +1,7 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.GoodsCreateRequest;
+import com.airgear.dto.GoodsCreateResponse;
 import com.airgear.model.Goods;
 import org.mapstruct.Mapper;
 
@@ -8,15 +9,20 @@ import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring",
-        uses = {UserMapper.class, LocationMapper.class, CategoryMapper.class})
+        uses = {UserMapper.class, LocationMapper.class, CategoryMapper.class , DepositMapper.class})
 public interface GoodsMapper {
-    GoodsDto toDto(Goods goods);
 
-    Goods toModel(GoodsDto dto);
+    GoodsCreateRequest toDtoRequest(Goods goods);
 
-    Set<GoodsDto> toDtoSet(Set<Goods> goods);
+    Goods toModelRequest(GoodsCreateRequest dto);
 
-    Set<Goods> toModelSet(Set<GoodsDto> dtos);
+    GoodsCreateResponse toDtoResponse(Goods goods);
 
-    List<GoodsDto> toDtoList(List<Goods> goods);
+    Goods toModelResponse(GoodsCreateResponse dto);
+
+    Set<GoodsCreateRequest> toDtoSet(Set<Goods> goods);
+
+    Set<Goods> toModelSet(Set<GoodsCreateRequest> dtos);
+
+    List<GoodsCreateRequest> toDtoList(List<Goods> goods);
 }

@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.GoodsCreateRequest;
 import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public Set<GoodsDto> getFavoriteGoods(Authentication auth) {
+    public Set<GoodsCreateRequest> getFavoriteGoods(Authentication auth) {
         User user = getUser(auth.getName());
         return goodsMapper.toDtoSet(userRepository.getFavoriteGoodsByUser(user.getId()));
     }

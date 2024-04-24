@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 public class ComplaintDto {
     private UserDto user;
     private ComplaintCategoryDto complaintCategoryDTO;
-    private GoodsDto goods;
+    private GoodsCreateRequest goods;
     private String description;
     private OffsetDateTime createdAt;
 }

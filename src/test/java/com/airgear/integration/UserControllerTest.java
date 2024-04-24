@@ -143,7 +143,7 @@
 //        location.setSettlement("Konstantinivka");
 //        Category category = new Category();
 //        category.setName("TOOLS_AND_EQUIPMENT");
-//        GoodsDto goods = GoodsDto.builder()
+//        GoodsCreateRequest goods = GoodsCreateRequest.builder()
 //                .name("bolt")
 //                .description("description")
 //                .price(BigDecimal.valueOf(100.0D))

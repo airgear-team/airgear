@@ -1,6 +1,6 @@
 package com.airgear.service;
 
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.GoodsCreateRequest;
 import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
@@ -38,7 +38,7 @@ public interface UserService {
 
     void markUserAsPotentiallyScam(Long userId, boolean isScam);
 
-    Set<GoodsDto> getFavoriteGoods(Authentication auth);
+    Set<GoodsCreateRequest> getFavoriteGoods(Authentication auth);
 
     void checkForUserUniqueness(UserDto userDto);
 

@@ -32,23 +32,23 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
-    public ResponseEntity<GoodsDto> createGoods(Authentication auth, @Valid @RequestBody GoodsDto goods) {
+    public ResponseEntity<GoodsCreateResponse> createGoods(Authentication auth, @Valid @RequestBody GoodsCreateRequest goods) {
         return ResponseEntity.ok(goodsService.createGoods(auth.getName(), goods));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
-    public ResponseEntity<GoodsDto> getGoodsById(HttpServletRequest request, Authentication auth,
-                                                 @PathVariable Long goodsId) {
+    public ResponseEntity<GoodsCreateRequest> getGoodsById(HttpServletRequest request, Authentication auth,
+                                                           @PathVariable Long goodsId) {
         return ResponseEntity.ok(goodsService.getGoodsById(request.getRemoteAddr(), auth.getName(), goodsId));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PutMapping("/{goodsId}")
-    public ResponseEntity<GoodsDto> updateGoods(
+    public ResponseEntity<GoodsCreateRequest> updateGoods(
                                                 Authentication auth,
                                                 @PathVariable Long goodsId,
-                                                @Valid @RequestBody GoodsDto updatedGoods) {
+                                                @Valid @RequestBody GoodsCreateRequest updatedGoods) {
         return ResponseEntity.ok(goodsService.updateGoods(auth.getName(), goodsId, updatedGoods));
     }
 
@@ -61,7 +61,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("addToFavorites/{goodsId}")
-    public ResponseEntity<GoodsDto> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
+    public ResponseEntity<GoodsCreateRequest> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
         return ResponseEntity.ok(goodsService.addToFavorites(auth.getName(), goodsId));
     }
 
@@ -74,7 +74,7 @@ public class GoodsController {
     }
 
     @GetMapping("/random-goods")
-    public List<GoodsDto> getRandomGoods(
+    public List<GoodsCreateRequest> getRandomGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
         return goodsService.getRandomGoods(categoryName, quantity);
@@ -82,7 +82,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/similar-goods")
-    public Page<GoodsDto> getSimilarGoods(
+    public Page<GoodsCreateRequest> getSimilarGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(name = "price") BigDecimal price) {
         return goodsService.getSimilarGoods(categoryName, price);
@@ -90,7 +90,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/filter")
-    public Page<GoodsDto> filterGoods(
+    public Page<GoodsCreateRequest> filterGoods(
             @RequestParam(name = "category", required = false) String categoryName,
             @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
             @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
