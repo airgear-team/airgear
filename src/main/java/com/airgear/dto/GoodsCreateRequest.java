@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @Builder
-public class GoodsDto {
+public class GoodsCreateRequest {
 
     private Long id;
 
@@ -31,8 +31,7 @@ public class GoodsDto {
 
     private DepositDto deposit;
 
-    @Valid
-    private LocationDto location;
+    private Long locationId;
 
     @NotNull(message = "Category is required")
     @Valid

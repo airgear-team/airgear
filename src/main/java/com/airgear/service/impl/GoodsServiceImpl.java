@@ -1,12 +1,9 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.LocationDto;
+import com.airgear.dto.GoodsCreateRequest;
+import com.airgear.dto.GoodsCreateResponse;
 import com.airgear.dto.TopGoodsPlacementDto;
-import com.airgear.exception.CategoryExceptions;
-import com.airgear.exception.GoodsExceptions;
-import com.airgear.exception.RegionExceptions;
-import com.airgear.exception.UserExceptions;
+import com.airgear.exception.*;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.User;
 import com.airgear.model.Category;
@@ -37,7 +34,6 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
-    private final RegionsRepository regionsRepository;
     private final GoodsMapper goodsMapper;
     private final TopGoodsPlacementRepository topGoodsPlacementRepository;
 
@@ -45,14 +41,14 @@ public class GoodsServiceImpl implements GoodsService {
     private static final BigDecimal PRICE_VARIATION_PERCENTAGE = new BigDecimal("0.15");
 
     @Override
-    public GoodsDto getGoodsById(Long id) {
+    public GoodsCreateRequest getGoodsById(Long id) {
         Optional<Goods> goodsOptional = goodsRepository.findById(id);
-        return goodsOptional.map(goodsMapper::toDto).orElse(null);
+        return goodsOptional.map(goodsMapper::toDtoRequest).orElse(null);
     }
 
     @Override
-    public GoodsDto getGoodsById(String ipAddress, String email, Long goodsId) {
-        GoodsDto goods = getGoodsById(goodsId);
+    public GoodsCreateRequest getGoodsById(String ipAddress, String email, Long goodsId) {
+        GoodsCreateRequest goods = getGoodsById(goodsId);
         if (goods == null||!goods.getStatus().equals(GoodsStatus.ACTIVE)) {
             throw GoodsExceptions.goodsNotFound(goodsId);
         }
@@ -69,7 +65,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void deleteGoods(String email, Long goodsId) {
         User user = getUser(email);
-        Goods goods = goodsMapper.toModel(getGoodsById(goodsId));
+        Goods goods = goodsMapper.toModelRequest(getGoodsById(goodsId));
 
         if (!user.getId().equals(goods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
             throw UserExceptions.AccessDenied("It is not your goods");
@@ -91,10 +87,10 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public GoodsDto updateGoods(String email, Long goodsId, GoodsDto updatedGoodsDto) {
+    public GoodsCreateRequest updateGoods(String email, Long goodsId, GoodsCreateRequest updatedGoodsCreateRequest) {
         User user = getUser(email);
-        Goods existingGoods = goodsMapper.toModel(getGoodsById(goodsId));
-        Goods updatedGoods = goodsMapper.toModel(updatedGoodsDto);
+        Goods existingGoods = goodsMapper.toModelRequest(getGoodsById(goodsId));
+        Goods updatedGoods = goodsMapper.toModelRequest(updatedGoodsCreateRequest);
         if (!user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains("ADMIN")) {
             throw UserExceptions.AccessDenied("It is not your goods");
         }
@@ -110,16 +106,16 @@ public class GoodsServiceImpl implements GoodsService {
         if (updatedGoods.getLocation() != null) {
             existingGoods.setLocation(updatedGoods.getLocation());
         }
-        return goodsMapper.toDto(updateGoods(existingGoods));
+        return goodsMapper.toDtoRequest(updateGoods(existingGoods));
     }
 
     @Override
-    public Set<GoodsDto> getAllGoodsByUsername(String username) {
+    public Set<GoodsCreateRequest> getAllGoodsByUsername(String username) {
         return goodsMapper.toDtoSet(goodsRepository.getGoodsByUserName(username));
     }
 
     @Override
-    public Page<GoodsDto> listGoodsByName(Pageable pageable, String goodsName) {
+    public Page<GoodsCreateRequest> listGoodsByName(Pageable pageable, String goodsName) {
         return null;
     }
 
@@ -129,7 +125,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public List<GoodsDto> getRandomGoods(String categoryName, int quantity) {
+    public List<GoodsCreateRequest> getRandomGoods(String categoryName, int quantity) {
         List<Goods> goods = getTopGoodsPlacements();
         List<Goods> randomGoods;
         Category category = convertStringToCategory(categoryName);
@@ -143,7 +139,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price) {
+    public Page<GoodsCreateRequest> getSimilarGoods(String categoryName, BigDecimal price) {
         BigDecimal lowerBound = price.multiply(BigDecimal.ONE.subtract(PRICE_VARIATION_PERCENTAGE));
         BigDecimal upperBound = price.multiply(BigDecimal.ONE.add(PRICE_VARIATION_PERCENTAGE));
 
@@ -156,22 +152,22 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<GoodsDto> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
+    public Page<GoodsCreateRequest> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
         Category category = convertStringToCategory(categoryName);
 
         if (category != null && minPrice != null && maxPrice != null) {
             return goodsRepository.findByCategoryAndPriceBetween(category, minPrice, maxPrice, pageable)
-                                  .map(goodsMapper::toDto);
+                                  .map(goodsMapper::toDtoRequest);
         } else if (minPrice != null && maxPrice != null) {
-            return goodsRepository.findByPriceBetween(minPrice, maxPrice, pageable).map(goodsMapper::toDto);
+            return goodsRepository.findByPriceBetween(minPrice, maxPrice, pageable).map(goodsMapper::toDtoRequest);
         } else if (minPrice != null) {
-            return goodsRepository.findByPriceGreaterThan(minPrice, pageable).map(goodsMapper::toDto);
+            return goodsRepository.findByPriceGreaterThan(minPrice, pageable).map(goodsMapper::toDtoRequest);
         } else if (maxPrice != null) {
-            return goodsRepository.findByPriceLessThan(maxPrice, pageable).map(goodsMapper::toDto);
+            return goodsRepository.findByPriceLessThan(maxPrice, pageable).map(goodsMapper::toDtoRequest);
         } else if (category != null) {
-            return goodsRepository.findByCategory(category, pageable).map(goodsMapper::toDto);
+            return goodsRepository.findByCategory(category, pageable).map(goodsMapper::toDtoRequest);
         } else {
-            return goodsRepository.findAll(pageable).map(goodsMapper::toDto);
+            return goodsRepository.findAll(pageable).map(goodsMapper::toDtoRequest);
         }
     }
 
@@ -198,33 +194,27 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public GoodsDto createGoods(String email, GoodsDto goodsDto) {
+    public GoodsCreateResponse createGoods(String email, GoodsCreateRequest goodsCreateRequest) {
         User user = getUser(email);
-        Goods goods = goodsMapper.toModel(goodsDto);
+        Goods goods = goodsMapper.toModelRequest(goodsCreateRequest);
         goods.setUser(user);
         goods.setStatus(GoodsStatus.ACTIVE);
         goods.setCreatedAt(OffsetDateTime.now());
 
-        LocationDto locationDto = goodsDto.getLocation();
-        Location existingLocation = locationRepository.findBySettlementAndRegionId(locationDto.getSettlement(), locationDto.getRegionId());
+        Location existingLocation = locationRepository.findByUniqueSettlementID(Math.toIntExact(goodsCreateRequest.getLocationId()));
 
         if (existingLocation != null) {
             goods.setLocation(existingLocation);
         } else {
-            Location newLocation = Location.builder()
-                    .settlement(locationDto.getSettlement())
-                    .region(regionsRepository.findById(locationDto.getRegionId()).orElseThrow(() -> RegionExceptions.regionNotFound(locationDto.getRegionId())))
-                    .build();
-
-            goods.setLocation(locationRepository.save(newLocation));
+            LocationException.locationNotFound(Math.toIntExact(goodsCreateRequest.getLocationId()));
         }
-        return goodsMapper.toDto(goodsRepository.save(goods));
+        return goodsMapper.toDtoResponse(goodsRepository.save(goods));
     }
 
     @Override
-    public GoodsDto addToFavorites(String email, Long goodsId) {
+    public GoodsCreateRequest addToFavorites(String email, Long goodsId) {
         User user = getUser(email);
-        Goods goods = goodsMapper.toModel(getGoodsById(goodsId));
+        Goods goods = goodsMapper.toModelRequest(getGoodsById(goodsId));
         if (goods == null) {
             throw GoodsExceptions.goodsNotFound(goodsId);
         }
@@ -235,7 +225,7 @@ public class GoodsServiceImpl implements GoodsService {
             user.getFavoriteGoods().add(goods);
         }
         userRepository.save(user);
-        return goodsMapper.toDto(goods);
+        return goodsMapper.toDtoRequest(goods);
     }
 
     @Override
@@ -248,7 +238,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto) {
         TopGoodsPlacement topGoodsPlacement = topGoodsPlacementDto.toModel();
-        Goods goods = goodsMapper.toModel(getGoodsById(topGoodsPlacement.getGoods().getId()));
+        Goods goods = goodsMapper.toModelRequest(getGoodsById(topGoodsPlacement.getGoods().getId()));
         Optional<User> userOptional = userRepository.findById(topGoodsPlacement.getUserId());
         if (userOptional.isEmpty()) {
             throw userNotFound(topGoodsPlacement.getUserId());

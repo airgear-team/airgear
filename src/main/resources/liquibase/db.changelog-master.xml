@@ -951,5 +951,16 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="add_new_fields_to_location_table" author="Opanasenko-Mykhailo">
+        <addColumn tableName="location">
+            <column name="unique_settlement_id" type="INT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="settlement_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>

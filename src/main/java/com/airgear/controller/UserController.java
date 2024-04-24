@@ -1,6 +1,6 @@
 package com.airgear.controller;
 
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.GoodsCreateRequest;
 import com.airgear.dto.UserDto;
 import com.airgear.dto.UserExistDto;
 import com.airgear.service.GoodsService;
@@ -40,7 +40,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
     @RequestMapping(value = "/{username}/goods", method = RequestMethod.GET)
-    public ResponseEntity<Set<GoodsDto>> getAllGoodsBy(@PathVariable String username) {
+    public ResponseEntity<Set<GoodsCreateRequest>> getAllGoodsBy(@PathVariable String username) {
         return ResponseEntity.ok(goodsService.getAllGoodsByUsername(username));
     }
 
@@ -61,7 +61,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
     @GetMapping("/favorites")
-    public Set<GoodsDto> getFavoriteGoods (Authentication auth) {
+    public Set<GoodsCreateRequest> getFavoriteGoods (Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return userService.getFavoriteGoods(auth);
     }

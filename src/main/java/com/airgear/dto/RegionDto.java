@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class RegionDto {
-    private Long id;
-    private String region;
+    private Long regionId;
+    private String regionName;
 }

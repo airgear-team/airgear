@@ -31,6 +31,7 @@ public class RentalCardServiceImpl implements RentalCardService {
     private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
     private final RentalCardMapper rentalCardMapper;
+    private final GoodsMapper goodsMapper;
 
     @Override
     public RentalCardResponse create(RentalCardSaveRequest request) {

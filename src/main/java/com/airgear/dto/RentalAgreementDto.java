@@ -12,7 +12,7 @@ public class RentalAgreementDto {
     private String renter;
     private OffsetDateTime firstDate;
     private OffsetDateTime lastDate;
-    private GoodsDto goods;
+    private GoodsCreateRequest goods;
     private String goal;
     private Double rentalPrice;
     private String lessorDocument;

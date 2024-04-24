@@ -7,9 +7,9 @@ import com.airgear.dto.LocationResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = RegionMapper.class)
 public interface LocationMapper {
-    @Mapping(target = "regionId", source = "region.id")
+    @Mapping(source = "uniqueSettlementID", target = "locationId")
     LocationDto toDto(Location location);
 
     @Mapping(target = "region", ignore = true)
@@ -18,5 +18,6 @@ public interface LocationMapper {
     @Mapping(source = "region.id", target = "regionId")
     LocationResponseDTO toLocationResponseDTO(Location location);
 
+    @Mapping(source = "locationId", target = "uniqueSettlementID")
     Location toModel(LocationDto dto);
 }
