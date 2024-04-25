@@ -18,7 +18,7 @@ public class UserReviewController {
 
     private final UserReviewService userReviewService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<UserReviewDto> createReview(@Valid @RequestBody UserReviewDto userReviewDto) {
         UserReviewDto createdReview = userReviewService.createReview(userReviewDto);
         return ResponseEntity.ok(createdReview);

@@ -26,7 +26,7 @@ public class UserController {
     private final GoodsService goodsService;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<UserDto>> getAllUsers(Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return ResponseEntity.ok(userService.findAll());
@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "/activeUsers", method = RequestMethod.GET)
+    @RequestMapping(value = "/active", method = RequestMethod.GET)
     public ResponseEntity<List<UserDto>> getAllActiveUsers(Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return ResponseEntity.ok(userService.findActiveUsers());

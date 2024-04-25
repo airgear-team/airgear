@@ -14,7 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/feedbacks")
+@RequestMapping("/feedback")
 @AllArgsConstructor
 public class FeedbackController {
 

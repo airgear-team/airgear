@@ -72,11 +72,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         permitAllUrls.add("/v3/api-docs/**");
         permitAllUrls.add("/swagger-ui/**");
         permitAllUrls.add("/swagger-ui.html");
+        permitAllUrls.add("/auth/authenticate");
         permitAllUrls.add("/auth/register");
         permitAllUrls.add("/auth/service");
+
         permitAllUrls.add("/goods/random-goods");
-        permitAllUrls.add("/auth/test");
-        return permitAllUrls.toArray(new String[permitAllUrls.size()]);
+        return permitAllUrls.toArray(new String[0]);
     }
 
     @Override

@@ -26,9 +26,10 @@ public class LocationController {
     private final LocationService locationService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping()
+    @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    public ResponseEntity<LocationResponseDTO> createLocation(@RequestBody @Valid SaveLocationRequestDTO request, UriComponentsBuilder ucb) {
+    public ResponseEntity<LocationResponseDTO> createLocation(@RequestBody @Valid SaveLocationRequestDTO request,
+                                                              UriComponentsBuilder ucb) {
         LocationResponseDTO response = locationService.addLocation(request);
         return ResponseEntity
                 .created(ucb.path("/{id}").build(response.getId()))
@@ -41,5 +42,4 @@ public class LocationController {
     public Page<RegionResponseDTO> getAllRegions(@Parameter(hidden = true) Pageable pageable) {
         return locationService.getAllRegions(pageable);
     }
-
 }

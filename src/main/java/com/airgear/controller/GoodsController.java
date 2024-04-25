@@ -60,20 +60,20 @@ public class GoodsController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping("addToFavorites/{goodsId}")
+    @PostMapping("/{goodsId}/favorite")
     public ResponseEntity<GoodsDto> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
         return ResponseEntity.ok(goodsService.addToFavorites(auth.getName(), goodsId));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping("/download/rental/{goodsId}")
+    @PostMapping("/{goodsId}/agreement")
     public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId,
                                                        @Valid @RequestBody RentalAgreementDto rental){
          return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
 
     }
 
-    @GetMapping("/random-goods")
+    @GetMapping("/random")
     public List<GoodsDto> getRandomGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
@@ -81,7 +81,7 @@ public class GoodsController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/similar-goods")
+    @GetMapping("/similar")
     public Page<GoodsDto> getSimilarGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(name = "price") BigDecimal price) {
@@ -107,7 +107,7 @@ public class GoodsController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping("/addTopPlacements")
+    @PostMapping("/top")
     public ResponseEntity<TopGoodsPlacementDto> addTopGoodsPlacements(@Valid @RequestBody TopGoodsPlacementDto topGoodsPlacementDto) {
         return ResponseEntity.ok(goodsService.addTopGoodsPlacements(topGoodsPlacementDto));
     }
