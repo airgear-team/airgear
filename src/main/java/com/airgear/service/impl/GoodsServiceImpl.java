@@ -55,7 +55,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsDto getGoodsById(String ipAddress, String email, Long goodsId) {
         GoodsDto goods = getGoodsById(goodsId);
-        if (goods == null||!goods.getStatus().equals(GoodsStatus.ACTIVE)) {
+        if (goods == null || !goods.getStatus().equals(GoodsStatus.ACTIVE)) {
             throw GoodsExceptions.goodsNotFound(goodsId);
         }
         return goods;
@@ -163,7 +163,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         if (category != null && minPrice != null && maxPrice != null) {
             return goodsRepository.findByCategoryAndPriceBetween(category, minPrice, maxPrice, pageable)
-                                  .map(goodsMapper::toDto);
+                    .map(goodsMapper::toDto);
         } else if (minPrice != null && maxPrice != null) {
             return goodsRepository.findByPriceBetween(minPrice, maxPrice, pageable).map(goodsMapper::toDto);
         } else if (minPrice != null) {
@@ -250,7 +250,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto) {
         TopGoodsPlacement topGoodsPlacement = topGoodsPlacementMapper.toModel(topGoodsPlacementDto);
-        Goods goods = goodsMapper.toModel(getGoodsById(topGoodsPlacement.getGoods().getId()));
+        Goods goods = goodsRepository.findById(topGoodsPlacement.getGoods().getId()).orElse(null);
         Optional<User> userOptional = userRepository.findById(topGoodsPlacement.getUserId());
         if (userOptional.isEmpty()) {
             throw userNotFound(topGoodsPlacement.getUserId());
