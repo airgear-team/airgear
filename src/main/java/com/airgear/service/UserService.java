@@ -1,9 +1,7 @@
 package com.airgear.service;
 
-import com.airgear.dto.GoodsCreateRequest;
-import com.airgear.dto.SaveUserRequestDto;
-import com.airgear.dto.UserDto;
-import com.airgear.dto.UserExistDto;
+import com.airgear.dto.*;
+import com.airgear.dto.UserSaveRequest;
 import com.airgear.model.User;
 import org.springframework.security.core.Authentication;
 
@@ -12,19 +10,19 @@ import java.util.Set;
 
 public interface UserService {
 
-    UserDto create(SaveUserRequestDto request);
+    UserGetResponse create(UserSaveRequest request);
 
-    List<UserDto> findAll();
+    List<UserGetResponse> findAll();
 
-    List<UserDto> findActiveUsers();
+    List<UserGetResponse> findActiveUsers();
 
-    UserDto getUserByEmail(String email);
+    UserGetResponse getUserByEmail(String email);
 
-    UserExistDto isEmailExists(String username);
+    UserExistResponse isEmailExists(String username);
 
     void markUserAsPotentiallyScam(Long userId, boolean isScam);
 
-    Set<GoodsCreateRequest> getFavoriteGoods(Authentication auth);
+    Set<GoodsSearchResponse> getFavoriteGoods(Authentication auth);
 
     User update(User user);
 

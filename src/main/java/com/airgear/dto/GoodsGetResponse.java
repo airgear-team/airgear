@@ -1,6 +1,6 @@
 package com.airgear.dto;
 
-import com.airgear.model.Location;
+import com.airgear.model.GoodsStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,11 +8,12 @@ import lombok.Setter;
 @Data
 @Setter(AccessLevel.NONE)
 @AllArgsConstructor
-public class GoodsResponseDTO {
+public class GoodsGetResponse {
     private Long id;
     private String name;
     private String description;
-    private Double price;
-    private Location location;
+    private PriceResponse price;
+    private LocationResponse location;
+    private GoodsStatus status;
     private Long userId;
 }

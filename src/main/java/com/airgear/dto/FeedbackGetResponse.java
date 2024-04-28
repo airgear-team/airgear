@@ -5,23 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
-
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class FeedbackResponse {
-
-    private Long id;
-
-    private Long userId;
+public class FeedbackGetResponse {
 
     private String title;
-
     private String message;
-
-    private OffsetDateTime createdAt;
-
     private FeedbackType feedbackType;
-
 }

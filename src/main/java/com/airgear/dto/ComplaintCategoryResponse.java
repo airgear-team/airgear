@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ComplaintCategoryDto {
+public class ComplaintCategoryResponse {
     private Long id;
     private String name;
 }

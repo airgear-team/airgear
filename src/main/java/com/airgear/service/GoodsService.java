@@ -11,9 +11,9 @@ import java.util.Set;
 
 public interface GoodsService {
 
-    GoodsCreateRequest getGoodsById(Long id);
+    GoodsGetResponse getGoodsById(Long id);
 
-    GoodsCreateRequest getGoodsById(String ipAddress, String username, Long goodsId);
+    GoodsGetResponse getGoodsById(String ipAddress, String username, Long goodsId);
 
     void deleteGoods(Goods goods);
 
@@ -23,25 +23,25 @@ public interface GoodsService {
 
     Goods updateGoods(Goods goods);
 
-    GoodsCreateRequest updateGoods(String username, Long goodsId, GoodsCreateRequest updatedGoods);
+    GoodsUpdateResponse updateGoods(String username, Long goodsId, GoodsUpdateRequest updatedGoods);
 
-    Set<GoodsCreateRequest> getAllGoodsByUsername(String username);
+    Set<GoodsSearchResponse> getAllGoodsByUsername(String username);
 
-    List<Goods> getAllGoods();
+    List<GoodsGetResponse> getAllGoods();
 
-    Page<Goods> getAllGoods(Pageable pageable);
+    Page<GoodsGetResponse> getAllGoods(Pageable pageable);
 
-    Page<GoodsCreateRequest> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+    Page<GoodsSearchResponse> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
-    Page<GoodsCreateRequest> listGoodsByName(Pageable pageable, String goodsName);
+    Page<GoodsSearchResponse> listGoodsByName(Pageable pageable, String goodsName);
 
-    List<GoodsCreateRequest> getRandomGoods(String categoryName, int quantity);
+    List<GoodsGetRandomResponse> getRandomGoods(String categoryName, int quantity);
 
-    Page<GoodsCreateRequest> getSimilarGoods(String categoryName, BigDecimal price);
+    Page<GoodsSearchResponse> getSimilarGoods(String categoryName, BigDecimal price);
 
     GoodsCreateResponse createGoods(String username, GoodsCreateRequest goodsCreateRequest);
 
-    GoodsCreateRequest addToFavorites(String username, Long goodsId);
+    GoodsGetResponse addToFavorites(String username, Long goodsId);
 
     List<Goods> getTopGoodsPlacements();
 

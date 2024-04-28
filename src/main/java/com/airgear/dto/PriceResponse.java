@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-public class PriceDto {
+public class PriceResponse {
     private BigDecimal priceAmount;
     private Currency priceCurrency;
     private PriceType priceType;

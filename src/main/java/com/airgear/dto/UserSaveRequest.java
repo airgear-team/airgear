@@ -11,7 +11,7 @@ import javax.validation.constraints.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveUserRequestDto {
+public class UserSaveRequest {
 
     @Email(message = "email must be a valid email string")
     @NotNull(message = "email must not be null")

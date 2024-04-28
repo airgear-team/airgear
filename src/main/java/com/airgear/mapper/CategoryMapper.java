@@ -1,12 +1,13 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.CategoryDto;
+import com.airgear.dto.CategoryRequest;
+import com.airgear.dto.CategoryResponse;
 import com.airgear.model.Category;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
-    CategoryDto toDto(Category category);
+    CategoryResponse toDto(Category category);
 
-    Category toModel(CategoryDto dto);
+    Category toModel(CategoryRequest dto);
 }

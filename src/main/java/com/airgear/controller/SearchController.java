@@ -1,6 +1,6 @@
 package com.airgear.controller;
 
-import com.airgear.dto.GoodsCreateRequest;
+import com.airgear.dto.GoodsSearchResponse;
 import com.airgear.service.GoodsService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
@@ -23,8 +23,8 @@ public class SearchController {
     @GetMapping(value = "/{goodsName}")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PageableAsQueryParam
-    public Page<GoodsCreateRequest> listGoodsByName(@Parameter(hidden = true) Pageable pageable,
-                                                    @PathVariable String goodsName) {
+    public Page<GoodsSearchResponse> listGoodsByName(@Parameter(hidden = true) Pageable pageable,
+                                                             @PathVariable String goodsName) {
         return goodsService.listGoodsByName(pageable, goodsName);
     }
 }

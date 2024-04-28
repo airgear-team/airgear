@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LocationResponseDTO {
-    private Long id;
-    private String settlement;
+public class RegionResponse {
     private Long regionId;
+    private String regionName;
 }

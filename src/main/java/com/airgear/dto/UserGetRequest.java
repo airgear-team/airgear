@@ -14,17 +14,17 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class UserGetRequest {
 
     private Long id;
     private String email;
     private String phone;
     private String name;
     private Set<Role> roles;
-    private Set<GoodsCreateRequest> goods;
+    private Set<GoodsGetRequest> goods;
     private OffsetDateTime createdAt;
     private OffsetDateTime deleteAt;
     private UserStatus status;
-    private Set<UserReviewDto> userReviews;
+    private Set<UserReviewGetRequest> userReviews;
 
 }
