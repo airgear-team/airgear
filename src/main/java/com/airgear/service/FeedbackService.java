@@ -1,22 +1,20 @@
 package com.airgear.service;
 
-import com.airgear.dto.FeedbackResponse;
-import com.airgear.dto.FeedbackSaveRequest;
-import com.airgear.model.Feedback;
+import com.airgear.dto.FeedbackCreateRequest;
+import com.airgear.dto.FeedbackCreateResponse;
+import com.airgear.dto.FeedbackGetResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface FeedbackService {
 
-    FeedbackResponse create(String email, FeedbackSaveRequest request);
+    FeedbackCreateResponse create(String email, FeedbackCreateRequest request);
 
-    Page<FeedbackResponse> list(Pageable pageable);
+    Page<FeedbackGetResponse> list(Pageable pageable);
 
-    Optional<FeedbackResponse> getById(long id);
+    Optional<FeedbackGetResponse> getById(Long id);
 
-    void deleteFeedback(long id);
-
+    void deleteFeedback(Long id);
 }

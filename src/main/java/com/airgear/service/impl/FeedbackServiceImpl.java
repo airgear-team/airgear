@@ -1,7 +1,8 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.FeedbackResponse;
-import com.airgear.dto.FeedbackSaveRequest;
+import com.airgear.dto.FeedbackCreateRequest;
+import com.airgear.dto.FeedbackCreateResponse;
+import com.airgear.dto.FeedbackGetResponse;
 import com.airgear.exception.FeedbackExceptions;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.FeedbackMapper;
@@ -29,27 +30,27 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackMapper feedbackMapper;
 
     @Override
-    public FeedbackResponse create(String email, FeedbackSaveRequest request) {
+    public FeedbackCreateResponse create(String email, FeedbackCreateRequest request) {
         User user = getUser(email);
-        return feedbackMapper.toDto(save(request, user));
+        return feedbackMapper.toCreateResponse(save(request, user));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FeedbackResponse> list(Pageable pageable) {
+    public Page<FeedbackGetResponse> list(Pageable pageable) {
         return feedbackRepository.findAll(pageable)
-                .map(feedbackMapper::toDto);
+                .map(feedbackMapper::toGetResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<FeedbackResponse> getById(long id) {
+    public Optional<FeedbackGetResponse> getById(Long id) {
         return feedbackRepository.findById(id)
-                .map(feedbackMapper::toDto);
+                .map(feedbackMapper::toGetResponse);
     }
 
     @Override
-    public void deleteFeedback(long id) {
+    public void deleteFeedback(Long id) {
         if (!feedbackRepository.existsById(id)) throw FeedbackExceptions.feedbackNotFound(id);
         feedbackRepository.deleteById(id);
     }
@@ -59,7 +60,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .orElseThrow(() -> UserExceptions.userNotFound(email));
     }
 
-    private Feedback save(FeedbackSaveRequest request, User user) {
+    private Feedback save(FeedbackCreateRequest request, User user) {
         Feedback feedback = feedbackMapper.toModel(request);
         feedback.setUser(user);
         feedback.setCreatedAt(OffsetDateTime.now());

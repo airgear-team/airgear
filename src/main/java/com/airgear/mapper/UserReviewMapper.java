@@ -1,6 +1,6 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.UserReviewDto;
+import com.airgear.dto.*;
 import com.airgear.model.UserReview;
 import org.mapstruct.Mapper;
 
@@ -8,11 +8,14 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface UserReviewMapper {
-    UserReviewDto toDto(UserReview userReview);
+    UserReviewCreateResponse toCreateResponse(UserReview userReview);
+    UserReviewUpdateResponse toUpdateResponse(UserReview userReview);
+    UserReviewGetResponse toGetResponse(UserReview userReview);
 
-    UserReview toModel(UserReviewDto dto);
+    UserReview toModel(UserReviewGetRequest dto);
+    UserReview toModel(UserReviewCreateRequest dto);
+    UserReview toModel(UserReviewUpdateRequest dto);
+    Set<UserReviewCreateRequest> toDtoSet(Set<UserReview> userReviews);
 
-    Set<UserReviewDto> toDtoSet(Set<UserReview> userReviews);
-
-    Set<UserReview> toModelSet(Set<UserReviewDto> dtos);
+    Set<UserReview> toModelSet(Set<UserReviewCreateRequest> dtos);
 }

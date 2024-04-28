@@ -1,9 +1,9 @@
 package com.airgear.service;
 
-import com.airgear.dto.SaveUserRequestDto;
+import com.airgear.dto.UserSaveRequest;
 
 public interface GoogleTokenHandler {
 
-    SaveUserRequestDto execute(String token);
+    UserSaveRequest execute(String token);
 
 }

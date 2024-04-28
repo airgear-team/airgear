@@ -1,15 +1,16 @@
 package com.airgear.service;
 
-import com.airgear.dto.SaveLocationRequestDTO;
-import com.airgear.dto.LocationResponseDTO;
-import com.airgear.dto.RegionResponseDTO;
+import com.airgear.dto.LocationRequest;
+import com.airgear.dto.LocationResponse;
+import com.airgear.dto.LocationSaveRequest;
+import com.airgear.dto.RegionResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface LocationService {
 
-    LocationResponseDTO addLocation(SaveLocationRequestDTO request);
+    LocationResponse addLocation(LocationSaveRequest request);
 
-    Page<RegionResponseDTO> getAllRegions(Pageable pageable);
+    Page<RegionResponse> getAllRegions(Pageable pageable);
 
 }

@@ -1,9 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.GoodsCreateRequest;
-import com.airgear.dto.SaveUserRequestDto;
-import com.airgear.dto.UserDto;
-import com.airgear.dto.UserExistDto;
+import com.airgear.dto.*;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
@@ -49,7 +46,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> findAll() {
+    public List<UserGetResponse> findAll() {
         List<User> users = new ArrayList<>();
         userRepository.findAll().iterator().forEachRemaining(users::add);
         return userMapper.toDtoList(users);
@@ -57,7 +54,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> findActiveUsers() {
+    public List<UserGetResponse> findActiveUsers() {
         List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
                 .filter(user -> user.getStatus() != null && user.getStatus().equals(UserStatus.ACTIVE)).toList();
         return userMapper.toDtoList(users);
@@ -65,21 +62,21 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto getUserByEmail(String email) {
+    public UserGetResponse getUserByEmail(String email) {
         User user = getUser(email);
         return userMapper.toDto(user);
     }
 
     @Override
-    public UserExistDto isEmailExists(String email) {
-        return UserExistDto.builder()
+    public UserExistResponse isEmailExists(String email) {
+        return UserExistResponse.builder()
                 .username(email)
                 .exist(userRepository.existsByEmail(email))
                 .build();
     }
 
     @Override
-    public UserDto create(SaveUserRequestDto request) {
+    public UserGetResponse create(UserSaveRequest request) {
         validateUniqueFields(request);
         User user = save(request);
         return userMapper.toDto(user);
@@ -91,9 +88,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public Set<GoodsCreateRequest> getFavoriteGoods(Authentication auth) {
+    public Set<GoodsSearchResponse> getFavoriteGoods(Authentication auth) {
         User user = getUser(auth.getName());
-        return goodsMapper.toDtoSet(userRepository.getFavoriteGoodsByUser(user.getId()));
+        return goodsMapper.toSearchResponse(userRepository.getFavoriteGoodsByUser(user.getId()));
     }
 
     @Override
@@ -101,7 +98,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepository.save(user);
     }
 
-    private void validateUniqueFields(SaveUserRequestDto request) {
+    private void validateUniqueFields(UserSaveRequest request) {
         String email = request.getEmail();
         if (userRepository.existsByEmail(email)) {
             throw UserExceptions.duplicateEmail(email);
@@ -112,7 +109,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
     }
 
-    private User save(SaveUserRequestDto request) {
+    private User save(UserSaveRequest request) {
         var user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));

@@ -1,23 +1,22 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.LocationDto;
+import com.airgear.dto.LocationRequest;
+import com.airgear.dto.LocationResponse;
+import com.airgear.dto.LocationSaveRequest;
 import com.airgear.model.Location;
-import com.airgear.dto.SaveLocationRequestDTO;
-import com.airgear.dto.LocationResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = RegionMapper.class)
 public interface LocationMapper {
+
     @Mapping(source = "uniqueSettlementID", target = "locationId")
-    LocationDto toDto(Location location);
+    @Mapping(source = "region.id", target = "regionId")
+    LocationResponse toLocationResponse(Location location);
 
     @Mapping(target = "region", ignore = true)
-    Location toEntity(SaveLocationRequestDTO dto);
-
-    @Mapping(source = "region.id", target = "regionId")
-    LocationResponseDTO toLocationResponseDTO(Location location);
+    Location toEntity(LocationSaveRequest dto);
 
     @Mapping(source = "locationId", target = "uniqueSettlementID")
-    Location toModel(LocationDto dto);
+    Location toModel(LocationRequest dto);
 }

@@ -1,7 +1,6 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.GoodsCreateRequest;
-import com.airgear.dto.GoodsCreateResponse;
+import com.airgear.dto.*;
 import com.airgear.model.Goods;
 import org.mapstruct.Mapper;
 
@@ -12,17 +11,16 @@ import java.util.Set;
         uses = {UserMapper.class, LocationMapper.class, CategoryMapper.class , DepositMapper.class})
 public interface GoodsMapper {
 
-    GoodsCreateRequest toDtoRequest(Goods goods);
+    Goods toModel(GoodsCreateRequest dto);
 
-    Goods toModelRequest(GoodsCreateRequest dto);
+    GoodsGetResponse toGetResponse(Goods goods);
+    GoodsUpdateResponse toUpdateResponse(Goods goods);
+    GoodsCreateResponse toCreateResponse(Goods goods);
+    Goods toModel(GoodsGetResponse dto);
+    Goods toModel(GoodsUpdateRequest dto);
 
-    GoodsCreateResponse toDtoResponse(Goods goods);
-
-    Goods toModelResponse(GoodsCreateResponse dto);
-
-    Set<GoodsCreateRequest> toDtoSet(Set<Goods> goods);
-
-    Set<Goods> toModelSet(Set<GoodsCreateRequest> dtos);
-
-    List<GoodsCreateRequest> toDtoList(List<Goods> goods);
+    Set<GoodsSearchResponse> toSearchResponse(Set<Goods> goods);
+    List<GoodsGetRandomResponse> toGetRandomResponseList(List<Goods> goods);
+    List<GoodsGetResponse> toGetResponseList(List<Goods> goods);
+    GoodsSearchResponse toFilterResponse(Goods goods);
 }

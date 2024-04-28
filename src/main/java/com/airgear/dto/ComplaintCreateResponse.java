@@ -9,10 +9,10 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @SuperBuilder
-public class ComplaintDto {
-    private UserDto user;
-    private ComplaintCategoryDto complaintCategoryDTO;
-    private GoodsCreateRequest goods;
+public class ComplaintCreateResponse {
+    private UserGetResponse user;
+    private ComplaintCategoryResponse complaintCategoryResponse;
+    private GoodsGetResponse goods;
     private String description;
     private OffsetDateTime createdAt;
 }

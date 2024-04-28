@@ -2,8 +2,10 @@ package com.airgear.dto;
 
 import com.airgear.mapper.GoodsMapperImpl;
 import com.airgear.model.TopGoodsPlacement;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -11,10 +13,12 @@ import java.util.Set;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TopGoodsPlacementDto {
     private Long id;
     private Long userId;
-    private GoodsCreateRequest goods;
+    private GoodsGetResponse goods;
     private OffsetDateTime startAt;
     private OffsetDateTime endAt;
 
@@ -22,7 +26,7 @@ public class TopGoodsPlacementDto {
         return TopGoodsPlacement.builder()
                 .id(id)
                 .userId(userId)
-                .goods(goods == null ? null : new GoodsMapperImpl().toModelRequest(goods))
+                .goods(goods == null ? null : new GoodsMapperImpl().toModel(goods))
                 .startAt(startAt)
                 .endAt(endAt)
                 .build();
@@ -38,7 +42,7 @@ public class TopGoodsPlacementDto {
         return TopGoodsPlacementDto.builder()
                 .id(topGoodsPlacement.getId())
                 .userId(topGoodsPlacement.getUserId())
-                .goods(new GoodsMapperImpl().toDtoRequest(topGoodsPlacement.getGoods()))
+                .goods(new GoodsMapperImpl().toGetResponse(topGoodsPlacement.getGoods()))
                 .startAt(topGoodsPlacement.getStartAt())
                 .endAt(topGoodsPlacement.getEndAt())
                 .build();

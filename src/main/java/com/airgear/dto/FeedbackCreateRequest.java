@@ -12,17 +12,15 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FeedbackSaveRequest {
-
-    @NotBlank(message = "title must not be blank")
+public class FeedbackCreateRequest {
+    @NotBlank
     @Size(max = 255, message = "The size of the title should not exceed 255 characters")
     private String title;
 
-    @NotBlank(message = "message must not be blank")
+    @NotBlank
     @Size(max = 1000, message = "The size of the message should not exceed 1000 characters")
     private String message;
 
-    @NotNull(message = "feedback type must not be blank")
+    @NotNull
     private FeedbackType feedbackType;
-
 }

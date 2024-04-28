@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @Setter(AccessLevel.NONE)
-public class ChangeTextRequestDTO {
+public class ChangeTextRequest {
         @NotBlank(message = "text must not be empty")
         private String text;
 }

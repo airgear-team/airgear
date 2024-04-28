@@ -9,17 +9,18 @@ import javax.validation.Valid;
 @Data
 @Builder
 public class GoodsCreateResponse {
+
     private Long id;
     private String name;
     private String description;
-    private PriceDto price;
-    private WeekendsPriceDto weekendsPrice;
-    private DepositDto deposit;
+    private PriceResponse price;
+    private WeekendsPriceResponse weekendsPrice;
+    private DepositResponse deposit;
     @Valid
-    private LocationDto location;
-    private CategoryDto category;
+    private LocationResponse location;
+    private CategoryResponse category;
     private String phoneNumber;
-    private UserDto user;
+    private UserGetResponse user;
     private GoodsCondition goodsCondition;
 
     private GoodsStatus status;

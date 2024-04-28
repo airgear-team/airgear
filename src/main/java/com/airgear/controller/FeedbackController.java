@@ -1,7 +1,7 @@
 package com.airgear.controller;
 
-import com.airgear.dto.FeedbackResponse;
-import com.airgear.dto.FeedbackSaveRequest;
+import com.airgear.dto.FeedbackCreateRequest;
+import com.airgear.dto.FeedbackCreateResponse;
 import com.airgear.service.FeedbackService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,10 +23,10 @@ public class FeedbackController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<FeedbackResponse> create(@AuthenticationPrincipal String email,
-                                                   @RequestBody @Valid FeedbackSaveRequest request,
-                                                   UriComponentsBuilder ucb) {
-        FeedbackResponse response = feedbackService.create(email, request);
+    public ResponseEntity<FeedbackCreateResponse> create(@AuthenticationPrincipal String email,
+                                                                  @RequestBody @Valid FeedbackCreateRequest request,
+                                                                  UriComponentsBuilder ucb) {
+        FeedbackCreateResponse response = feedbackService.create(email, request);
         return ResponseEntity
                 .created(ucb.path("/feedbacks/{id}").build(response.getId()))
                 .body(response);

@@ -38,17 +38,17 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
-    public ResponseEntity<GoodsCreateRequest> getGoodsById(HttpServletRequest request, Authentication auth,
-                                                           @PathVariable Long goodsId) {
+    public ResponseEntity<GoodsGetResponse> getGoodsById(HttpServletRequest request, Authentication auth,
+                                                         @PathVariable Long goodsId) {
         return ResponseEntity.ok(goodsService.getGoodsById(request.getRemoteAddr(), auth.getName(), goodsId));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PutMapping("/{goodsId}")
-    public ResponseEntity<GoodsCreateRequest> updateGoods(
+    public ResponseEntity<GoodsUpdateResponse> updateGoods(
                                                 Authentication auth,
                                                 @PathVariable Long goodsId,
-                                                @Valid @RequestBody GoodsCreateRequest updatedGoods) {
+                                                @Valid @RequestBody GoodsUpdateRequest updatedGoods) {
         return ResponseEntity.ok(goodsService.updateGoods(auth.getName(), goodsId, updatedGoods));
     }
 
@@ -61,20 +61,20 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("addToFavorites/{goodsId}")
-    public ResponseEntity<GoodsCreateRequest> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
+    public ResponseEntity<GoodsGetResponse> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
         return ResponseEntity.ok(goodsService.addToFavorites(auth.getName(), goodsId));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/download/rental/{goodsId}")
     public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId,
-                                                       @Valid @RequestBody RentalAgreementDto rental){
+                                                       @Valid @RequestBody RentalAgreementRequest rental){
          return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
 
     }
 
     @GetMapping("/random-goods")
-    public List<GoodsCreateRequest> getRandomGoods(
+    public List<GoodsGetRandomResponse> getRandomGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
         return goodsService.getRandomGoods(categoryName, quantity);
@@ -82,7 +82,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/similar-goods")
-    public Page<GoodsCreateRequest> getSimilarGoods(
+    public Page<GoodsSearchResponse> getSimilarGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(name = "price") BigDecimal price) {
         return goodsService.getSimilarGoods(categoryName, price);
@@ -90,7 +90,7 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/filter")
-    public Page<GoodsCreateRequest> filterGoods(
+    public Page<GoodsSearchResponse> filterGoods(
             @RequestParam(name = "category", required = false) String categoryName,
             @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
             @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
@@ -100,9 +100,9 @@ public class GoodsController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/{goodsId}/complaint")
-    public ResponseEntity<ComplaintDto> addComplaint (Authentication auth,
-                                                      @PathVariable Long goodsId,
-                                                      @Valid @RequestBody ComplaintDto complaint) {
+    public ResponseEntity<ComplaintCreateResponse> addComplaint (Authentication auth,
+                                                                 @PathVariable Long goodsId,
+                                                                 @Valid @RequestBody ComplaintCreateRequest complaint) {
         return ResponseEntity.ok(complaintService.save(auth.getName(), goodsId, complaint));
     }
 

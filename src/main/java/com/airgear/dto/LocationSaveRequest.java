@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 @Data
-public class SaveLocationRequestDTO {
+public class LocationSaveRequest {
         @NotNull(message = "the settlement must not be null")
         @Setter(AccessLevel.NONE)
         private String settlement;

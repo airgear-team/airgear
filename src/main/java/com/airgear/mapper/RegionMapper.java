@@ -1,8 +1,8 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.RegionDto;
+import com.airgear.dto.RegionRequest;
+import com.airgear.dto.RegionResponse;
 import com.airgear.model.Region;
-import com.airgear.dto.RegionResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -11,11 +11,10 @@ public interface RegionMapper {
 
     @Mapping(source = "id", target = "regionId")
     @Mapping(source = "region", target = "regionName")
-    RegionDto toDto(Region region);
+    RegionResponse toDto(Region region);
 
     @Mapping(source = "regionId", target = "id")
     @Mapping(source = "regionName", target = "region")
-    Region toModel(RegionDto dto);
+    Region toModel(RegionRequest dto);
 
-    RegionResponseDTO toRegionResponseDTO(Region region);
 }

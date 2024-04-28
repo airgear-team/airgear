@@ -1,6 +1,6 @@
 package com.airgear.security;
 
-import com.airgear.dto.SignInDto;
+import com.airgear.dto.SignInResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,9 +30,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
-        SignInDto credentials;
+        SignInResponse credentials;
         try {
-            credentials = objectMapper.readValue(req.getInputStream(), SignInDto.class);
+            credentials = objectMapper.readValue(req.getInputStream(), SignInResponse.class);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

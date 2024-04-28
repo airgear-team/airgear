@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserExistDto {
-    private String username;
-    private Boolean exist;
+public class CategoryResponse {
+    private Integer id;
+    private String name;
 }

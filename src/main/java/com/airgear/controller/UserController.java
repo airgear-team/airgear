@@ -1,8 +1,8 @@
 package com.airgear.controller;
 
-import com.airgear.dto.GoodsCreateRequest;
-import com.airgear.dto.UserDto;
-import com.airgear.dto.UserExistDto;
+import com.airgear.dto.GoodsSearchResponse;
+import com.airgear.dto.UserGetResponse;
+import com.airgear.dto.UserExistResponse;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
@@ -27,41 +27,41 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<List<UserDto>> getAllUsers(Authentication auth) {
+    public ResponseEntity<List<UserGetResponse>> getAllUsers(Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return ResponseEntity.ok(userService.findAll());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/{email}", method = RequestMethod.GET)
-    public ResponseEntity<UserDto> getUserByUserName(@PathVariable String email) {
+    public ResponseEntity<UserGetResponse> getUserByUserName(@PathVariable String email) {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
     @RequestMapping(value = "/{username}/goods", method = RequestMethod.GET)
-    public ResponseEntity<Set<GoodsCreateRequest>> getAllGoodsBy(@PathVariable String username) {
+    public ResponseEntity<Set<GoodsSearchResponse>> getAllGoodsBy(@PathVariable String username) {
         return ResponseEntity.ok(goodsService.getAllGoodsByUsername(username));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{email}/isExists")
-    public ResponseEntity<UserExistDto> isEmailExists(Authentication auth,
-                                                      @PathVariable String email) {
+    public ResponseEntity<UserExistResponse> isEmailExists(Authentication auth,
+                                                           @PathVariable String email) {
         log.info("auth name : {}", auth.getName());
         return ResponseEntity.ok(userService.isEmailExists(email));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/activeUsers", method = RequestMethod.GET)
-    public ResponseEntity<List<UserDto>> getAllActiveUsers(Authentication auth) {
+    public ResponseEntity<List<UserGetResponse>> getAllActiveUsers(Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return ResponseEntity.ok(userService.findActiveUsers());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','USER')")
     @GetMapping("/favorites")
-    public Set<GoodsCreateRequest> getFavoriteGoods (Authentication auth) {
+    public Set<GoodsSearchResponse> getFavoriteGoods (Authentication auth) {
         log.info("auth name : {}", auth.getName());
         return userService.getFavoriteGoods(auth);
     }

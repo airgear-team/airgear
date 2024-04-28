@@ -2,8 +2,10 @@ package com.airgear.dto;
 
 import com.airgear.model.GoodsCondition;
 import com.airgear.model.GoodsStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -13,6 +15,8 @@ import javax.validation.constraints.Size;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GoodsCreateRequest {
 
     private Long id;
@@ -25,22 +29,22 @@ public class GoodsCreateRequest {
     @Size(min = 10, max = 1000, message = "Description length must be between 10 and 1000 characters")
     private String description;
 
-    private PriceDto price;
+    private PriceRequest price;
 
-    private WeekendsPriceDto weekendsPrice;
+    private WeekendsPriceRequest weekendsPrice;
 
-    private DepositDto deposit;
+    private DepositRequest deposit;
 
     private Long locationId;
 
     @NotNull(message = "Category is required")
     @Valid
-    private CategoryDto category;
+    private CategoryRequest category;
 
     @Pattern(regexp = "^\\+\\d{1,3}\\s?\\(?\\d{1,4}\\)?[\\s.-]?\\d{1,4}[\\s.-]?\\d{1,4}$", message = "The phone number must be in the format +380XXXXXXXXX")
     private String phoneNumber;
 
-    private UserDto user;
+    private UserGetRequest user;
 
     @NotNull(message = "Goods condition is required")
     private GoodsCondition goodsCondition;
