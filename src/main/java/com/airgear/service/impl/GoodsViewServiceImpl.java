@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.GoodsGetResponse;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.GoodsView;
 import com.airgear.model.Goods;
@@ -19,8 +19,8 @@ public class GoodsViewServiceImpl implements GoodsViewService {
     private final GoodsMapper goodsMapper;
 
     @Override
-    public void saveGoodsView(String ip, Long userId, GoodsDto goodsDto) {
-        Goods goods = goodsMapper.toModel(goodsDto);
+    public void saveGoodsView(String ip, Long userId, GoodsGetResponse goodsGetResponse) {
+        Goods goods = goodsMapper.toModel(goodsGetResponse);
         if (goodsViewRepository.existsByIpAndGoods(ip, goods)) {
             if (userId != null && !goodsViewRepository.existsByUserIdAndGoods(userId, goods)) {
                 goodsViewRepository.save(new GoodsView(1, userId, ip, OffsetDateTime.now(), goods));

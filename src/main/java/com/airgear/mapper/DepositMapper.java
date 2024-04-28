@@ -1,15 +1,16 @@
 package com.airgear.mapper;
 
 
-import com.airgear.dto.DepositDto;
+import com.airgear.dto.DepositRequest;
+import com.airgear.dto.DepositResponse;
 import com.airgear.entity.Deposit;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface DepositMapper {
 
-    DepositDto toDto(Deposit price);
+    DepositResponse toDto(Deposit price);
 
-    Deposit toModel(DepositDto dto);
+    Deposit toModel(DepositRequest dto);
 
 }

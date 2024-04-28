@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +19,6 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/{goodsId}")
     public ResponseEntity<ImagesSaveResponse> uploadImages(@AuthenticationPrincipal String email,
                                                            @RequestParam("images") MultipartFile[] images,
@@ -28,7 +26,6 @@ public class ImageController {
         return ResponseEntity.ok(imageService.uploadImages(email, images, goodsId));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}/image/{imageId}")
     public ResponseEntity<FileSystemResource> downloadImages(@AuthenticationPrincipal String email,
                                                              @PathVariable("goodsId") Long goodsId,

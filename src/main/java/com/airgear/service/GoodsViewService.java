@@ -1,8 +1,8 @@
 package com.airgear.service;
 
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.GoodsGetResponse;
 
 public interface GoodsViewService {
 
-    void saveGoodsView(String ip, Long userId, GoodsDto goods);
+    void saveGoodsView(String ip, Long userId, GoodsGetResponse goods);
 }

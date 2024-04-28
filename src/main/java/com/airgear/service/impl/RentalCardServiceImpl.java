@@ -4,6 +4,7 @@ import com.airgear.dto.*;
 import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.RentalCardExceptions;
 import com.airgear.exception.UserExceptions;
+import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.RentalCardMapper;
 import com.airgear.model.Goods;
 import com.airgear.model.RentalCard;
@@ -31,6 +32,7 @@ public class RentalCardServiceImpl implements RentalCardService {
     private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
     private final RentalCardMapper rentalCardMapper;
+    private final GoodsMapper goodsMapper;
 
     @Override
     public RentalCardResponse create(RentalCardSaveRequest request) {

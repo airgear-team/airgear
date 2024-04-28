@@ -1,8 +1,8 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.SaveUserRequestDto;
-import com.airgear.dto.UserDto;
+import com.airgear.dto.GoodsSearchResponse;
+import com.airgear.dto.UserGetResponse;
+import com.airgear.dto.UserSaveRequest;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
@@ -44,25 +44,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto getUserByEmail(String email) {
+    public UserGetResponse getUserByEmail(String email) {
         User user = getUser(email);
         return userMapper.toDto(user);
     }
 
     @Override
-    public UserDto create(SaveUserRequestDto request) {
+    public UserGetResponse create(UserSaveRequest request) {
         validateUniqueFields(request);
         User user = save(request);
         return userMapper.toDto(user);
     }
 
     @Override
-    public Set<GoodsDto> getFavoriteGoods(String email) {
+    public Set<GoodsSearchResponse> getFavoriteGoods(String email) {
         User user = getUser(email);
-        return goodsMapper.toDtoSet(userRepository.getFavoriteGoodsByUser(user.getId()));
+        return goodsMapper.toSearchResponse(userRepository.getFavoriteGoodsByUser(user.getId()));
     }
 
-    private void validateUniqueFields(SaveUserRequestDto request) {
+    private void validateUniqueFields(UserSaveRequest request) {
         String email = request.getEmail();
         if (userRepository.existsByEmail(email)) {
             throw UserExceptions.duplicateEmail(email);
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
     }
 
-    private User save(SaveUserRequestDto request) {
+    private User save(UserSaveRequest request) {
         var user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));

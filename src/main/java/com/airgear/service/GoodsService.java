@@ -1,7 +1,6 @@
 package com.airgear.service;
 
-import com.airgear.dto.GoodsDto;
-import com.airgear.dto.TopGoodsPlacementDto;
+import com.airgear.dto.*;
 import com.airgear.model.Goods;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +11,9 @@ import java.util.Set;
 
 public interface GoodsService {
 
-    GoodsDto getGoodsById(Long id);
+    GoodsGetResponse getGoodsById(Long id);
 
-    GoodsDto getGoodsById(String ipAddress, String username, Long goodsId);
+    GoodsGetResponse getGoodsById(String ipAddress, String username, Long goodsId);
 
     void deleteGoods(Goods goods);
 
@@ -22,25 +21,23 @@ public interface GoodsService {
 
     Goods updateGoods(Goods goods);
 
-    GoodsDto updateGoods(String username, Long goodsId, GoodsDto updatedGoods);
+    GoodsUpdateResponse updateGoods(String username, Long goodsId, GoodsUpdateRequest updatedGoods);
 
-    Set<GoodsDto> getAllGoodsByUsername(String username);
+    Set<GoodsSearchResponse> getAllGoodsByUsername(String username);
 
-    List<Goods> getAllGoods();
+    Page<GoodsGetResponse> getAllGoods(Pageable pageable);
 
-    Page<Goods> getAllGoods(Pageable pageable);
+    Page<GoodsSearchResponse> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
-    Page<GoodsDto> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+    Page<GoodsSearchResponse> listGoodsByName(Pageable pageable, String goodsName);
 
-    Page<GoodsDto> listGoodsByName(Pageable pageable, String goodsName);
+    List<GoodsGetRandomResponse> getRandomGoods(String categoryName, int quantity);
 
-    List<GoodsDto> getRandomGoods(String categoryName, int quantity);
+    Page<GoodsSearchResponse> getSimilarGoods(String categoryName, BigDecimal price);
 
-    Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price);
+    GoodsCreateResponse createGoods(String email, GoodsCreateRequest goodsDto);
 
-    GoodsDto createGoods(String email, GoodsDto goodsDto);
-
-    GoodsDto addToFavorites(String username, Long goodsId);
+    GoodsGetResponse addToFavorites(String username, Long goodsId);
 
     List<Goods> getTopGoodsPlacements();
 

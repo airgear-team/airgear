@@ -1,6 +1,6 @@
 package com.airgear.controller;
 
-import com.airgear.dto.GoodsDto;
+import com.airgear.dto.GoodsSearchResponse;
 import com.airgear.service.GoodsService;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
@@ -21,12 +21,12 @@ public class UserController {
     private final GoodsService goodsService;
 
     @RequestMapping(value = "/{username}/goods", method = RequestMethod.GET)
-    public Set<GoodsDto> getAllGoodsBy(@PathVariable String username) {
+    public Set<GoodsSearchResponse> getAllGoodsBy(@PathVariable String username) {
         return goodsService.getAllGoodsByUsername(username);
     }
 
     @GetMapping("/favorites")
-    public Set<GoodsDto> getFavoriteGoods(@AuthenticationPrincipal String email) {
+    public Set<GoodsSearchResponse> getFavoriteGoods(@AuthenticationPrincipal String email) {
         return userService.getFavoriteGoods(email);
     }
 }

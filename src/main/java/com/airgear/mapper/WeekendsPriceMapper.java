@@ -1,13 +1,14 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.WeekendsPriceDto;
+import com.airgear.dto.WeekendsPriceRequest;
+import com.airgear.dto.WeekendsPriceResponse;
 import com.airgear.model.WeekendsPrice;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface WeekendsPriceMapper {
 
-    WeekendsPriceDto toDto(WeekendsPrice price);
+    WeekendsPriceResponse toDto(WeekendsPrice price);
 
-    WeekendsPrice toModel(WeekendsPriceDto dto);
+    WeekendsPrice toModel(WeekendsPriceRequest dto);
 }

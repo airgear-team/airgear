@@ -1,7 +1,7 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.ImagesSaveResponse;
-import com.airgear.dto.UserDto;
+import com.airgear.dto.UserGetResponse;
 import com.airgear.exception.ImageExceptions;
 import com.airgear.service.ImageService;
 import com.airgear.service.UserService;
@@ -36,7 +36,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ImagesSaveResponse uploadImages(String email, MultipartFile[] images, Long goodsId) {
-        UserDto user = getUser(email);
+        UserGetResponse user = getUser(email);
         List<String> imageUrls = new ArrayList<>();
         for (MultipartFile image : images) {
             try {
@@ -53,7 +53,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public FileSystemResource downloadImage(String email, Long goodsId, String imageId) {
-        UserDto user = getUser(email);
+        UserGetResponse user = getUser(email);
         String imagePath = DirectoryPathUtil.getBasePath() + "\\"+USER_DIR_NAME+"\\" + user.getId() + "\\"+GOODS_DIR_NAME+"\\" + goodsId + "\\" + imageId;
         log.info("image path : {}", imagePath);
         File file = new File(imagePath);
@@ -75,7 +75,7 @@ public class ImageServiceImpl implements ImageService {
         return uniqueFileName;
     }
 
-    private UserDto getUser(String email) {
+    private UserGetResponse getUser(String email) {
         return userService.getUserByEmail(email);
     }
 

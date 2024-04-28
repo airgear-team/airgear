@@ -1,13 +1,14 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.ComplaintDto;
+import com.airgear.dto.ComplaintCreateRequest;
+import com.airgear.dto.ComplaintCreateResponse;
 import com.airgear.model.Complaint;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring",
         uses = {UserMapper.class, ComplaintCategoryMapper.class, GoodsMapper.class})
 public interface ComplaintMapper {
-    ComplaintDto toDto(Complaint complaint);
+    ComplaintCreateResponse toDto(Complaint complaint);
 
-    Complaint toModel(ComplaintDto dto);
+    Complaint toModel(ComplaintCreateRequest dto);
 }
