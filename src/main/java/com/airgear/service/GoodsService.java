@@ -5,8 +5,8 @@ import com.airgear.model.Goods;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 public interface GoodsService {
@@ -19,15 +19,11 @@ public interface GoodsService {
 
     void deleteGoods(String username, Long goodsId);
 
-    Goods saveGoods(Goods goods);
-
     Goods updateGoods(Goods goods);
 
     GoodsUpdateResponse updateGoods(String username, Long goodsId, GoodsUpdateRequest updatedGoods);
 
     Set<GoodsSearchResponse> getAllGoodsByUsername(String username);
-
-    List<GoodsGetResponse> getAllGoods();
 
     Page<GoodsGetResponse> getAllGoods(Pageable pageable);
 
@@ -39,7 +35,7 @@ public interface GoodsService {
 
     Page<GoodsSearchResponse> getSimilarGoods(String categoryName, BigDecimal price);
 
-    GoodsCreateResponse createGoods(String username, GoodsCreateRequest goodsCreateRequest);
+    GoodsCreateResponse createGoods(String email, GoodsCreateRequest goodsDto);
 
     GoodsGetResponse addToFavorites(String username, Long goodsId);
 

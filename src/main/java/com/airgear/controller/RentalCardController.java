@@ -7,8 +7,10 @@ import com.airgear.dto.RentalCardSaveRequest;
 import com.airgear.service.RentalCardService;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.time.OffsetDateTime;
@@ -21,13 +23,16 @@ public class RentalCardController {
 
     private final RentalCardService rentalCardService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
-    public RentalCardResponse create(@RequestBody @Valid RentalCardSaveRequest request) {
-        return rentalCardService.create(request);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<RentalCardResponse> create(@RequestBody @Valid RentalCardSaveRequest request,
+                                                     UriComponentsBuilder ucb) {
+        RentalCardResponse response = rentalCardService.create(request);
+        return ResponseEntity
+                .created(ucb.path("/rental/{id}").build(response.getId()))
+                .body(response);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}/calendar")
     public List<CalendarDayResponse> getCalendarForGoods(
             @PathVariable long goodsId,
@@ -36,21 +41,19 @@ public class RentalCardController {
         return rentalCardService.getCalendarForGoods(goodsId, fromDate, toDate);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public RentalCardResponse getById(@PathVariable long id) {
         return rentalCardService.getById(id);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PatchMapping("/{id}")
     public RentalCardResponse changeDurationById(@PathVariable Long id,
                                                  @RequestBody @Valid RentalCardChangeDurationRequest request) {
         return rentalCardService.changeDurationById(id, request);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable long id) {
         rentalCardService.deleteById(id);
     }

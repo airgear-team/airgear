@@ -14,21 +14,20 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/feedbacks")
+@RequestMapping("/feedback")
 @AllArgsConstructor
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<FeedbackCreateResponse> create(@AuthenticationPrincipal String email,
-                                                                  @RequestBody @Valid FeedbackCreateRequest request,
-                                                                  UriComponentsBuilder ucb) {
+                                                         @RequestBody @Valid FeedbackCreateRequest request,
+                                                         UriComponentsBuilder ucb) {
         FeedbackCreateResponse response = feedbackService.create(email, request);
         return ResponseEntity
-                .created(ucb.path("/feedbacks/{id}").build(response.getId()))
+                .created(ucb.path("/feedback/{id}").build(response.getId()))
                 .body(response);
     }
 }

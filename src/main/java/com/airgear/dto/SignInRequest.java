@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignInResponse {
+public class SignInRequest {
 
     @JsonAlias({"email"})
     private String login;

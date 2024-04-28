@@ -1,6 +1,8 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.*;
+import com.airgear.dto.GoodsSearchResponse;
+import com.airgear.dto.UserGetResponse;
+import com.airgear.dto.UserSaveRequest;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
@@ -11,7 +13,6 @@ import com.airgear.model.UserStatus;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,11 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.StreamSupport;
 
 @Service(value = "userService")
 @Transactional
@@ -46,33 +44,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserGetResponse> findAll() {
-        List<User> users = new ArrayList<>();
-        userRepository.findAll().iterator().forEachRemaining(users::add);
-        return userMapper.toDtoList(users);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserGetResponse> findActiveUsers() {
-        List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(user -> user.getStatus() != null && user.getStatus().equals(UserStatus.ACTIVE)).toList();
-        return userMapper.toDtoList(users);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public UserGetResponse getUserByEmail(String email) {
         User user = getUser(email);
         return userMapper.toDto(user);
-    }
-
-    @Override
-    public UserExistResponse isEmailExists(String email) {
-        return UserExistResponse.builder()
-                .username(email)
-                .exist(userRepository.existsByEmail(email))
-                .build();
     }
 
     @Override
@@ -83,19 +57,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void markUserAsPotentiallyScam(Long userId, boolean isScam) {
-        userRepository.updateIsPotentiallyScamStatus(userId, isScam);
-    }
-
-    @Override
-    public Set<GoodsSearchResponse> getFavoriteGoods(Authentication auth) {
-        User user = getUser(auth.getName());
+    public Set<GoodsSearchResponse> getFavoriteGoods(String email) {
+        User user = getUser(email);
         return goodsMapper.toSearchResponse(userRepository.getFavoriteGoodsByUser(user.getId()));
-    }
-
-    @Override
-    public User update(User user) {
-        return userRepository.save(user);
     }
 
     private void validateUniqueFields(UserSaveRequest request) {

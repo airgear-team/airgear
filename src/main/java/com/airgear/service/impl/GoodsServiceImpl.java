@@ -1,7 +1,9 @@
 package com.airgear.service.impl;
 
-import  com.airgear.dto.*;
-import com.airgear.exception.*;
+import com.airgear.dto.*;
+import com.airgear.exception.GoodsExceptions;
+import com.airgear.exception.LocationException;
+import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.*;
 import com.airgear.repository.*;
@@ -42,7 +44,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsGetResponse getGoodsById(String ipAddress, String email, Long goodsId) {
         GoodsGetResponse goods = getGoodsById(goodsId);
-        if (goods == null||!goods.getStatus().equals(GoodsStatus.ACTIVE)) {
+        if (goods == null || !goods.getStatus().equals(GoodsStatus.ACTIVE)) {
             throw GoodsExceptions.goodsNotFound(goodsId);
         }
         return goods;
@@ -64,12 +66,6 @@ public class GoodsServiceImpl implements GoodsService {
             throw UserExceptions.AccessDenied("It is not your goods");
         }
         deleteGoods(goods);
-    }
-
-    @Override
-    public Goods saveGoods(@Valid Goods goods) {  // TODO to refactor this code
-        checkCategory(goods);
-        return goodsRepository.save(goods);
     }
 
     @Override
@@ -113,11 +109,6 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public List<GoodsGetResponse> getAllGoods() {
-        return goodsMapper.toGetResponseList(goodsRepository.findAll());
-    }
-
-    @Override
     public List<GoodsGetRandomResponse> getRandomGoods(String categoryName, int quantity) {
         List<Goods> goods = getTopGoodsPlacements();
         List<Goods> randomGoods;
@@ -150,7 +141,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         if (category != null && minPrice != null && maxPrice != null) {
             return goodsRepository.findByCategoryAndPriceBetween(category, minPrice, maxPrice, pageable)
-                                  .map(goodsMapper::toFilterResponse);
+                    .map(goodsMapper::toFilterResponse);
         } else if (minPrice != null && maxPrice != null) {
             return goodsRepository.findByPriceBetween(minPrice, maxPrice, pageable).map(goodsMapper::toFilterResponse);
         } else if (minPrice != null) {
@@ -161,16 +152,6 @@ public class GoodsServiceImpl implements GoodsService {
             return goodsRepository.findByCategory(category, pageable).map(goodsMapper::toFilterResponse);
         } else {
             return goodsRepository.findAll(pageable).map(goodsMapper::toFilterResponse);
-        }
-    }
-
-    private void checkCategory(Goods goods) {
-        if (goods.getCategory() != null) {
-            Category category = categoryRepository.findByName(goods.getCategory().getName());
-            if (category != null)
-                goods.setCategory(category);
-            else
-                throw CategoryExceptions.categoryNotFound(goods.getCategory().getName());
         }
     }
 
@@ -187,19 +168,19 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public GoodsCreateResponse createGoods(String email, GoodsCreateRequest goodsCreateRequest) {
+    public GoodsCreateResponse createGoods(String email, GoodsCreateRequest request) {
         User user = getUser(email);
-        Goods goods = goodsMapper.toModel(goodsCreateRequest);
+        Goods goods = goodsMapper.toModel(request);
         goods.setUser(user);
         goods.setStatus(GoodsStatus.ACTIVE);
         goods.setCreatedAt(OffsetDateTime.now());
 
-        Location existingLocation = locationRepository.findByUniqueSettlementID(Math.toIntExact(goodsCreateRequest.getLocationId()));
+        Location existingLocation = locationRepository.findByUniqueSettlementID(Math.toIntExact(request.getLocationId()));
 
         if (existingLocation != null) {
             goods.setLocation(existingLocation);
         } else {
-            LocationException.locationNotFound(Math.toIntExact(goodsCreateRequest.getLocationId()));
+            LocationException.locationNotFound(Math.toIntExact(request.getLocationId()));
         }
         return goodsMapper.toCreateResponse(goodsRepository.save(goods));
     }

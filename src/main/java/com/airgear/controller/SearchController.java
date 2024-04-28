@@ -21,10 +21,9 @@ public class SearchController {
     private final GoodsService goodsService;
 
     @GetMapping(value = "/{goodsName}")
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PageableAsQueryParam
     public Page<GoodsSearchResponse> listGoodsByName(@Parameter(hidden = true) Pageable pageable,
-                                                             @PathVariable String goodsName) {
+                                                     @PathVariable String goodsName) {
         return goodsService.listGoodsByName(pageable, goodsName);
     }
 }

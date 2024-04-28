@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LocationRequest {
+
     private Long locationId;
+
     private String settlement;
-    private Long regionId;;
+
+    private Long regionId;
+
 }

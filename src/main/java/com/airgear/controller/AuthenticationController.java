@@ -1,6 +1,6 @@
 package com.airgear.controller;
 
-import com.airgear.dto.SignInResponse;
+import com.airgear.dto.SignInRequest;
 import com.airgear.dto.UserSaveRequest;
 import com.airgear.entity.AuthToken;
 import com.airgear.model.CustomUserDetails;
@@ -26,7 +26,7 @@ public class AuthenticationController {
 
     @PostMapping(value = "/authenticate")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            content = @Content(schema = @Schema(implementation = SignInResponse.class)))
+            content = @Content(schema = @Schema(implementation = SignInRequest.class)))
     public AuthToken login(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return jwtTokenUtil.generateToken(userDetails);
     }

@@ -1,9 +1,12 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.ImagesSaveResponse;
+import com.airgear.dto.UserGetResponse;
 import com.airgear.exception.ImageExceptions;
 import com.airgear.service.ImageService;
+import com.airgear.service.UserService;
 import com.airgear.utils.DirectoryPathUtil;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
@@ -17,8 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Slf4j
 @Service
+@Slf4j
+@AllArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
     private static final long MAX_FILE_SIZE_IN_BYTES = 10485760;
@@ -28,12 +32,16 @@ public class ImageServiceImpl implements ImageService {
     private static final String GOODS_DIR_NAME = "goods";
     private static final Path BASE_DIR = DirectoryPathUtil.getBasePath();
 
-    public ImagesSaveResponse uploadImages(MultipartFile[] images, Long userId, Long goodsId) {
+    private final UserService userService;
+
+    @Override
+    public ImagesSaveResponse uploadImages(String email, MultipartFile[] images, Long goodsId) {
+        UserGetResponse user = getUser(email);
         List<String> imageUrls = new ArrayList<>();
         for (MultipartFile image : images) {
             try {
                 log.info("Uploading: Name: " + image.getOriginalFilename() + ", Type: " + image.getContentType() + ", Size: " + image.getSize());
-                String filePath = uploadImage(image, userId, goodsId);
+                String filePath = uploadImage(image, user.getId(), goodsId);
                 imageUrls.add(filePath);
             } catch (IOException e) {
                 log.error("Failed to upload photo", e);
@@ -44,14 +52,15 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public FileSystemResource downloadImage(Long userId, Long goodsId, String imageId) {
-        String imagePath = DirectoryPathUtil.getBasePath() + "\\"+USER_DIR_NAME+"\\" + userId + "\\"+GOODS_DIR_NAME+"\\" + goodsId + "\\" + imageId;
+    public FileSystemResource downloadImage(String email, Long goodsId, String imageId) {
+        UserGetResponse user = getUser(email);
+        String imagePath = DirectoryPathUtil.getBasePath() + "\\"+USER_DIR_NAME+"\\" + user.getId() + "\\"+GOODS_DIR_NAME+"\\" + goodsId + "\\" + imageId;
         log.info("image path : {}", imagePath);
         File file = new File(imagePath);
         if (file.exists()) {
-           return new FileSystemResource(file);
+            return new FileSystemResource(file);
         } else {
-            ImageExceptions.imageNotFound(userId, goodsId, imageId);
+            ImageExceptions.imageNotFound(user.getId(), goodsId, imageId);
             return new FileSystemResource("");
         }
     }
@@ -64,6 +73,10 @@ public class ImageServiceImpl implements ImageService {
         Path filePath = targetDir.resolve(uniqueFileName);
         file.transferTo(filePath.toFile());
         return uniqueFileName;
+    }
+
+    private UserGetResponse getUser(String email) {
+        return userService.getUserByEmail(email);
     }
 
     private void validateFile(MultipartFile image) {
@@ -101,5 +114,4 @@ public class ImageServiceImpl implements ImageService {
         }
         return "";
     }
-
 }
