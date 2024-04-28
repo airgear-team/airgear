@@ -1,11 +1,13 @@
 package com.airgear.security;
 
+import com.airgear.model.Role;
 import com.airgear.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -56,6 +58,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .antMatchers(getPermitAllUrls()).permitAll()
+                .antMatchers(HttpMethod.GET, "/users/**").hasAnyRole(Role.ADMIN.getValue(), Role.MODERATOR.getValue(), Role.USER.getValue())
+                .antMatchers(HttpMethod.POST, "/goods", "/goods/top").hasAnyRole(Role.ADMIN.getValue(), Role.MODERATOR.getValue(), Role.USER.getValue())
+                .antMatchers("/goods/{goodsId:\\d+}/**}").hasAnyRole(Role.ADMIN.getValue(), Role.MODERATOR.getValue(), Role.USER.getValue())
                 .and()
                 .addFilter(jwtAuthenticationFilter())
                 .addFilter(jwtAuthorizationFilter())
@@ -75,11 +80,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         permitAllUrls.add("/auth/authenticate");
         permitAllUrls.add("/auth/register");
         permitAllUrls.add("/auth/service");
-
-        permitAllUrls.add("/goods/{goodsId}");
+        permitAllUrls.add("/goods/random");
         permitAllUrls.add("/goods/similar");
         permitAllUrls.add("/goods/filter");
-        permitAllUrls.add("/goods/random-goods");
         return permitAllUrls.toArray(new String[0]);
     }
 

@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -35,9 +34,8 @@ public class GoodsController {
     private final ComplaintService complaintService;
     private final RentalAgreementService rentalAgreementService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<GoodsDto> createGoods(@AuthenticationPrincipal String email,
                                                 @RequestBody @Valid GoodsDto goods,
                                                 UriComponentsBuilder ucb) {
@@ -47,7 +45,6 @@ public class GoodsController {
                 .body(response);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
     public GoodsDto getGoodsById(HttpServletRequest request,
                                  @AuthenticationPrincipal String email,
@@ -55,7 +52,6 @@ public class GoodsController {
         return goodsService.getGoodsById(request.getRemoteAddr(), email, goodsId);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PutMapping("/{goodsId}")
     public GoodsDto updateGoods(@AuthenticationPrincipal String email,
                                 @PathVariable Long goodsId,
@@ -63,25 +59,35 @@ public class GoodsController {
         return goodsService.updateGoods(email, goodsId, updatedGoods);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{goodsId}")
     public ResponseEntity<String> deleteGoods(@AuthenticationPrincipal String email, @PathVariable Long goodsId) {
         goodsService.deleteGoods(email, goodsId);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/{goodsId}/favorite")
     public GoodsDto addToFavorites(@AuthenticationPrincipal String email, @PathVariable Long goodsId) {
         return goodsService.addToFavorites(email, goodsId);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping("/{goodsId}/agreement")
     public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId,
                                                        @Valid @RequestBody RentalAgreementDto rental) {
         return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
 
+    }
+
+    @PostMapping("/{goodsId}/complaint")
+    public ResponseEntity<ComplaintDto> addComplaint(@AuthenticationPrincipal String email,
+                                                     @PathVariable Long goodsId,
+                                                     @RequestBody @Valid ComplaintDto complaint) {
+        return ResponseEntity.ok(complaintService.save(email, goodsId, complaint));
+    }
+
+    @PostMapping("/top")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<TopGoodsPlacementDto> addTopGoodsPlacements(@RequestBody @Valid TopGoodsPlacementDto topGoodsPlacementDto) {
+        return ResponseEntity.ok(goodsService.addTopGoodsPlacements(topGoodsPlacementDto));
     }
 
     @GetMapping("/random")
@@ -91,33 +97,17 @@ public class GoodsController {
         return goodsService.getRandomGoods(categoryName, quantity);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/similar")
     public Page<GoodsDto> getSimilarGoods(@RequestParam(required = false, name = "category") String categoryName,
                                           @RequestParam(name = "price") BigDecimal price) {
         return goodsService.getSimilarGoods(categoryName, price);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/filter")
     public Page<GoodsDto> filterGoods(@RequestParam(name = "category", required = false) String categoryName,
                                       @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
                                       @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
                                       Pageable pageable) {
         return goodsService.filterGoods(categoryName, minPrice, maxPrice, pageable);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping("/{goodsId}/complaint")
-    public ResponseEntity<ComplaintDto> addComplaint(@AuthenticationPrincipal String email,
-                                                     @PathVariable Long goodsId,
-                                                     @RequestBody @Valid ComplaintDto complaint) {
-        return ResponseEntity.ok(complaintService.save(email, goodsId, complaint));
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping("/top")
-    public ResponseEntity<TopGoodsPlacementDto> addTopGoodsPlacements(@RequestBody @Valid TopGoodsPlacementDto topGoodsPlacementDto) {
-        return ResponseEntity.ok(goodsService.addTopGoodsPlacements(topGoodsPlacementDto));
     }
 }
