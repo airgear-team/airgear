@@ -3,7 +3,6 @@ package com.airgear.service.impl;
 import com.airgear.dto.GoodsDto;
 import com.airgear.dto.SaveUserRequestDto;
 import com.airgear.dto.UserDto;
-import com.airgear.dto.UserExistDto;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
@@ -23,11 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.StreamSupport;
 
 @Service(value = "userService")
 @Transactional
@@ -49,33 +45,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> findAll() {
-        List<User> users = new ArrayList<>();
-        userRepository.findAll().iterator().forEachRemaining(users::add);
-        return userMapper.toDtoList(users);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserDto> findActiveUsers() {
-        List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(user -> user.getStatus() != null && user.getStatus().equals(UserStatus.ACTIVE)).toList();
-        return userMapper.toDtoList(users);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public UserDto getUserByEmail(String email) {
         User user = getUser(email);
         return userMapper.toDto(user);
-    }
-
-    @Override
-    public UserExistDto isEmailExists(String email) {
-        return UserExistDto.builder()
-                .username(email)
-                .exist(userRepository.existsByEmail(email))
-                .build();
     }
 
     @Override
@@ -86,19 +58,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void markUserAsPotentiallyScam(Long userId, boolean isScam) {
-        userRepository.updateIsPotentiallyScamStatus(userId, isScam);
-    }
-
-    @Override
     public Set<GoodsDto> getFavoriteGoods(Authentication auth) {
         User user = getUser(auth.getName());
         return goodsMapper.toDtoSet(userRepository.getFavoriteGoodsByUser(user.getId()));
-    }
-
-    @Override
-    public User update(User user) {
-        return userRepository.save(user);
     }
 
     private void validateUniqueFields(SaveUserRequestDto request) {

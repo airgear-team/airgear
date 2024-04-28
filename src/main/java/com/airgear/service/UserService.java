@@ -14,18 +14,8 @@ public interface UserService {
 
     UserDto create(SaveUserRequestDto request);
 
-    List<UserDto> findAll();
-
-    List<UserDto> findActiveUsers();
-
     UserDto getUserByEmail(String email);
 
-    UserExistDto isEmailExists(String username);
-
-    void markUserAsPotentiallyScam(Long userId, boolean isScam);
-
     Set<GoodsDto> getFavoriteGoods(Authentication auth);
-
-    User update(User user);
 
 }
