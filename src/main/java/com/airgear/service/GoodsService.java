@@ -1,12 +1,13 @@
 package com.airgear.service;
 
-import com.airgear.dto.*;
+import com.airgear.dto.GoodsDto;
+import com.airgear.dto.TopGoodsPlacementDto;
 import com.airgear.model.Goods;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 public interface GoodsService {
@@ -18,8 +19,6 @@ public interface GoodsService {
     void deleteGoods(Goods goods);
 
     void deleteGoods(String username, Long goodsId);
-
-    Goods saveGoods(Goods goods);
 
     Goods updateGoods(Goods goods);
 
@@ -39,7 +38,7 @@ public interface GoodsService {
 
     Page<GoodsDto> getSimilarGoods(String categoryName, BigDecimal price);
 
-    GoodsDto createGoods(String username, GoodsDto goodsDto);
+    GoodsDto createGoods(String email, GoodsDto goodsDto);
 
     GoodsDto addToFavorites(String username, Long goodsId);
 

@@ -8,12 +8,7 @@ import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.RegionExceptions;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
-import com.airgear.model.User;
-import com.airgear.model.Category;
-import com.airgear.model.Goods;
-import com.airgear.model.TopGoodsPlacement;
-import com.airgear.model.GoodsStatus;
-import com.airgear.model.Location;
+import com.airgear.model.*;
 import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
 import lombok.RequiredArgsConstructor;
@@ -75,12 +70,6 @@ public class GoodsServiceImpl implements GoodsService {
             throw UserExceptions.AccessDenied("It is not your goods");
         }
         deleteGoods(goods);
-    }
-
-    @Override
-    public Goods saveGoods(@Valid Goods goods) {  // TODO to refactor this code
-        checkCategory(goods);
-        return goodsRepository.save(goods);
     }
 
     @Override

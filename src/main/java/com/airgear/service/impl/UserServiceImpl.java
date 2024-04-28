@@ -13,7 +13,6 @@ import com.airgear.model.UserStatus;
 import com.airgear.repository.UserRepository;
 import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -58,8 +57,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public Set<GoodsDto> getFavoriteGoods(Authentication auth) {
-        User user = getUser(auth.getName());
+    public Set<GoodsDto> getFavoriteGoods(String email) {
+        User user = getUser(email);
         return goodsMapper.toDtoSet(userRepository.getFavoriteGoodsByUser(user.getId()));
     }
 

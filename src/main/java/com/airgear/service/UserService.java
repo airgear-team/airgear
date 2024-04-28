@@ -16,6 +16,6 @@ public interface UserService {
 
     UserDto getUserByEmail(String email);
 
-    Set<GoodsDto> getFavoriteGoods(Authentication auth);
+    Set<GoodsDto> getFavoriteGoods(String email);
 
 }
