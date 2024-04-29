@@ -52,7 +52,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public FileSystemResource downloadImage(String email, Long goodsId, String imageId) {
+    public FileSystemResource downloadImageWithAuth(String email, Long goodsId, String imageId) {
         UserGetResponse user = getUser(email);
         String imagePath = DirectoryPathUtil.getBasePath() + "\\"+USER_DIR_NAME+"\\" + user.getId() + "\\"+GOODS_DIR_NAME+"\\" + goodsId + "\\" + imageId;
         log.info("image path : {}", imagePath);
@@ -61,6 +61,19 @@ public class ImageServiceImpl implements ImageService {
             return new FileSystemResource(file);
         } else {
             ImageExceptions.imageNotFound(user.getId(), goodsId, imageId);
+            return new FileSystemResource("");
+        }
+    }
+
+    @Override
+    public FileSystemResource downloadImage(Long userId, Long goodsId, String imageId) {
+        String imagePath = DirectoryPathUtil.getBasePath() + "\\"+USER_DIR_NAME+"\\" + userId + "\\"+GOODS_DIR_NAME+"\\" + goodsId + "\\" + imageId;
+        log.info("image path : {}", imagePath);
+        File file = new File(imagePath);
+        if (file.exists()) {
+            return new FileSystemResource(file);
+        } else {
+            ImageExceptions.imageNotFound(userId, goodsId, imageId);
             return new FileSystemResource("");
         }
     }
