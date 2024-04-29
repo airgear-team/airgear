@@ -29,8 +29,6 @@ public interface GoodsService {
 
     Page<GoodsSearchResponse> filterGoods(String categoryName, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
-    Page<GoodsSearchResponse> listGoodsByName(Pageable pageable, String goodsName);
-
     List<GoodsGetRandomResponse> getRandomGoods(String categoryName, int quantity);
 
     Page<GoodsSearchResponse> getSimilarGoods(String categoryName, BigDecimal price);
