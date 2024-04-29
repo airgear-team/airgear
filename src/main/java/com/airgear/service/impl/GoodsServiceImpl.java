@@ -104,11 +104,6 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<GoodsSearchResponse> listGoodsByName(Pageable pageable, String goodsName) {
-        return null;
-    }
-
-    @Override
     public List<GoodsGetRandomResponse> getRandomGoods(String categoryName, int quantity) {
         List<Goods> goods = getTopGoodsPlacements();
         List<Goods> randomGoods;
