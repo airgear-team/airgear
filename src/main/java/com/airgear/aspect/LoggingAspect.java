@@ -33,8 +33,8 @@ public class LoggingAspect {
 
     @After(value = "notificationPointcut()")
     public void executeLoggingAfter() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        HttpServletResponse response = attributes.getResponse();
+        HttpServletResponse response =
+                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
         logging.log(response);
     }
 }
