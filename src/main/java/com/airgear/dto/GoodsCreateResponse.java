@@ -27,5 +27,5 @@ public class GoodsCreateResponse {
     private GoodsCondition goodsCondition;
 
     private GoodsStatus status;
-    private List<GoodsImages> images;
+    private List<GoodsImagesResponse> images;
 }

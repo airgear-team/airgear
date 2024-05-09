@@ -1,6 +1,8 @@
 package com.airgear.controller;
 
+import com.airgear.dto.GoodsImagesResponse;
 import com.airgear.dto.ImagesSaveResponse;
+import com.airgear.mapper.GoodsImagesMapper;
 import com.airgear.model.GoodsImages;
 import com.airgear.service.ImageService;
 import lombok.AllArgsConstructor;
@@ -26,6 +28,7 @@ import java.util.List;
 public class ImageController {
 
     private final ImageService imageService;
+    private final GoodsImagesMapper goodsImagesMapper;
 
     @PostMapping("/images/{goodsId}")
     public ResponseEntity<ImagesSaveResponse> uploadImages(@AuthenticationPrincipal String email,
@@ -57,11 +60,10 @@ public class ImageController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-    @GetMapping("/images/goods/{goodsId}")
-    public ResponseEntity<List<GoodsImages>> getImagesByGoodsId(@PathVariable Long goodsId) {
+    @GetMapping("/goods/{goodsId}/images")
+    public ResponseEntity<List<GoodsImagesResponse>> getImagesByGoodsId(@PathVariable Long goodsId) {
         List<GoodsImages> imageIds = imageService.getImagesByGoodsId(goodsId);
-        return ResponseEntity.ok().body(imageIds);
+        return ResponseEntity.ok().body(goodsImagesMapper.toDtoList(imageIds));
     }
 
 }

@@ -70,24 +70,9 @@ public class ImageServiceImpl implements ImageService {
         return new ImagesSaveResponse(imageUrls);
     }
 
-
-    @Override
-    public FileSystemResource downloadImageWithAuth(String email, Long goodsId, String imageId) {
-        UserGetResponse user = getUser(email);
-        String imagePath = DirectoryPathUtil.getBasePath() + "\\"+USER_DIR_NAME+"\\" + user.getId() + "\\"+GOODS_DIR_NAME+"\\" + goodsId + "\\" + imageId;
-        log.info("image path : {}", imagePath);
-        File file = new File(imagePath);
-        if (file.exists()) {
-            return new FileSystemResource(file);
-        } else {
-            ImageExceptions.imageNotFound(user.getId(), goodsId, imageId);
-            return new FileSystemResource("");
-        }
-    }
-
     @Override
     public FileSystemResource downloadImage(Long userId, Long goodsId, String imageId) {
-        String imagePath = DirectoryPathUtil.getBasePath() + "\\"+USER_DIR_NAME+"\\" + userId + "\\"+GOODS_DIR_NAME+"\\" + goodsId + "\\" + imageId;
+        String imagePath = DirectoryPathUtil.getBasePath() + "\\" + USER_DIR_NAME + "\\" + userId + "\\" + GOODS_DIR_NAME + "\\" + goodsId + "\\" + imageId;
         log.info("image path : {}", imagePath);
         File file = new File(imagePath);
         if (file.exists()) {
@@ -123,17 +108,6 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-    private Path prepareTargetDirectory(Long userId, Long goodsId) throws IOException {
-        Path targetDir = BASE_DIR.resolve(USER_DIR_NAME)
-                .resolve(userId.toString())
-                .resolve(GOODS_DIR_NAME)
-                .resolve(goodsId.toString());
-        if (!Files.exists(targetDir)) {
-            Files.createDirectories(targetDir);
-        }
-        return targetDir;
-    }
-
     private String generateUniqueFileName(String originalFilename) {
         String extension = getExtension(originalFilename);
         return UUID.randomUUID() + (extension.isEmpty() ? "" : "." + extension);
@@ -146,16 +120,19 @@ public class ImageServiceImpl implements ImageService {
         }
         return "";
     }
+
     @Override
     public byte[] getImageBytesById(String imageId) throws IOException {
         String imagePath = BASE_DIR.resolve(imageId).toString();
         return Files.readAllBytes(Path.of(imagePath));
     }
+
     @Override
     public List<GoodsImages> getImagesByGoodsId(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> GoodsExceptions.goodsNotFound(goodsId));
         return goods.getImages();
     }
+
     @Override
     public MediaType getImageMediaType(String fileName) {
         String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
