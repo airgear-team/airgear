@@ -1,15 +1,23 @@
 package com.airgear.controller;
 
 import com.airgear.dto.ImagesSaveResponse;
+import com.airgear.model.GoodsImages;
 import com.airgear.service.ImageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -38,12 +46,22 @@ public class ImageController {
     //todo переробоити бд та логіку отримання фото.
     // Отримання фото відбувається без авторизації
     @GetMapping("/images/{imageId}")
-    public ResponseEntity<String> downloadImagesByImageId(@PathVariable("goodsId") Long goodsId,
-                                                                      @PathVariable("imageId") String imageId) {
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body("OK");
-                //.body(imageService.downloadImage(email, goodsId, imageId));
+    public ResponseEntity<byte[]> getImagesByImageId(@PathVariable("imageId") String imageId) {
+        try {
+            byte[] imageBytes = imageService.getImageBytesById(imageId);
+            MediaType mediaType = imageService.getImageMediaType(imageId);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(mediaType);
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/images/goods/{goodsId}")
+    public ResponseEntity<List<GoodsImages>> getImagesByGoodsId(@PathVariable Long goodsId) {
+        List<GoodsImages> imageIds = imageService.getImagesByGoodsId(goodsId);
+        return ResponseEntity.ok().body(imageIds);
     }
 
 }
