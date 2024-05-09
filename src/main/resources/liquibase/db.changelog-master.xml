@@ -969,22 +969,17 @@
 
     <changeSet id="createGoodsImagesTable" author="Opanasenko-Mykhailo">
         <createTable tableName="goods_images">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="image_url" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="goods_id" type="BIGINT">
-                <constraints nullable="false"/>
             </column>
         </createTable>
         <addForeignKeyConstraint baseTableName="goods_images" baseColumnNames="goods_id"
                                  constraintName="fk_goods_images_goods_id"
                                  referencedTableName="goods" referencedColumnNames="id"/>
     </changeSet>
-
-
-
-
 </databaseChangeLog>
