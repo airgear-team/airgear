@@ -1,11 +1,14 @@
 package com.airgear.dto;
 
 import com.airgear.model.GoodsCondition;
+import com.airgear.model.GoodsImages;
 import com.airgear.model.GoodsStatus;
 import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.Valid;
+import java.util.List;
+
 @Data
 @Builder
 public class GoodsCreateResponse {
@@ -24,4 +27,5 @@ public class GoodsCreateResponse {
     private GoodsCondition goodsCondition;
 
     private GoodsStatus status;
+    private List<GoodsImagesResponse> images;
 }

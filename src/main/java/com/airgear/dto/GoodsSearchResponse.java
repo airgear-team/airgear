@@ -5,6 +5,8 @@ import com.airgear.model.GoodsStatus;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class GoodsSearchResponse {
@@ -20,6 +22,6 @@ public class GoodsSearchResponse {
     private String phoneNumber;
     private UserGetResponse user;
     private GoodsCondition goodsCondition;
-
     private GoodsStatus status;
+    private List<GoodsImagesResponse> images;
 }
