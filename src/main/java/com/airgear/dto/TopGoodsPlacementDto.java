@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 public class TopGoodsPlacementDto {
     private Long id;
     private Long userId;
-    private GoodsDto goods;
+    private GoodsGetResponse goods;
     private OffsetDateTime startAt;
     private OffsetDateTime endAt;
 
