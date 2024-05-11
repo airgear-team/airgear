@@ -6,6 +6,13 @@ import com.airgear.exception.LocationException;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.model.*;
+import com.airgear.mapper.TopGoodsPlacementMapper;
+import com.airgear.model.User;
+import com.airgear.model.Category;
+import com.airgear.model.Goods;
+import com.airgear.model.TopGoodsPlacement;
+import com.airgear.model.GoodsStatus;
+import com.airgear.model.Location;
 import com.airgear.repository.*;
 import com.airgear.service.GoodsService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +36,10 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
+    private final RegionsRepository regionsRepository;
     private final GoodsMapper goodsMapper;
     private final TopGoodsPlacementRepository topGoodsPlacementRepository;
+    private final TopGoodsPlacementMapper topGoodsPlacementMapper;
 
     private static final int SIMILAR_GOODS_LIMIT = 12;
     private static final BigDecimal PRICE_VARIATION_PERCENTAGE = new BigDecimal("0.15");
@@ -206,8 +215,8 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public TopGoodsPlacementDto addTopGoodsPlacements(TopGoodsPlacementDto topGoodsPlacementDto) {
-        TopGoodsPlacement topGoodsPlacement = topGoodsPlacementDto.toModel();
-        Goods goods = goodsMapper.toModel(getGoodsById(topGoodsPlacement.getGoods().getId()));
+        TopGoodsPlacement topGoodsPlacement = topGoodsPlacementMapper.toModel(topGoodsPlacementDto);
+        Goods goods = goodsRepository.findById(topGoodsPlacement.getGoods().getId()).orElse(null);
         Optional<User> userOptional = userRepository.findById(topGoodsPlacement.getUserId());
         if (userOptional.isEmpty()) {
             throw userNotFound(topGoodsPlacement.getUserId());
@@ -218,7 +227,7 @@ public class GoodsServiceImpl implements GoodsService {
         if (!topGoodsPlacement.getUserId().equals(goods.getUser().getId()) && !userOptional.get().getRoles().contains(Role.ADMIN)) {
             throw UserExceptions.AccessDenied("It is not your goods");
         }
-        return TopGoodsPlacementDto.toDto(topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
+        return topGoodsPlacementMapper.toDto(topGoodsPlacementRepository.save(TopGoodsPlacement.builder()
                 .userId(topGoodsPlacement.getUserId())
                 .goods(goods)
                 .startAt(topGoodsPlacement.getStartAt())
