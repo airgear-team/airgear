@@ -1,18 +1,18 @@
 package com.airgear.service;
 
-import com.airgear.dto.UserReviewDto;
+import com.airgear.dto.*;
 import com.airgear.model.User;
 
 import java.util.List;
 
 public interface UserReviewService {
 
-    UserReviewDto createReview(UserReviewDto userReviewDto);
+    UserReviewCreateResponse createReview(UserReviewCreateRequest userReviewDto);
 
-    void updateReview(UserReviewDto userReview);
+    UserReviewUpdateResponse updateReview(UserReviewUpdateRequest userReview);
 
-    void deleteReview(UserReviewDto userReview);
+    void deleteReview(UserReviewGetRequest userReview);
 
-    List<UserReviewDto> getReviewsForUser(User user);
+    List<UserReviewGetResponse> getReviewsForUser(User user);
 
 }

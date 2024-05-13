@@ -1,6 +1,6 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.RentalCardDto;
+import com.airgear.dto.RentalCardResponse;
 import com.airgear.model.RentalCard;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -8,8 +8,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface RentalCardMapper {
 
-    @Mapping(target = "lessor.email", source = "lessorUsername")
-    @Mapping(target = "renter.email", source = "renterUsername")
-    @Mapping(target = "goods.id", source = "goodsId")
-    RentalCard toModel(RentalCardDto rentalCardDto);
+    @Mapping(target = "lessor", source = "lessor.email")
+    @Mapping(target = "renter", source = "renter.email")
+    @Mapping(target = "goods", source = "goods.name")
+    @Mapping(target = "price", source = "rentalPrice")
+    RentalCardResponse toDto(RentalCard rentalCard);
+
 }

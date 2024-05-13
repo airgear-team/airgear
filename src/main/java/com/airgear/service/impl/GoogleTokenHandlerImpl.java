@@ -1,7 +1,7 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.SaveUserRequestDto;
-import com.airgear.dto.TokenResponseDTO;
+import com.airgear.dto.UserSaveRequest;
+import com.airgear.dto.TokenResponse;
 import com.airgear.service.GoogleTokenHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,19 +31,19 @@ public class GoogleTokenHandlerImpl implements GoogleTokenHandler {
     private final ObjectMapper objectMapper;
 
     @Override
-    public SaveUserRequestDto execute(String token) {
+    public UserSaveRequest execute(String token) {
         String tokenUrl = thirdPartyUrl + token;
 
-        TokenResponseDTO tokenResponse = getTokenResponse(tokenUrl);
+        TokenResponse tokenResponse = getTokenResponse(tokenUrl);
 
-        return new SaveUserRequestDto(
+        return new UserSaveRequest(
                 tokenResponse.getSub(),
                 defaultPassword,
                 null,
                 tokenResponse.getName());
     }
 
-    private TokenResponseDTO getTokenResponse(String validationUrl) {
+    private TokenResponse getTokenResponse(String validationUrl) {
         HttpURLConnection connection = getHttpURLConnection(validationUrl);
         StringBuilder response = readFromConnection(connection);
         String tokenInfo = response.toString();
@@ -51,9 +51,9 @@ public class GoogleTokenHandlerImpl implements GoogleTokenHandler {
         return parseTokenInfo(tokenInfo);
     }
 
-    private TokenResponseDTO parseTokenInfo(String tokenInfo) {
+    private TokenResponse parseTokenInfo(String tokenInfo) {
         try {
-            return objectMapper.readValue(tokenInfo, TokenResponseDTO.class);
+            return objectMapper.readValue(tokenInfo, TokenResponse.class);
         } catch (JsonProcessingException e) {
             log.error("JsonProcessingException in 'getTokenRequest(String tokenInfo)' method.");
             throw new RuntimeException(e);

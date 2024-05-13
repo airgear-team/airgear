@@ -951,5 +951,35 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="add_new_fields_to_location_table" author="Opanasenko-Mykhailo">
+        <addColumn tableName="location">
+            <column name="unique_settlement_id" type="INT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="settlement_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="addImageIdsToGoodsTable" author="Opanasenko-Mykhailo">
+        <addColumn tableName="goods">
+            <column name="image_ids" type="TEXT"/>
+        </addColumn>
+    </changeSet>
 
+    <changeSet id="createGoodsImagesTable" author="Opanasenko-Mykhailo">
+        <createTable tableName="goods_images">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="image_url" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="goods_id" type="BIGINT">
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="goods_images" baseColumnNames="goods_id"
+                                 constraintName="fk_goods_images_goods_id"
+                                 referencedTableName="goods" referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>

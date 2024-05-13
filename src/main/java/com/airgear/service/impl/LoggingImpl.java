@@ -28,23 +28,25 @@ public class LoggingImpl implements Logging {
     }
 
     private String buildRequestMessage(HttpServletRequest request) {
-        String nickname = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (nickname.equals("anonymousUser")) nickname = "unauthorized request";
         String path = request.getServletPath();
         String httpMethod = request.getMethod();
 
         return String.format("""
                 Request: nickname - '%s', path - '%s', httpMethod - '%s'.
-                """, nickname, path, httpMethod);
+                """, getNickname(), path, httpMethod);
     }
 
     private String buildResponseMessage(HttpServletResponse response) {
-        String nickname = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (nickname.equals("anonymousUser")) nickname = "unauthorized request";
         String httpResponseCode = HttpStatus.valueOf(response.getStatus()).toString();
 
         return String.format("""
                 Response: nickname - '%s', httpResponseCode - '%s'.
-                """, nickname, httpResponseCode);
+                """, getNickname(), httpResponseCode);
+    }
+
+    private String getNickname() {
+        String nickname = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (nickname.equals("anonymousUser")) nickname = "unauthorized request";
+        return nickname;
     }
 }

@@ -12,4 +12,5 @@ public class GoodsExceptions {
     public static ResponseStatusException goodsLimitExceeded(long categoryId) {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Goods limit exceeded for category with id '" + categoryId + "'");
     }
+
 }

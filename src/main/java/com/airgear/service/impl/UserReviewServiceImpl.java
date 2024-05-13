@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.UserReviewDto;
+import com.airgear.dto.*;
 import com.airgear.exception.UserExceptions;
 import com.airgear.exception.UserReviewExceptions;
 import com.airgear.mapper.UserReviewMapper;
@@ -23,7 +23,8 @@ public class UserReviewServiceImpl implements UserReviewService {
     private final UserRepository userRepository;
     private final UserReviewMapper userReviewMapper;
 
-    public UserReviewDto createReview(UserReviewDto userReviewDto) {
+    @Override
+    public UserReviewCreateResponse createReview(UserReviewCreateRequest userReviewDto) {
         if (userReviewDto.getReviewed().getId().equals(userReviewDto.getReviewer().getId())){
             throw UserReviewExceptions.reviewerNotReviewed(userReviewDto.getReviewer().getId());
         }
@@ -50,20 +51,24 @@ public class UserReviewServiceImpl implements UserReviewService {
         reviewedUser.setRating(averageRating);
         userRepository.save(reviewedUser);
 
-        return userReviewMapper.toDto(userReview);
-    }
-    public void updateReview(UserReviewDto userReview) {
-        userReviewRepository.save(userReviewMapper.toModel(userReview));
+        return userReviewMapper.toCreateResponse(userReview);
     }
 
-    public void deleteReview(UserReviewDto userReview) {
+    @Override
+    public UserReviewUpdateResponse updateReview(UserReviewUpdateRequest userReview) {
+        return userReviewMapper.toUpdateResponse(userReviewRepository.save(userReviewMapper.toModel(userReview)));
+    }
+
+    @Override
+    public void deleteReview(UserReviewGetRequest userReview) {
         userReviewRepository.delete(userReviewMapper.toModel(userReview));
     }
 
-    public List<UserReviewDto> getReviewsForUser(User user) {
+    @Override
+    public List<UserReviewGetResponse> getReviewsForUser(User user) {
         return userReviewRepository.findByReviewedUser(user)
                 .stream()
-                .map(userReviewMapper::toDto)
+                .map(userReviewMapper::toGetResponse)
                 .collect(Collectors.toList());
     }
 

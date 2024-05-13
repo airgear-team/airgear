@@ -4,7 +4,7 @@ package com.airgear.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class RentalExceptions extends RuntimeException{
+public class RentalExceptions {
 
     public static ResponseStatusException badPeriod() {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Don't fill duration or last day in rental card!");

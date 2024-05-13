@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface LocationRepository extends JpaRepository<Location, Long> {
     Location findBySettlement(String settlement);
 
-    Location findBySettlementAndRegionId(String settlement, Long regionId);
+    Location findByUniqueSettlementID(Integer uniqueSettlementID);
 }

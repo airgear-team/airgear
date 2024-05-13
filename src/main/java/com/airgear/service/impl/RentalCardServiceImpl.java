@@ -1,17 +1,17 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.CalendarDay;
-import com.airgear.dto.RentalCardDto;
-import com.airgear.dto.DayTime;
-import com.airgear.exception.RentalExceptions;
+import com.airgear.dto.*;
+import com.airgear.exception.GoodsExceptions;
+import com.airgear.exception.RentalCardExceptions;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.RentalCardMapper;
+import com.airgear.model.Goods;
 import com.airgear.model.RentalCard;
 import com.airgear.model.User;
+import com.airgear.repository.GoodsRepository;
 import com.airgear.repository.RentalCardRepository;
 import com.airgear.repository.UserRepository;
-import com.airgear.service.GoodsService;
 import com.airgear.service.RentalCardService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,113 +20,111 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Service
 @Transactional
-@AllArgsConstructor
 public class RentalCardServiceImpl implements RentalCardService {
 
     private final RentalCardRepository rentalCardRepository;
     private final UserRepository userRepository;
-    private final GoodsService goodsService;
+    private final GoodsRepository goodsRepository;
     private final RentalCardMapper rentalCardMapper;
     private final GoodsMapper goodsMapper;
 
     @Override
-    public RentalCard getRentalCardById(Long id) {
-        return rentalCardRepository.getReferenceById(id);
+    public RentalCardResponse create(RentalCardSaveRequest request) {
+        return rentalCardMapper.toDto(save(request));
     }
 
     @Override
-    public void deleteRentalCard(RentalCard rentalCard) {
-        rentalCard.setDeletedAt(OffsetDateTime.now());
-        rentalCardRepository.save(rentalCard);
-    }
+    @Transactional(readOnly = true)
+    public List<CalendarDayResponse> getCalendarForGoods(long goodsId, OffsetDateTime fromDate, OffsetDateTime toDate) {
+        List<RentalCard> list = rentalCardRepository.findRentalCardsByPeriod(goodsId, fromDate, toDate);
+        Map<LocalDate, Set<DayTimeResponse>> map = new HashMap<>();
 
-    @Override
-    public RentalCard saveRentalCard(RentalCardDto rentalCardDto) {
-        RentalCard rentalCard = rentalCardMapper.toModel(rentalCardDto);
-        rentalCard.setRenter(getUser(rentalCardDto.getRenterUsername()));
-        rentalCard.setLessor(getUser(rentalCardDto.getLessorUsername()));
-        rentalCard.setGoods(goodsMapper.toModel(goodsService.getGoodsById(rentalCardDto.getGoodsId())));
-        rentalCard.setCreatedAt(OffsetDateTime.now());
-        checkDays(rentalCard);
-        return rentalCardRepository.save(rentalCard);
-    }
-
-    @Override
-    public RentalCard updateRentalCard(RentalCardDto rentalCardDto) {
-        return saveRentalCard(rentalCardDto);
-    }
-    private void checkDays(RentalCard rentalCard){
-        if(rentalCard.getDuration()==null&&rentalCard.getLastDate()==null){
-            throw RentalExceptions.badPeriod();
+        LocalDate date = fromDate.toLocalDate();
+        while (!date.isAfter(toDate.toLocalDate())) {
+            map.put(date, new TreeSet<>(Comparator.comparing(DayTimeResponse::getTimeFrom)));
+            date = date.plusDays(1);
         }
-        else if(rentalCard.getDuration()==null){
-            rentalCard.setDuration(ChronoUnit.DAYS);
-        }
-        else{
-            rentalCard.setLastDate(rentalCard.getFirstDate().plus(rentalCard.getQuantity(), rentalCard.getDuration()));
-        }
-    }
 
-    @Override
-    public List<CalendarDay> getCalendarForGoods(Long goodsId, OffsetDateTime fromDate, OffsetDateTime toDate){
-        List<RentalCard> list =rentalCardRepository.findRentalCardsByPeriod(goodsId,fromDate, toDate);
-        Map<LocalDate, Set<DayTime>> map = fromDate.toLocalDate()
-                .datesUntil(toDate.toLocalDate())
-                .collect(Collectors.toMap(x->x, x->new TreeSet<>(Comparator.comparing(DayTime::getTimeFrom))));
+        for (RentalCard card : list) {
+            LocalDate firstDate = card.getFirstDate().toLocalDate();
+            LocalDate lastDate = card.getLastDate().toLocalDate();
 
-        for (Map.Entry<LocalDate, Set<DayTime>> entry : map.entrySet()) {
-            for (RentalCard card:list) {
-                if((card.getFirstDate().toLocalDate().isBefore(entry.getKey())||card.getFirstDate().toLocalDate().isEqual(entry.getKey()))
-                        && (card.getLastDate().toLocalDate().isAfter(entry.getKey())||card.getLastDate().toLocalDate().isEqual(entry.getKey()))){
-                    if(card.getDuration()== ChronoUnit.HOURS){
-                        entry.getValue().add(new DayTime(card.getFirstDate().toLocalTime(), card.getLastDate().toLocalTime(), false));
-                    }
-                    else{
-                        entry.getValue().add(new DayTime(LocalTime.MIN, LocalTime.MAX, false));
-                    }
+            for (LocalDate rentalDate = firstDate; !rentalDate.isAfter(lastDate); rentalDate = rentalDate.plusDays(1)) {
+                Set<DayTimeResponse> dayTimeResponseSet = map.get(rentalDate);
+                if (dayTimeResponseSet != null) {
+                    LocalTime startTime = rentalDate.equals(fromDate.toLocalDate()) ? fromDate.toLocalTime() : LocalTime.MIN;
+                    LocalTime endTime = rentalDate.equals(toDate.toLocalDate()) ? toDate.toLocalTime() : LocalTime.MAX;
+                    dayTimeResponseSet.add(new DayTimeResponse(startTime, endTime, false));
                 }
             }
         }
-        List<CalendarDay> listCalendar =new ArrayList<>();
-        for (Map.Entry<LocalDate, Set<DayTime>> entry : map.entrySet()) {
-            boolean isEmpty = entry.getValue().isEmpty();
-            listCalendar.add(new CalendarDay(entry.getKey(),isEmpty, goodsId, isEmpty?null:getDayTime(fromDate, toDate, entry)));
-        }
-        return listCalendar.stream().sorted(Comparator.comparing(CalendarDay::getDate)).collect(Collectors.toList());
+
+        return map.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> new CalendarDayResponse(entry.getKey(), entry.getValue().isEmpty(), goodsId,
+                        entry.getValue().isEmpty() ? null : entry.getValue()))
+                .collect(Collectors.toList());
     }
 
-    private Set<DayTime> getDayTime(OffsetDateTime fromDate, OffsetDateTime toDate, Map.Entry<LocalDate, Set<DayTime>> entry) {
-        Set<DayTime> setTime =new TreeSet<>(Comparator.comparing(DayTime::getTimeFrom));
-        LocalTime localTimeStart = fromDate.toLocalDate().isEqual(entry.getKey()) ? fromDate.toLocalTime() : LocalTime.MIN;
-        LocalTime localTimeEnd = toDate.toLocalDate().isEqual(entry.getKey()) ? toDate.toLocalTime() : LocalTime.MAX;
-        for (DayTime el : entry.getValue()) {
-            if(el.getTimeFrom().equals(LocalTime.MIN)&&el.getTimeTo().equals(LocalTime.MAX)){
-                return null;
-            }
-            else if (el.getTimeFrom().isBefore(localTimeStart)||el.getTimeFrom().equals(localTimeStart)){
-                setTime.add(new DayTime(localTimeStart, el.getTimeTo().isBefore(localTimeEnd)?el.getTimeTo():localTimeEnd, false));
-                localTimeStart= el.getTimeTo().isBefore(localTimeEnd)?el.getTimeTo():localTimeEnd;
-            }
-            else if(el.getTimeFrom().isBefore(localTimeEnd)) {
-                setTime.add(new DayTime(localTimeStart, el.getTimeFrom().isBefore(localTimeEnd)?el.getTimeFrom():localTimeEnd, true));
-                setTime.add(new DayTime(el.getTimeFrom(), el.getTimeTo().isBefore(localTimeEnd)?el.getTimeTo():localTimeEnd, false));
-                localTimeStart= el.getTimeTo().isBefore(localTimeEnd)?el.getTimeTo():localTimeEnd;
-            }
-        }
-        if (localTimeStart.isBefore(localTimeEnd)) {
-            setTime.add(new DayTime(localTimeStart, localTimeEnd, true));
-        }
-        return setTime;
+    @Override
+    @Transactional(readOnly = true)
+    public RentalCardResponse getById(long id) {
+        return rentalCardMapper.toDto(getRentalCard(id));
     }
 
-    private User getUser(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> UserExceptions.userNotFound(email));
+    @Override
+    public RentalCardResponse changeDurationById(long id, RentalCardChangeDurationRequest request) {
+        RentalCard rentalCard = getRentalCard(id);
+        return rentalCardMapper.toDto(changeDuration(rentalCard, request));
+    }
+
+    @Override
+    public void deleteById(long id) {
+        RentalCard rentalCard = getRentalCard(id);
+        rentalCard.setDeletedAt(OffsetDateTime.now());
+    }
+
+    private RentalCard save(RentalCardSaveRequest request) {
+        RentalCard rentalCard = new RentalCard();
+        rentalCard.setCreatedAt(OffsetDateTime.now());
+        rentalCard.setLessor(getUser(request.getLessorId()));
+        rentalCard.setRenter(getUser(request.getRenterId()));
+        rentalCard.setFirstDate(request.getFirstDate());
+        rentalCard.setLastDate(request.getLastDate());
+        rentalCard.setDuration(request.getDuration());
+        rentalCard.setQuantity(request.getQuantity());
+        rentalCard.setGoods(getGoods(request.getGoodsId()));
+        rentalCard.setRentalPrice(request.getPrice());
+        rentalCard.setFine(request.getFine());
+        rentalCard.setDescription(request.getDescription());
+        return rentalCardRepository.save(rentalCard);
+    }
+
+    private User getUser(long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> UserExceptions.userNotFound(id));
+    }
+
+    private Goods getGoods(long id) {
+        return goodsRepository.findById(id)
+                .orElseThrow(() -> GoodsExceptions.goodsNotFound(id));
+    }
+
+    public RentalCard changeDuration(RentalCard rentalCard, RentalCardChangeDurationRequest request) {
+        rentalCard.setFirstDate(request.getFirstDate());
+        rentalCard.setLastDate(request.getLastDate());
+        rentalCard.setDuration(request.getDuration());
+        return rentalCard;
+    }
+
+    private RentalCard getRentalCard(long id) {
+        return rentalCardRepository.findById(id)
+                .orElseThrow(() -> RentalCardExceptions.rentalCardNotFound(id));
     }
 }

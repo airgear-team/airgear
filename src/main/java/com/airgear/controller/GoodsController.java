@@ -1,23 +1,26 @@
 package com.airgear.controller;
 
 import com.airgear.dto.*;
-import com.airgear.service.*;
 import com.airgear.service.ComplaintService;
 import com.airgear.service.GoodsService;
+import com.airgear.service.RentalAgreementService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -30,85 +33,88 @@ public class GoodsController {
     private final ComplaintService complaintService;
     private final RentalAgreementService rentalAgreementService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
+    @GetMapping
+    @PageableAsQueryParam
+    public Page<GoodsGetResponse> listGoods(@Parameter(hidden = true) Pageable pageable) {
+        return goodsService.getAllGoods(pageable);
+    }
+
     @PostMapping
-    public ResponseEntity<GoodsDto> createGoods(Authentication auth, @Valid @RequestBody GoodsDto goods) {
-        return ResponseEntity.ok(goodsService.createGoods(auth.getName(), goods));
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<GoodsCreateResponse> createGoods(@AuthenticationPrincipal String email,
+                                                           @RequestBody @Valid GoodsCreateRequest request,
+                                                           UriComponentsBuilder ucb) {
+        GoodsCreateResponse response = goodsService.createGoods(email, request);
+        return ResponseEntity
+                .created(ucb.path("/goods/{id}").build(response.getId()))
+                .body(response);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/{goodsId}")
-    public ResponseEntity<GoodsDto> getGoodsById(HttpServletRequest request, Authentication auth,
-                                                 @PathVariable Long goodsId) {
-        return ResponseEntity.ok(goodsService.getGoodsById(request.getRemoteAddr(), auth.getName(), goodsId));
+    public GoodsGetResponse getGoodsById(HttpServletRequest request,
+                                         @AuthenticationPrincipal String email,
+                                         @PathVariable Long goodsId) {
+        return goodsService.getGoodsById(request.getRemoteAddr(), email, goodsId);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PutMapping("/{goodsId}")
-    public ResponseEntity<GoodsDto> updateGoods(
-                                                Authentication auth,
-                                                @PathVariable Long goodsId,
-                                                @Valid @RequestBody GoodsDto updatedGoods) {
-        return ResponseEntity.ok(goodsService.updateGoods(auth.getName(), goodsId, updatedGoods));
+    public GoodsUpdateResponse updateGoods(@AuthenticationPrincipal String email,
+                                           @PathVariable Long goodsId,
+                                           @RequestBody @Valid GoodsUpdateRequest request) {
+        return goodsService.updateGoods(email, goodsId, request);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @DeleteMapping("/{goodsId}")
-    public ResponseEntity<String> deleteGoods(Authentication auth, @PathVariable Long goodsId) {
-        goodsService.deleteGoods(auth.getName(), goodsId);
+    public ResponseEntity<String> deleteGoods(@AuthenticationPrincipal String email,
+                                              @PathVariable Long goodsId) {
+        goodsService.deleteGoods(email, goodsId);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping("addToFavorites/{goodsId}")
-    public ResponseEntity<GoodsDto> addToFavorites(Authentication auth, @PathVariable Long goodsId) {
-        return ResponseEntity.ok(goodsService.addToFavorites(auth.getName(), goodsId));
+    @PostMapping("/{goodsId}/favorite")
+    public GoodsGetResponse addToFavorites(@AuthenticationPrincipal String email,
+                                           @PathVariable Long goodsId) {
+        return goodsService.addToFavorites(email, goodsId);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping("/download/rental/{goodsId}")
+    @PostMapping("/{goodsId}/agreement")
     public ResponseEntity<FileSystemResource> download(@PathVariable Long goodsId,
-                                                       @Valid @RequestBody RentalAgreementDto rental){
-         return rentalAgreementService.generateRentalAgreementResponse(rental, goodsId);
+                                                       @RequestBody @Valid RentalAgreementRequest request) {
+        return rentalAgreementService.generateRentalAgreementResponse(request, goodsId);
 
     }
 
-    @GetMapping("/random-goods")
-    public List<GoodsDto> getRandomGoods(
+    @PostMapping("/{goodsId}/complaint")
+    public ResponseEntity<ComplaintCreateResponse> addComplaint(@AuthenticationPrincipal String email,
+                                                                @PathVariable Long goodsId,
+                                                                @RequestBody @Valid ComplaintCreateRequest request) {
+        return ResponseEntity.ok(complaintService.save(email, goodsId, request));
+    }
+
+    @PostMapping("/top")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<TopGoodsPlacementDto> addTopGoodsPlacements(@RequestBody @Valid TopGoodsPlacementDto request) {
+        return ResponseEntity.ok(goodsService.addTopGoodsPlacements(request));
+    }
+
+    @GetMapping("/random")
+    public List<GoodsGetRandomResponse> getRandomGoods(
             @RequestParam(required = false, name = "category") String categoryName,
             @RequestParam(required = false, name = "quantity", defaultValue = "12") int quantity) {
         return goodsService.getRandomGoods(categoryName, quantity);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/similar-goods")
-    public Page<GoodsDto> getSimilarGoods(
-            @RequestParam(required = false, name = "category") String categoryName,
-            @RequestParam(name = "price") BigDecimal price) {
+    @GetMapping("/similar")
+    public Page<GoodsSearchResponse> getSimilarGoods(@RequestParam(required = false, name = "category") String categoryName,
+                                                     @RequestParam(name = "price") BigDecimal price) {
         return goodsService.getSimilarGoods(categoryName, price);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @GetMapping("/filter")
-    public Page<GoodsDto> filterGoods(
-            @RequestParam(name = "category", required = false) String categoryName,
-            @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
-            @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
-            Pageable pageable) {
+    public Page<GoodsSearchResponse> filterGoods(@RequestParam(name = "category", required = false) String categoryName,
+                                                 @RequestParam(name = "min_price", required = false) BigDecimal minPrice,
+                                                 @RequestParam(name = "max_price", required = false) BigDecimal maxPrice,
+                                                 Pageable pageable) {
         return goodsService.filterGoods(categoryName, minPrice, maxPrice, pageable);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping("/{goodsId}/complaint")
-    public ResponseEntity<ComplaintDto> addComplaint (Authentication auth,
-                                                      @PathVariable Long goodsId,
-                                                      @Valid @RequestBody ComplaintDto complaint) {
-        return ResponseEntity.ok(complaintService.save(auth.getName(), goodsId, complaint));
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PostMapping("/addTopPlacements")
-    public ResponseEntity<TopGoodsPlacementDto> addTopGoodsPlacements(@Valid @RequestBody TopGoodsPlacementDto topGoodsPlacementDto) {
-        return ResponseEntity.ok(goodsService.addTopGoodsPlacements(topGoodsPlacementDto));
     }
 }

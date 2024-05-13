@@ -1,6 +1,6 @@
 package com.airgear.mapper;
 
-import com.airgear.dto.UserDto;
+import com.airgear.dto.UserGetResponse;
 import com.airgear.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,12 +12,12 @@ import java.util.List;
 public interface UserMapper {
 
     @Mapping(target = "goods", ignore = true)
-    UserDto toDto(User user);
+    UserGetResponse toDto(User user);
 
     @Mapping(target = "goods", ignore = true)
-    User toModel(UserDto dto);
+    User toModel(UserGetResponse dto);
 
-    List<UserDto> toDtoList(List<User> users);
+    List<UserGetResponse> toDtoList(List<User> users);
 
-    List<User> toModelList(List<UserDto> dtos);
+    List<User> toModelList(List<UserGetResponse> dtos);
 }

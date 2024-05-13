@@ -1,19 +1,16 @@
 package com.airgear.controller;
 
-import com.airgear.dto.CalendarDay;
-import com.airgear.dto.RentalCardDto;
-import com.airgear.dto.UserDto;
-import com.airgear.exception.UserExceptions;
-import com.airgear.model.RentalCard;
-import com.airgear.model.Role;
+import com.airgear.dto.CalendarDayResponse;
+import com.airgear.dto.RentalCardChangeDurationRequest;
+import com.airgear.dto.RentalCardResponse;
+import com.airgear.dto.RentalCardSaveRequest;
 import com.airgear.service.RentalCardService;
-import com.airgear.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.time.OffsetDateTime;
@@ -25,57 +22,39 @@ import java.util.List;
 public class RentalCardController {
 
     private final RentalCardService rentalCardService;
-    private final UserService userService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @RequestMapping(value = "/{rentalCardId}", method = RequestMethod.GET)
-    public RentalCard getRentalCardById(@PathVariable Long rentalCardId) {
-        return rentalCardService.getRentalCardById(rentalCardId);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
-    public RentalCard createRentalCard(@RequestBody RentalCardDto rentalCardDto) {
-        return rentalCardService.saveRentalCard(rentalCardDto);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<RentalCardResponse> create(@RequestBody @Valid RentalCardSaveRequest request,
+                                                     UriComponentsBuilder ucb) {
+        RentalCardResponse response = rentalCardService.create(request);
+        return ResponseEntity
+                .created(ucb.path("/rental/{id}").build(response.getId()))
+                .body(response);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @PutMapping("/{rentalCardId}")
-    public ResponseEntity<RentalCardDto> updateRentalCard(
-            Authentication auth,
-            @PathVariable Long rentalCardId,
-            @Valid @RequestBody RentalCardDto updatedRentalCard) {
-        UserDto user = userService.getUserByEmail(auth.getName());
-        RentalCard existingRentalCard = rentalCardService.getRentalCardById(rentalCardId);
-        if (!(user.getId().equals(existingRentalCard.getRenter().getId())
-                ||user.getId().equals(existingRentalCard.getLessor().getId())
-                || user.getRoles().stream().anyMatch(role->role== Role.ADMIN))){
-            throw UserExceptions.AccessDenied("It is not your rental card");
-        }
-        return ResponseEntity.ok(updatedRentalCard);
+    @GetMapping("/{goodsId}/calendar")
+    public List<CalendarDayResponse> getCalendarForGoods(
+            @PathVariable long goodsId,
+            @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
+            @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate) {
+        return rentalCardService.getCalendarForGoods(goodsId, fromDate, toDate);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @DeleteMapping("/{rentalCardId}")
-    public ResponseEntity<String> deleteRentalCard(Authentication auth, @PathVariable Long rentalCardId){
-        UserDto user = userService.getUserByEmail(auth.getName());
-        RentalCard existingRentalCard = rentalCardService.getRentalCardById(rentalCardId);
-        if (!(user.getId().equals(existingRentalCard.getRenter().getId())
-                ||user.getId().equals(existingRentalCard.getLessor().getId())
-                || user.getRoles().stream().anyMatch(role->role== Role.ADMIN))){
-            throw UserExceptions.AccessDenied("It is not your rental card");
-        }
-        rentalCardService.deleteRentalCard(existingRentalCard);
-        return ResponseEntity.noContent().build();
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public RentalCardResponse getById(@PathVariable long id) {
+        return rentalCardService.getById(id);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
-    @GetMapping("/calendar/{goodsId}")
-    public ResponseEntity<List<CalendarDay>> getCalendarForGoods(@PathVariable Long goodsId,
-                                                                 @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fromDate,
-                                                                 @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime toDate
-    ){
-        List<CalendarDay> list = rentalCardService.getCalendarForGoods(goodsId,fromDate,toDate);
-        return ResponseEntity.ok(list);
+    @PatchMapping("/{id}")
+    public RentalCardResponse changeDurationById(@PathVariable Long id,
+                                                 @RequestBody @Valid RentalCardChangeDurationRequest request) {
+        return rentalCardService.changeDurationById(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable long id) {
+        rentalCardService.deleteById(id);
     }
 }

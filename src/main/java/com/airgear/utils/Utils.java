@@ -1,7 +1,7 @@
 package com.airgear.utils;
 
 import com.airgear.controller.GoodsController;
-import com.airgear.dto.RentalAgreementDto;
+import com.airgear.dto.RentalAgreementRequest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Utils {
 
-    public static File getAgreement(RentalAgreementDto agreement) throws IOException {
+    public static File getAgreement(RentalAgreementRequest agreement) throws IOException {
         ClassLoader classLoader = GoodsController.class.getClassLoader();
         File fileTemplate = new File(classLoader.getResource("forms/rentalAgreementTemplate.html").getFile());
         Document doc = Jsoup.parse(fileTemplate,null);

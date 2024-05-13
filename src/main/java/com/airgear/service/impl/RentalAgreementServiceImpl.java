@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.RentalAgreementDto;
+import com.airgear.dto.RentalAgreementRequest;
 import com.airgear.exception.RentalExceptions;
 import com.airgear.service.GoodsService;
 import com.airgear.service.RentalAgreementService;
@@ -24,7 +24,7 @@ public class RentalAgreementServiceImpl implements RentalAgreementService {
     private final GoodsService goodsService;
 
     @Override
-    public ResponseEntity<FileSystemResource> generateRentalAgreementResponse(RentalAgreementDto rental, Long goodsId){
+    public ResponseEntity<FileSystemResource> generateRentalAgreementResponse(RentalAgreementRequest rental, Long goodsId){
         rental.setGoods(goodsService.getGoodsById(goodsId));
         try {
             File pdfFile = generateRentalAgreementPdf(rental);
@@ -39,7 +39,7 @@ public class RentalAgreementServiceImpl implements RentalAgreementService {
 
     }
 
-    private File generateRentalAgreementPdf(RentalAgreementDto rental) throws IOException {
+    private File generateRentalAgreementPdf(RentalAgreementRequest rental) throws IOException {
         File fileTemplate = Utils.getAgreement(rental);
         File pdfDest = new File("output.pdf");
 
