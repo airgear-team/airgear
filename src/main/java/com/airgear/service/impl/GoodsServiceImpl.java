@@ -200,24 +200,31 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsDto createGoods(String email, GoodsDto goodsDto) {
         User user = getUser(email);
+
+        if (goodsDto.getPhoneNumber() == null || goodsDto.getPhoneNumber().isEmpty()) {
+            goodsDto.setPhoneNumber(user.getPhone());
+        }
+
         Goods goods = goodsMapper.toModel(goodsDto);
         goods.setUser(user);
         goods.setStatus(GoodsStatus.ACTIVE);
         goods.setCreatedAt(OffsetDateTime.now());
 
         LocationDto locationDto = goodsDto.getLocation();
-        Location existingLocation = locationRepository.findBySettlementAndRegionId(locationDto.getSettlement(), locationDto.getRegionId());
+        Location existingLocation = locationRepository.findBySettlementAndRegionId(
+                locationDto.getSettlement(), locationDto.getRegionId());
 
         if (existingLocation != null) {
             goods.setLocation(existingLocation);
         } else {
             Location newLocation = Location.builder()
                     .settlement(locationDto.getSettlement())
-                    .region(regionsRepository.findById(locationDto.getRegionId()).orElseThrow(() -> RegionExceptions.regionNotFound(locationDto.getRegionId())))
+                    .region(regionsRepository.findById(locationDto.getRegionId()).orElseThrow(
+                            () -> new RuntimeException("Region not found for ID: " + locationDto.getRegionId())))
                     .build();
-
             goods.setLocation(locationRepository.save(newLocation));
         }
+
         return goodsMapper.toDto(goodsRepository.save(goods));
     }
 

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,8 @@ public class GoodsController {
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
     @PostMapping
     public ResponseEntity<GoodsDto> createGoods(Authentication auth, @Valid @RequestBody GoodsDto goods) {
-        return ResponseEntity.ok(goodsService.createGoods(auth.getName(), goods));
+        GoodsDto createdGoods = goodsService.createGoods(auth.getName(), goods);
+        return new ResponseEntity<>(createdGoods, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'USER')")
