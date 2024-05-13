@@ -5,7 +5,9 @@ import com.airgear.model.GoodsStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -42,6 +44,8 @@ public class GoodsCreateRequest {
     private CategoryRequest category;
 
     @Pattern(regexp = "^\\+\\d{1,3}\\s?\\(?\\d{1,4}\\)?[\\s.-]?\\d{1,4}[\\s.-]?\\d{1,4}$", message = "The phone number must be in the format +380XXXXXXXXX")
+    @Getter
+    @Setter
     private String phoneNumber;
 
     private UserGetRequest user;
