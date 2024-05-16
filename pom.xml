@@ -185,9 +185,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.bithub7</groupId>
+            <groupId>com.github.airgear-team</groupId>
             <artifactId>airgear.model</artifactId>
-            <version>v1.1.14</version>
+            <version>price-951b90d69e-1</version>
         </dependency>
 
     </dependencies>

@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.UserSaveRequest;
+import com.airgear.dto.UserCreateRequest;
 import com.airgear.dto.TokenResponse;
 import com.airgear.service.GoogleTokenHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,12 +31,12 @@ public class GoogleTokenHandlerImpl implements GoogleTokenHandler {
     private final ObjectMapper objectMapper;
 
     @Override
-    public UserSaveRequest execute(String token) {
+    public UserCreateRequest execute(String token) {
         String tokenUrl = thirdPartyUrl + token;
 
         TokenResponse tokenResponse = getTokenResponse(tokenUrl);
 
-        return new UserSaveRequest(
+        return new UserCreateRequest(
                 tokenResponse.getSub(),
                 defaultPassword,
                 null,

@@ -982,4 +982,14 @@
                                  constraintName="fk_goods_images_goods_id"
                                  referencedTableName="goods" referencedColumnNames="id"/>
     </changeSet>
+    <!--
+    <changeSet id="price_to_string" author="Olena.Sinkevych">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="goods" columnName="price_currency"/>
+            <columnExists tableName="goods" columnName="weekends_price_currency"/>
+        </preConditions>
+        <dropColumn tableName="goods" columnName="price_currency"/>
+        <dropColumn tableName="goods" columnName="weekends_price_currency"/>
+    </changeSet>
+    -->
 </databaseChangeLog>

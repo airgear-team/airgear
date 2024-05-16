@@ -3,7 +3,7 @@ package com.airgear.mapper;
 
 import com.airgear.dto.DepositRequest;
 import com.airgear.dto.DepositResponse;
-import com.airgear.entity.Deposit;
+import com.airgear.model.Deposit;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
