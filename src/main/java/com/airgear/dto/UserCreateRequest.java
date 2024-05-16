@@ -11,7 +11,7 @@ import javax.validation.constraints.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSaveRequest {
+public class UserCreateRequest {
 
     @Email(message = "email must be a valid email string")
     @NotNull(message = "email must not be null")
@@ -23,11 +23,11 @@ public class UserSaveRequest {
     @Size(max = 50, message = "Password is too long, it must be no more than 50 characters long.")
     private String password;
 
-    @Pattern(regexp = "^\\+\\d{9,11}$", message = "phones must be in the format +XXXXXXXXXXX")
+    @Pattern(regexp = "^\\+\\d{10,12}$", message = "phones must be in the format +XXXXXXXXXXXX")
     private String phone;
 
     @NotBlank(message = "name must not be blank")
-    @Pattern(regexp = "^(?=.{2,50}$)[a-zA-Zа-яА-Я]+(?:\\s[a-zA-Zа-яА-Я]+)*$", message = "The name should contain between 2 and 50 characters, only Latin and Cyrillic characters, and should not contain special characters.")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+(?:\\s[a-zA-Zа-яА-Я]+){0,49}$", message = "The name should contain between 2 and 50 characters, only Latin and Cyrillic characters, and should not contain special characters.")
     private String name;
 
 }

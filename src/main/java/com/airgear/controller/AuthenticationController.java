@@ -1,7 +1,7 @@
 package com.airgear.controller;
 
 import com.airgear.dto.SignInRequest;
-import com.airgear.dto.UserSaveRequest;
+import com.airgear.dto.UserCreateRequest;
 import com.airgear.entity.AuthToken;
 import com.airgear.model.CustomUserDetails;
 import com.airgear.security.TokenProvider;
@@ -33,7 +33,7 @@ public class AuthenticationController {
 
     @PostMapping(value = "/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthToken register(@RequestBody @Valid UserSaveRequest request) {
+    public AuthToken register(@RequestBody @Valid UserCreateRequest request) {
         return jwtTokenUtil.generateToken(tokenHandler.execute(request));
     }
 

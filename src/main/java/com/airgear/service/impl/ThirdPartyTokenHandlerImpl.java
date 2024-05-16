@@ -1,6 +1,6 @@
 package com.airgear.service.impl;
 
-import com.airgear.dto.UserSaveRequest;
+import com.airgear.dto.UserCreateRequest;
 import com.airgear.model.CustomUserDetails;
 import com.airgear.service.ThirdPartyDataHandler;
 import com.airgear.service.ThirdPartyTokenHandler;
@@ -23,18 +23,18 @@ public class ThirdPartyTokenHandlerImpl implements ThirdPartyTokenHandler {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public CustomUserDetails execute(UserSaveRequest request) {
+    public CustomUserDetails execute(UserCreateRequest request) {
         userService.create(request);
         return getCustomUserDetails(request);
     }
 
     @Override
     public CustomUserDetails execute(HttpServletRequest request) {
-        UserSaveRequest userRequest = thirdPartyDataHandler.execute(request);
+        UserCreateRequest userRequest = thirdPartyDataHandler.execute(request);
         return getCustomUserDetails(userRequest);
     }
 
-    private CustomUserDetails getCustomUserDetails(UserSaveRequest request) {
+    private CustomUserDetails getCustomUserDetails(UserCreateRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

@@ -2,7 +2,7 @@ package com.airgear.service.impl;
 
 import com.airgear.dto.GoodsSearchResponse;
 import com.airgear.dto.UserGetResponse;
-import com.airgear.dto.UserSaveRequest;
+import com.airgear.dto.UserCreateRequest;
 import com.airgear.exception.UserExceptions;
 import com.airgear.mapper.GoodsMapper;
 import com.airgear.mapper.UserMapper;
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public UserGetResponse create(UserSaveRequest request) {
+    public UserGetResponse create(UserCreateRequest request) {
         validateUniqueFields(request);
         User user = save(request);
         return userMapper.toDto(user);
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return goodsMapper.toSearchResponse(userRepository.getFavoriteGoodsByUser(user.getId()));
     }
 
-    private void validateUniqueFields(UserSaveRequest request) {
+    private void validateUniqueFields(UserCreateRequest request) {
         String email = request.getEmail();
         if (userRepository.existsByEmail(email)) {
             throw UserExceptions.duplicateEmail(email);
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
     }
 
-    private User save(UserSaveRequest request) {
+    private User save(UserCreateRequest request) {
         var user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
