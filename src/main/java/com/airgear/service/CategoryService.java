@@ -1,7 +1,8 @@
 package com.airgear.service;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CategoryService {
-    List<String> getAllCategoryImageUrls();
+    Map<String, String> getAllCategoryImageUrls();
 }
