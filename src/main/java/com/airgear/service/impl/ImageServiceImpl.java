@@ -16,7 +16,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.webjars.NotFoundException;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +45,7 @@ public class ImageServiceImpl implements ImageService {
     public ImagesSaveResponse uploadImages(String email, MultipartFile[] images, Long goodsId) {
         UserGetResponse user = getUser(email);
         List<GoodsImages> imagesList = new ArrayList<>();
-        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new NotFoundException("Goods not found"));
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> GoodsExceptions.goodsNotFound(goodsId));
         for (MultipartFile image : images) {
             try {
                 log.info("Uploading: Name: {}, Type: {}, Size: {}", image.getOriginalFilename(), image.getContentType(), image.getSize());
