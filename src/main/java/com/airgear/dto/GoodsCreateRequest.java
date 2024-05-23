@@ -29,10 +29,13 @@ public class GoodsCreateRequest {
     @Size(min = 10, max = 1000, message = "Description length must be between 10 and 1000 characters")
     private String description;
 
+    @Valid
     private PriceRequest price;
 
+    @Valid
     private WeekendsPriceRequest weekendsPrice;
 
+    @Valid
     private DepositRequest deposit;
 
     private Long locationId;
@@ -46,7 +49,6 @@ public class GoodsCreateRequest {
 
     private UserGetRequest user;
 
-    @NotNull(message = "Goods condition is required")
     private GoodsCondition goodsCondition;
 
     private GoodsStatus status;

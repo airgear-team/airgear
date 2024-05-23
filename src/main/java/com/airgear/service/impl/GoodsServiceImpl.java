@@ -36,7 +36,6 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
-    private final RegionsRepository regionsRepository;
     private final GoodsMapper goodsMapper;
     private final TopGoodsPlacementRepository topGoodsPlacementRepository;
     private final TopGoodsPlacementMapper topGoodsPlacementMapper;
@@ -178,7 +177,9 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setUser(user);
         goods.setStatus(GoodsStatus.ACTIVE);
         goods.setCreatedAt(OffsetDateTime.now());
-
+        if (goods.getGoodsCondition()==null){
+            goods.setGoodsCondition(GoodsCondition.USED);
+        }
         Location existingLocation = locationRepository.findByUniqueSettlementID(Math.toIntExact(request.getLocationId()));
 
         if (existingLocation != null) {
