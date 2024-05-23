@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Data
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class WeekendsPriceRequest {
     private BigDecimal weekendsPriceAmount;
+    @NotNull(message = "Weekends currency cannot be null!")
     private Currency weekendsPriceCurrency;
     private PriceType weekendsPriceType;
 }
