@@ -1,6 +1,7 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.*;
+import com.airgear.exception.CategoryExceptions;
 import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.LocationException;
 import com.airgear.exception.UserExceptions;
@@ -179,6 +180,10 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setCreatedAt(OffsetDateTime.now());
         if (goods.getGoodsCondition()==null){
             goods.setGoodsCondition(GoodsCondition.USED);
+        }
+        Integer categoryId = request.getCategory().getId();
+        if (!categoryRepository.existsById(categoryId)) {
+            throw CategoryExceptions.categoryNotFound(categoryId);
         }
         Location existingLocation = locationRepository.findByUniqueSettlementID(Math.toIntExact(request.getLocationId()));
 
