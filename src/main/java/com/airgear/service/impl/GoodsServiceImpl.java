@@ -181,6 +181,10 @@ public class GoodsServiceImpl implements GoodsService {
         if (goods.getGoodsCondition()==null){
             goods.setGoodsCondition(GoodsCondition.USED);
         }
+        checkPrice(goods.getPrice());
+        checkDeposit(goods.getDeposit());
+        checkWeekendsPrice(goods.getWeekendsPrice());
+
         Integer categoryId = request.getCategory().getId();
         if (!categoryRepository.existsById(categoryId)) {
             throw CategoryExceptions.categoryNotFound(categoryId);
@@ -193,6 +197,29 @@ public class GoodsServiceImpl implements GoodsService {
             LocationException.locationNotFound(Math.toIntExact(request.getLocationId()));
         }
         return goodsMapper.toCreateResponse(goodsRepository.save(goods));
+    }
+
+    private void checkPrice(Price price) {
+        if(price.getPriceType()==null){
+            price.setPriceType(price.getPriceAmount() ==null?PriceType.NEGOTIATED_PRICE:PriceType.NON_NEGOTIATED_PRICE);
+        }
+        if(price.getPriceAmount()!=null&&price.getPriceCurrency()==null){
+            throw GoodsExceptions.currencyIsNull(price.getClass().getSimpleName());
+        }
+    }
+    private void checkDeposit(Deposit deposit) {
+        if(deposit.getDepositAmount()!=null&&deposit.getDepositCurrency()==null){
+            throw GoodsExceptions.currencyIsNull(deposit.getClass().getSimpleName());
+        }
+    }
+    private void checkWeekendsPrice(WeekendsPrice weekendsPrice) {
+        if(weekendsPrice.getWeekendsPriceType()==null){
+            weekendsPrice.setWeekendsPriceType(weekendsPrice.getWeekendsPriceAmount()==null
+                    ?PriceType.NEGOTIATED_PRICE:PriceType.NON_NEGOTIATED_PRICE);
+        }
+        if(weekendsPrice.getWeekendsPriceAmount() !=null&&weekendsPrice.getWeekendsPriceCurrency()==null){
+            throw GoodsExceptions.currencyIsNull(weekendsPrice.getClass().getSimpleName());
+        }
     }
 
     @Override
