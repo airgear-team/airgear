@@ -20,5 +20,7 @@ public class ImageExceptions {
     public static ResponseStatusException imageNotFound(Long userId, Long goodsId, String imageName) {
         throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Image not found. "+"UserId : "+ userId +" GoodsId : " +goodsId + " File name : " + imageName);
     }
-
+    public static ResponseStatusException tooManyImages(int maxImages) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many images. The maximum allowed is " + maxImages);
+    }
 }
