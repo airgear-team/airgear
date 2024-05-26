@@ -30,6 +30,7 @@ public class GoodsCreateRequest {
     private String description;
 
     @Valid
+    @NotNull(message = "Price cannot be null!")
     private PriceRequest price;
 
     @Valid
