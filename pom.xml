@@ -186,7 +186,7 @@
         <dependency>
             <groupId>com.github.airgear-team</groupId>
             <artifactId>airgear.model</artifactId>
-            <version>v1.1.16</version>
+            <version>v1.1.17</version>
         </dependency>
     </dependencies>
 

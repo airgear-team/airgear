@@ -1011,4 +1011,8 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="dropSendAtInMessages" author="Oleksandr Tuleninov">
+        <sql>ALTER TABLE messages DROP column send_at</sql>
+    </changeSet>
 </databaseChangeLog>
