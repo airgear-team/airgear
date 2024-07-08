@@ -1012,6 +1012,27 @@
         </addColumn>
     </changeSet>
 
+    <!-- Create Custom Email Message Table -->
+    <changeSet id="createCustomEmailMessageTable" author="vitalii.shkaraputa">
+        <createTable tableName="custom_email_message">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="recipient" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="text" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="attachment" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet id="dropSendAtInMessages" author="Oleksandr Tuleninov">
         <sql>ALTER TABLE messages DROP column send_at</sql>
     </changeSet>
