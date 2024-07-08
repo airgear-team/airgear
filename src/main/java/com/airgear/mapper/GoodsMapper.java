@@ -3,6 +3,7 @@ package com.airgear.mapper;
 import com.airgear.dto.*;
 import com.airgear.model.Goods;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 import java.util.Set;
@@ -12,7 +13,7 @@ import java.util.Set;
 public interface GoodsMapper {
 
     Goods toModel(GoodsCreateRequest dto);
-
+    @Mapping(target = "userId", source = "user.id")
     GoodsGetResponse toGetResponse(Goods goods);
     GoodsUpdateResponse toUpdateResponse(Goods goods);
     GoodsCreateResponse toCreateResponse(Goods goods);

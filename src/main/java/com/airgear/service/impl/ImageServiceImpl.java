@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,8 +35,6 @@ public class ImageServiceImpl implements ImageService {
     private static final long MAX_FILE_SIZE_IN_BYTES = 10485760;
     private static final String IMAGE_EXTENSIONS_PNG = "image/png";
     private static final String IMAGE_EXTENSIONS_JPEG = "image/jpeg";
-    private static final String USER_DIR_NAME = "users";
-    private static final String GOODS_DIR_NAME = "goods";
     private static final int MAX_IMAGES_COUNT = 30;
 
     private static final Path BASE_DIR = DirectoryPathUtil.getBasePath();
@@ -75,9 +74,10 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public FileSystemResource downloadImage(Long userId, Long goodsId, String imageId) {
-        String imagePath = DirectoryPathUtil.getBasePath() + "\\" + USER_DIR_NAME + "\\" + userId + "\\" + GOODS_DIR_NAME + "\\" + goodsId + "\\" + imageId;
+        Path imagePath = Paths.get(DirectoryPathUtil.getBasePath().toString(), imageId);
         log.info("image path : {}", imagePath);
-        File file = new File(imagePath);
+
+        File file = imagePath.toFile();
         if (file.exists()) {
             return new FileSystemResource(file);
         } else {
