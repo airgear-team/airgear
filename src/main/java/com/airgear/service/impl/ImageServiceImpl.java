@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.ImageDownloadRequest;
 import com.airgear.dto.ImagesSaveResponse;
 import com.airgear.dto.UserGetResponse;
 import com.airgear.exception.GoodsExceptions;
@@ -73,15 +74,15 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public FileSystemResource downloadImage(Long userId, Long goodsId, String imageId) {
-        Path imagePath = Paths.get(DirectoryPathUtil.getBasePath().toString(), imageId);
+    public FileSystemResource downloadImage(ImageDownloadRequest request) {
+        Path imagePath = Paths.get(DirectoryPathUtil.getBasePath().toString(), request.getImageId());
         log.info("image path : {}", imagePath);
 
         File file = imagePath.toFile();
         if (file.exists()) {
             return new FileSystemResource(file);
         } else {
-            ImageExceptions.imageNotFound(userId, goodsId, imageId);
+            ImageExceptions.imageNotFound(request.getUserId(), request.getGoodsId(), request.getImageId());
             return new FileSystemResource("");
         }
     }
