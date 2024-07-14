@@ -12,9 +12,15 @@ import java.util.List;
 public interface ImageService {
 
     ImagesSaveResponse uploadImages(String email, MultipartFile[] images, Long goodsId);
+
     FileSystemResource downloadImage(Long userId, Long goodsId, String imageId);
+
     String uploadImage(MultipartFile image, Long userId, Long goodsId) throws IOException;
+
     byte[] getImageBytesById(String imageId) throws IOException;
+
     List<GoodsImages> getImagesByGoodsId(Long goodsId);
+
     MediaType getImageMediaType(String fileName);
+
 }
