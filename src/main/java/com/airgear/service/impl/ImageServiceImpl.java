@@ -1,5 +1,6 @@
 package com.airgear.service.impl;
 
+import com.airgear.dto.ImageDownloadRequest;
 import com.airgear.dto.ImagesSaveResponse;
 import com.airgear.dto.UserGetResponse;
 import com.airgear.exception.GoodsExceptions;
@@ -16,7 +17,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.webjars.NotFoundException;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +36,8 @@ public class ImageServiceImpl implements ImageService {
     private static final long MAX_FILE_SIZE_IN_BYTES = 10485760;
     private static final String IMAGE_EXTENSIONS_PNG = "image/png";
     private static final String IMAGE_EXTENSIONS_JPEG = "image/jpeg";
-    private static final String USER_DIR_NAME = "users";
-    private static final String GOODS_DIR_NAME = "goods";
+    private static final int MAX_IMAGES_COUNT = 30;
+
     private static final Path BASE_DIR = DirectoryPathUtil.getBasePath();
     private final UserService userService;
     private final GoodsRepository goodsRepository;
@@ -46,7 +46,13 @@ public class ImageServiceImpl implements ImageService {
     public ImagesSaveResponse uploadImages(String email, MultipartFile[] images, Long goodsId) {
         UserGetResponse user = getUser(email);
         List<GoodsImages> imagesList = new ArrayList<>();
-        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new NotFoundException("Goods not found"));
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> GoodsExceptions.goodsNotFound(goodsId));
+
+        List<GoodsImages> currentImages = goods.getImages();
+        int totalImages = currentImages.size() + images.length;
+        if (totalImages > MAX_IMAGES_COUNT) {
+            throw ImageExceptions.tooManyImages(MAX_IMAGES_COUNT);
+        }
         for (MultipartFile image : images) {
             try {
                 log.info("Uploading: Name: {}, Type: {}, Size: {}", image.getOriginalFilename(), image.getContentType(), image.getSize());
@@ -60,25 +66,23 @@ public class ImageServiceImpl implements ImageService {
 
             }
         }
-
-        List<GoodsImages> currentImages = goods.getImages();
         currentImages.addAll(imagesList);
         goods.setImages(currentImages);
         goodsRepository.save(goods);
-
         List<String> imageUrls = imagesList.stream().map(GoodsImages::getImageUrl).collect(Collectors.toList());
         return new ImagesSaveResponse(imageUrls);
     }
 
     @Override
-    public FileSystemResource downloadImage(Long userId, Long goodsId, String imageId) {
-        String imagePath = DirectoryPathUtil.getBasePath() + "\\" + USER_DIR_NAME + "\\" + userId + "\\" + GOODS_DIR_NAME + "\\" + goodsId + "\\" + imageId;
+    public FileSystemResource downloadImage(ImageDownloadRequest request) {
+        Path imagePath = Paths.get(DirectoryPathUtil.getBasePath().toString(), request.getImageId());
         log.info("image path : {}", imagePath);
-        File file = new File(imagePath);
+
+        File file = imagePath.toFile();
         if (file.exists()) {
             return new FileSystemResource(file);
         } else {
-            ImageExceptions.imageNotFound(userId, goodsId, imageId);
+            ImageExceptions.imageNotFound(request.getUserId(), request.getGoodsId(), request.getImageId());
             return new FileSystemResource("");
         }
     }

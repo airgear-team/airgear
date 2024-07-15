@@ -59,6 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .antMatchers(getPermitAllUrls()).permitAll()
                 .antMatchers(HttpMethod.GET, "/goods").permitAll()
+                .antMatchers(HttpMethod.GET, "/images/{id:\\d+}/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/reviews").hasAnyRole(Role.USER.getValue())
                 .anyRequest().authenticated()
                 .and()
@@ -83,7 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         permitAllUrls.add("/goods/random");
         permitAllUrls.add("/goods/similar");
         permitAllUrls.add("/goods/filter");
-        permitAllUrls.add("/users/{userId}/goods/{goodsId}/images/{imageId}");
+        permitAllUrls.add("/category/image/**");
         return permitAllUrls.toArray(new String[0]);
     }
 

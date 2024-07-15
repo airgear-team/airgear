@@ -1,6 +1,7 @@
 package com.airgear.service.impl;
 
 import com.airgear.dto.*;
+import com.airgear.exception.CategoryExceptions;
 import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.LocationException;
 import com.airgear.exception.UserExceptions;
@@ -36,7 +37,6 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
-    private final RegionsRepository regionsRepository;
     private final GoodsMapper goodsMapper;
     private final TopGoodsPlacementRepository topGoodsPlacementRepository;
     private final TopGoodsPlacementMapper topGoodsPlacementMapper;
@@ -178,7 +178,17 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setUser(user);
         goods.setStatus(GoodsStatus.ACTIVE);
         goods.setCreatedAt(OffsetDateTime.now());
+        if (goods.getGoodsCondition()==null){
+            goods.setGoodsCondition(GoodsCondition.USED);
+        }
+        checkPrice(goods.getPrice());
+        checkDeposit(goods.getDeposit());
+        checkWeekendsPrice(goods.getWeekendsPrice());
 
+        Integer categoryId = request.getCategory().getId();
+        if (!categoryRepository.existsById(categoryId)) {
+            throw CategoryExceptions.categoryNotFound(categoryId);
+        }
         Location existingLocation = locationRepository.findByUniqueSettlementID(Math.toIntExact(request.getLocationId()));
 
         if (existingLocation != null) {
@@ -187,6 +197,29 @@ public class GoodsServiceImpl implements GoodsService {
             LocationException.locationNotFound(Math.toIntExact(request.getLocationId()));
         }
         return goodsMapper.toCreateResponse(goodsRepository.save(goods));
+    }
+
+    private void checkPrice(Price price) {
+        if(price.getPriceType()==null){
+            price.setPriceType(price.getPriceAmount() ==null?PriceType.NEGOTIATED_PRICE:PriceType.NON_NEGOTIATED_PRICE);
+        }
+        if(price.getPriceAmount()!=null&&price.getPriceCurrency()==null){
+            throw GoodsExceptions.currencyIsNull(price.getClass().getSimpleName());
+        }
+    }
+    private void checkDeposit(Deposit deposit) {
+        if(deposit.getDepositAmount()!=null&&deposit.getDepositCurrency()==null){
+            throw GoodsExceptions.currencyIsNull(deposit.getClass().getSimpleName());
+        }
+    }
+    private void checkWeekendsPrice(WeekendsPrice weekendsPrice) {
+        if(weekendsPrice.getWeekendsPriceType()==null){
+            weekendsPrice.setWeekendsPriceType(weekendsPrice.getWeekendsPriceAmount()==null
+                    ?PriceType.NEGOTIATED_PRICE:PriceType.NON_NEGOTIATED_PRICE);
+        }
+        if(weekendsPrice.getWeekendsPriceAmount() !=null&&weekendsPrice.getWeekendsPriceCurrency()==null){
+            throw GoodsExceptions.currencyIsNull(weekendsPrice.getClass().getSimpleName());
+        }
     }
 
     @Override

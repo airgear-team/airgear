@@ -982,4 +982,58 @@
                                  constraintName="fk_goods_images_goods_id"
                                  referencedTableName="goods" referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="price_drop_column" author="Olena.Sinkevych">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="goods" columnName="price_currency"/>
+            <columnExists tableName="goods" columnName="weekends_price_currency"/>
+            <columnExists tableName="goods" columnName="price_currency"/>
+            <columnExists tableName="goods" columnName="weekends_price_currency"/>
+            <columnExists tableName="goods" columnName="amount"/>
+            <columnExists tableName="goods" columnName="currency"/>
+        </preConditions>
+        <dropColumn tableName="goods" columnName="price_currency"/>
+        <dropColumn tableName="goods" columnName="weekends_price_currency"/>
+        <dropColumn tableName="goods" columnName="price_type"/>
+        <dropColumn tableName="goods" columnName="weekends_price_type"/>
+        <dropColumn tableName="goods" columnName="amount"/>
+        <dropColumn tableName="goods" columnName="currency"/>
+    </changeSet>
+    <changeSet id="price_add_column" author="Olena.Sinkevych">
+        <addColumn tableName="goods">
+            <column name="price_currency" type="VARCHAR(10)">
+            </column>
+            <column name="weekends_price_currency" type="VARCHAR(10)">
+            </column>
+            <column name="deposit_currency" type="VARCHAR(10)">
+            </column>
+            <column name="deposit_amount" type="DECIMAL(19, 2)">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Create Custom Email Message Table -->
+    <changeSet id="createCustomEmailMessageTable" author="vitalii.shkaraputa">
+        <createTable tableName="custom_email_message">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="recipient" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="text" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="attachment" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dropSendAtInMessages" author="Oleksandr Tuleninov">
+        <sql>ALTER TABLE messages DROP column send_at</sql>
+    </changeSet>
 </databaseChangeLog>

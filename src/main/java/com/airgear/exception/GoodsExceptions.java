@@ -13,4 +13,8 @@ public class GoodsExceptions {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Goods limit exceeded for category with id '" + categoryId + "'");
     }
 
+    public static ResponseStatusException currencyIsNull(String currencyName) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, currencyName + " currency cannot be null!");
+    }
+
 }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -58,5 +60,26 @@ public class CustomExceptionHandler {
                         ex.getMessage(),
                         request.getRequestURI())
         );
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMultipartException(MultipartException ex,
+                                                  HttpServletRequest request) {
+        return new ErrorResponse(
+                new Date(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Request is not a multipart request",
+                request.getRequestURI());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    public ErrorResponse handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex, HttpServletRequest request) {
+        return new ErrorResponse(
+                new Date(),
+                HttpStatus.PAYLOAD_TOO_LARGE.value(),
+                "Maximum upload size exceeded",
+                request.getRequestURI());
     }
 }
