@@ -5,21 +5,17 @@ import com.airgear.model.GoodsStatus;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.OffsetDateTime;
+
 @Data
 @Builder
 public class GoodsGetRandomResponse {
 
     private Long id;
     private String name;
-    private String description;
     private PriceResponse price;
-    private WeekendsPriceResponse weekendsPrice;
-    private DepositResponse deposit;
     private LocationResponse location;
-    private CategoryResponse category;
-    private String phoneNumber;
-    private UserGetResponse user;
+    private OffsetDateTime createdAt;
     private GoodsCondition goodsCondition;
-
     private GoodsStatus status;
 }
