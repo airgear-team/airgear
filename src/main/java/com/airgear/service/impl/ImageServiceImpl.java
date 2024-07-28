@@ -8,8 +8,9 @@ import com.airgear.model.GoodsImages;
 import com.airgear.repository.GoodsRepository;
 import com.airgear.service.ImageService;
 import com.airgear.utils.DirectoryPathUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,18 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
-    private static final long MAX_FILE_SIZE_IN_BYTES = 10485760;
     private static final String IMAGE_EXTENSIONS_PNG = "image/png";
     private static final String IMAGE_EXTENSIONS_JPEG = "image/jpeg";
-    private static final int MAX_NUMBER_IMAGES = 30;
     private static final Path BASE_DIR = DirectoryPathUtil.getBasePath();
+
+    @Value("${images.file.size}")
+    private long maxFileSizeBytes;
+
+    @Value("${images.max.number}")
+    private int maxNumberImages;
 
     private final GoodsRepository goodsRepository;
 
@@ -47,8 +52,8 @@ public class ImageServiceImpl implements ImageService {
         List<GoodsImages> currentImages = goods.getImages();
         List<GoodsImages> imagesList = new ArrayList<>();
 
-        if (currentImages.size() + images.length > MAX_NUMBER_IMAGES)
-            throw ImageExceptions.tooManyImages(MAX_NUMBER_IMAGES);
+        if (currentImages.size() + images.length > maxNumberImages)
+            throw ImageExceptions.tooManyImages(maxNumberImages);
 
         fillImagesList(images, imagesList);
         currentImages.addAll(imagesList);
@@ -128,7 +133,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private void validateFile(MultipartFile image) {
-        if (image.isEmpty() || image.getSize() > MAX_FILE_SIZE_IN_BYTES) {
+        if (image.isEmpty() || image.getSize() > maxFileSizeBytes) {
             throw ImageExceptions.invalidImageSize(image.getOriginalFilename());
         }
 
