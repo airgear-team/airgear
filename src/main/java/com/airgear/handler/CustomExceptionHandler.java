@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
@@ -61,5 +62,16 @@ public class CustomExceptionHandler {
                                 ex.getMessage(),
                                 request.getRequestURI())
                 );
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException ex,
+                                                       HttpServletRequest request) {
+        return new ErrorResponse(
+                new Date(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid location: " + ex.getMessage(),
+                request.getRequestURI());
     }
 }

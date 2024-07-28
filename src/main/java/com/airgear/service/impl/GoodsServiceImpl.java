@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -171,14 +172,13 @@ public class GoodsServiceImpl implements GoodsService {
         return goods.subList(0, Math.min(goods.size(), limit));
     }
 
-    @Override
     public GoodsCreateResponse createGoods(String email, GoodsCreateRequest request) {
         User user = getUser(email);
         Goods goods = goodsMapper.toModel(request);
         goods.setUser(user);
         goods.setStatus(GoodsStatus.ACTIVE);
         goods.setCreatedAt(OffsetDateTime.now());
-        if (goods.getGoodsCondition()==null){
+        if (goods.getGoodsCondition() == null) {
             goods.setGoodsCondition(GoodsCondition.USED);
         }
         checkPrice(goods.getPrice());
@@ -187,14 +187,14 @@ public class GoodsServiceImpl implements GoodsService {
 
         Integer categoryId = request.getCategory().getId();
         if (!categoryRepository.existsById(categoryId)) {
-            throw CategoryExceptions.categoryNotFound(categoryId);
+            throw new EntityNotFoundException("Category with id " + categoryId + " not found");
         }
         Location existingLocation = locationRepository.findByUniqueSettlementID(Math.toIntExact(request.getLocationId()));
 
         if (existingLocation != null) {
             goods.setLocation(existingLocation);
         } else {
-            LocationException.locationNotFound(Math.toIntExact(request.getLocationId()));
+            throw new EntityNotFoundException("Location with id " + request.getLocationId() + " not found");
         }
         return goodsMapper.toCreateResponse(goodsRepository.save(goods));
     }
