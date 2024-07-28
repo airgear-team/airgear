@@ -1,11 +1,15 @@
 package com.airgear.dto;
 
+import com.airgear.deserializer.TrimStringDeserializer;
 import com.airgear.model.GoodsCondition;
 import com.airgear.model.GoodsStatus;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -45,7 +49,10 @@ public class GoodsCreateRequest {
     @Valid
     private CategoryRequest category;
 
-    @Pattern(regexp = "^\\+\\d{1,3}\\s?\\(?\\d{1,4}\\)?[\\s.-]?\\d{1,4}[\\s.-]?\\d{1,4}$", message = "The phone number must be in the format +380XXXXXXXXX")
+    @Pattern(regexp = "(^$|^\\+\\d{1,3}\\s?\\(?\\d{1,4}\\)?[\\s.-]?\\d{1,4}[\\s.-]?\\d{1,4}$)", message = "The phone number must be in the format +380XXXXXXXXX")
+    @JsonDeserialize(using = TrimStringDeserializer.class)
+    @Getter
+    @Setter
     private String phoneNumber;
 
     private UserGetRequest user;

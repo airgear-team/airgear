@@ -174,6 +174,10 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsCreateResponse createGoods(String email, GoodsCreateRequest request) {
         User user = getUser(email);
+        if (request.getPhoneNumber() == null || request.getPhoneNumber().isEmpty()) {
+            request.setPhoneNumber(user.getPhone());
+        }
+
         Goods goods = goodsMapper.toModel(request);
         goods.setUser(user);
         goods.setStatus(GoodsStatus.ACTIVE);
