@@ -3,9 +3,11 @@ package com.airgear.service.impl;
 import com.airgear.dto.ImagesSaveResponse;
 import com.airgear.exception.GoodsExceptions;
 import com.airgear.exception.ImageExceptions;
+import com.airgear.exception.UserExceptions;
 import com.airgear.model.Goods;
 import com.airgear.model.GoodsImages;
 import com.airgear.repository.GoodsRepository;
+import com.airgear.repository.UserRepository;
 import com.airgear.service.ImageService;
 import com.airgear.utils.DirectoryPathUtil;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,7 @@ public class ImageServiceImpl implements ImageService {
     @Value("${images.max.number}")
     private int maxNumberImages;
 
+    private final UserRepository userRepository;
     private final GoodsRepository goodsRepository;
 
     @Override
@@ -68,17 +71,22 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public FileSystemResource downloadImage(Long userId, Long goodsId, String imageId) {
-        Path imagePath = Paths.get(DirectoryPathUtil.getBasePath().toString(), imageId);
-        log.info("image path : {}", imagePath);
+    public FileSystemResource downloadImage(Long userId, Long goodsId, String imageUrl) {
+        if (!userRepository.existsById(userId)) UserExceptions.userNotFound(userId);
+        if (!goodsRepository.existsById(goodsId)) GoodsExceptions.goodsNotFound(goodsId);
 
+        Goods goods = getGoods(goodsId);
+        List<String> urls = goods.getImages().stream()
+                .map(GoodsImages::getImageUrl)
+                .toList();
+        if (!urls.contains(imageUrl)) ImageExceptions.urlNotExistInGoods(goodsId, imageUrl);
+
+        Path imagePath = Paths.get(BASE_DIR.toString(), imageUrl);
+        log.info("image path : {}", imagePath);
         File file = imagePath.toFile();
-        if (file.exists()) {
-            return new FileSystemResource(file);
-        } else {
-            ImageExceptions.imageNotFound(userId, goodsId, imageId);
-            return new FileSystemResource("");
-        }
+        if (!file.exists()) ImageExceptions.imageNotFound(userId, goodsId, imageUrl);
+
+        return new FileSystemResource(file);
     }
 
     @Override
