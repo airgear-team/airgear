@@ -22,4 +22,5 @@ public class GoodsUpdateResponse {
     private GoodsCondition goodsCondition;
 
     private GoodsStatus status;
+    private String sourceUrl;
 }

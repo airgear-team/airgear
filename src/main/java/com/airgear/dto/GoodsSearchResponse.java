@@ -23,5 +23,6 @@ public class GoodsSearchResponse {
     private UserGetResponse user;
     private GoodsCondition goodsCondition;
     private GoodsStatus status;
+    private String sourceUrl;
     private List<GoodsImagesResponse> images;
 }

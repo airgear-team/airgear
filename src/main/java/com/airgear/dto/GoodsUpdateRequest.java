@@ -51,4 +51,6 @@ public class GoodsUpdateRequest {
     private GoodsCondition goodsCondition;
 
     private GoodsStatus status;
+
+    private String sourceUrl;
 }

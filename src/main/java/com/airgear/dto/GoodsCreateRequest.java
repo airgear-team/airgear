@@ -53,4 +53,6 @@ public class GoodsCreateRequest {
     private GoodsCondition goodsCondition;
 
     private GoodsStatus status;
+
+    private String sourceUrl;
 }
