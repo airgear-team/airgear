@@ -1036,4 +1036,12 @@
     <changeSet id="dropSendAtInMessages" author="Oleksandr Tuleninov">
         <sql>ALTER TABLE messages DROP column send_at</sql>
     </changeSet>
+
+    <changeSet id="add_source_url_to_goods" author="Opanasenko-Mykhailo">
+        <addColumn tableName="goods">
+            <column name="source_url" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

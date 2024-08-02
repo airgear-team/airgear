@@ -30,4 +30,5 @@ public class GoodsGetResponse {
     private DepositRequest deposit;
     private PriceResponse price;
     private String phoneNumber;
+    private String sourceUrl;
 }

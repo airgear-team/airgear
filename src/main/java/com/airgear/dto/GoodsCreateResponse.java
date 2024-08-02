@@ -28,5 +28,6 @@ public class GoodsCreateResponse {
     private GoodsCondition goodsCondition;
     private OffsetDateTime createdAt;
     private GoodsStatus status;
+    private String sourceUrl;
     private List<GoodsImagesResponse> images;
 }
