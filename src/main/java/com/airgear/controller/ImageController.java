@@ -1,7 +1,6 @@
 package com.airgear.controller;
 
 import com.airgear.dto.GoodsImagesResponse;
-import com.airgear.dto.ImageDownloadRequest;
 import com.airgear.dto.ImagesSaveResponse;
 import com.airgear.mapper.GoodsImagesMapper;
 import com.airgear.model.GoodsImages;
@@ -17,7 +16,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,28 +29,29 @@ public class ImageController {
     private final GoodsImagesMapper goodsImagesMapper;
 
     @PostMapping("/{goodsId}")
-    public ResponseEntity<ImagesSaveResponse> uploadImages(@AuthenticationPrincipal String email,
-                                                           @RequestParam("images") MultipartFile[] images,
-                                                           @PathVariable("goodsId") Long goodsId) {
-        return ResponseEntity.ok(imageService.uploadImages(email, images, goodsId));
+    @ResponseStatus(HttpStatus.CREATED)
+    public ImagesSaveResponse uploadImages(@AuthenticationPrincipal String email,
+                                           @RequestParam("images") MultipartFile[] images,
+                                           @PathVariable("goodsId") Long goodsId) {
+        return imageService.uploadImages(email, images, goodsId);
     }
 
-    @GetMapping
-    public ResponseEntity<FileSystemResource> downloadImages(@RequestBody @Valid ImageDownloadRequest request) {
-        FileSystemResource resource = imageService.downloadImage(request);
+    @GetMapping("/user/{userId}/goods/{goodsId}/image/{imageId}")
+    public ResponseEntity<FileSystemResource> downloadImages(@PathVariable Long userId,
+                                                             @PathVariable Long goodsId,
+                                                             @PathVariable String imageId) {
+        FileSystemResource resource = imageService.downloadImage(userId, goodsId, imageId);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(resource);
     }
 
-    //todo переробоити бд та логіку отримання фото.
-    // Отримання фото відбувається без авторизації
-    @GetMapping("/{imageId}")
-    public ResponseEntity<byte[]> getImagesByImageId(@PathVariable("imageId") String imageId) {
+    @GetMapping("/{imageUrl}")
+    public ResponseEntity<byte[]> getImageByImageUrl(@PathVariable("imageUrl") String imageUrl) {
         try {
-            byte[] imageBytes = imageService.getImageBytesById(imageId);
-            MediaType mediaType = imageService.getImageMediaType(imageId);
+            byte[] imageBytes = imageService.getImageBytesById(imageUrl);
+            MediaType mediaType = imageService.getImageMediaType(imageUrl);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(mediaType);
             return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
@@ -61,9 +60,9 @@ public class ImageController {
         }
     }
 
-    @GetMapping("/{goodsId}/goods")
-    public ResponseEntity<List<GoodsImagesResponse>> getImagesByGoodsId(@PathVariable Long goodsId) {
+    @GetMapping("/{goodsId}/images")
+    public List<GoodsImagesResponse> getImagesByGoodsId(@PathVariable Long goodsId) {
         List<GoodsImages> imageIds = imageService.getImagesByGoodsId(goodsId);
-        return ResponseEntity.ok().body(goodsImagesMapper.toDtoList(imageIds));
+        return goodsImagesMapper.toDtoList(imageIds);
     }
 }

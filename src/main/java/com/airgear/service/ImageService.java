@@ -1,6 +1,5 @@
 package com.airgear.service;
 
-import com.airgear.dto.ImageDownloadRequest;
 import com.airgear.dto.ImagesSaveResponse;
 import com.airgear.model.GoodsImages;
 import org.springframework.core.io.FileSystemResource;
@@ -14,14 +13,12 @@ public interface ImageService {
 
     ImagesSaveResponse uploadImages(String email, MultipartFile[] images, Long goodsId);
 
-    FileSystemResource downloadImage(ImageDownloadRequest request);
-
-    String uploadImage(MultipartFile image, Long userId, Long goodsId) throws IOException;
+    FileSystemResource downloadImage(Long userId, Long goodsId, String imageId);
 
     byte[] getImageBytesById(String imageId) throws IOException;
 
-    List<GoodsImages> getImagesByGoodsId(Long goodsId);
-
     MediaType getImageMediaType(String fileName);
+
+    List<GoodsImages> getImagesByGoodsId(Long goodsId);
 
 }

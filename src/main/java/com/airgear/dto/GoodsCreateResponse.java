@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.Valid;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Data
@@ -25,7 +26,8 @@ public class GoodsCreateResponse {
     private String phoneNumber;
     private UserGetResponse user;
     private GoodsCondition goodsCondition;
-
+    private OffsetDateTime createdAt;
     private GoodsStatus status;
+    private String sourceUrl;
     private List<GoodsImagesResponse> images;
 }
