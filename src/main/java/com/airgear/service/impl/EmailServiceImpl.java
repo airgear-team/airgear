@@ -37,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Value("${spring.mail.username}")
     private String fromMail;
-    JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
     private final EmailMessageRepository emailMessageRepository;
 
     public EmailServiceImpl(JavaMailSender mailSender, EmailMessageRepository emailMessageRepository) {
@@ -67,7 +67,7 @@ public class EmailServiceImpl implements EmailService {
                         log.info("The email was sent successfully to address: {}", address);
                     } catch (RuntimeException e) {
                         log.error("Unable to send email to address: {}", address, e);
-                        throw  EmailExceptions.unableToSendEmail(address);
+                        throw EmailExceptions.unableToSendEmail(address);
                         //TODO save unsent email
                     }
                 }, counter.getAndIncrement(), TimeUnit.SECONDS);
@@ -76,7 +76,7 @@ public class EmailServiceImpl implements EmailService {
         } catch (RuntimeException e) {
             log.error("Unable to submit emails for sending.", e);
             //TODO save unsent emails
-            throw  EmailExceptions.unableToSendEmail(addresses.toString());
+            throw EmailExceptions.unableToSendEmail(addresses.toString());
         } finally {
             executorService.shutdown();
         }
@@ -98,17 +98,16 @@ public class EmailServiceImpl implements EmailService {
             return "The email was sent successfully.";
         } catch (MailSendException | NullPointerException | MessagingException e) {
             log.error("Unable to submit this email. ", e);
-            throw  EmailExceptions.unableToSendEmail(request.getRecipient());
+            throw EmailExceptions.unableToSendEmail(request.getRecipient());
         }
     }
-
 
     @Override
     public String save(CustomEmailMessageDto message) {
         CustomEmailMessage newMessage = message.toCustomEmailMessage();
         try {
             emailMessageRepository.save(newMessage);
-            return "The email was save successfully.";
+            return "The email was saved successfully.";
         } catch (RuntimeException e) {
             log.error("Unable to save this email. ", e);
             throw EmailExceptions.unableToSaveEmail(message.getRecipient());
@@ -119,7 +118,7 @@ public class EmailServiceImpl implements EmailService {
         String recipientAddress = user.getEmail();
 
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = null;
+        MimeMessageHelper helper;
         try {
             helper = new MimeMessageHelper(message, true);
             helper.setTo(recipientAddress);
@@ -141,10 +140,10 @@ public class EmailServiceImpl implements EmailService {
                     .build();
 
             log.info(this.save(savingMessage));
-            return "The welcome email was send successfully.";
+            return "The welcome email was sent successfully.";
         } catch (MailSendException | NullPointerException | MessagingException e) {
             e.printStackTrace();
-            throw  EmailExceptions.unableToSendEmail(user.getEmail());
+            throw EmailExceptions.unableToSendEmail(user.getEmail());
         }
     }
 
@@ -179,5 +178,4 @@ public class EmailServiceImpl implements EmailService {
     private Pageable createPageRequestUsing(int page, int size) {
         return PageRequest.of(page, size);
     }
-
 }
