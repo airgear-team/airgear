@@ -35,8 +35,7 @@ public class GoodsUpdateRequest {
 
     private DepositRequest deposit;
 
-    @Valid
-    private LocationRequest location;
+    private Long locationId;
 
     @NotNull(message = "Category is required")
     @Valid

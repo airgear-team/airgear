@@ -87,11 +87,17 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsUpdateResponse updateGoods(String email, Long goodsId, GoodsUpdateRequest goodsUpdateRequest) {
         User user = getUser(email);
+
         Goods existingGoods = goodsMapper.toModel(getGoodsById(goodsId));
+        existingGoods.setUser(user);
+
         Goods updatedGoods = goodsMapper.toModel(goodsUpdateRequest);
+        updatedGoods.setLocation(getLocationOrThrow(goodsUpdateRequest.getLocationId()));
+
         if (!user.getId().equals(existingGoods.getUser().getId()) && !user.getRoles().contains(Role.ADMIN)) {
             throw UserExceptions.AccessDenied("It is not your goods");
         }
+
         if (updatedGoods.getName() != null) {
             existingGoods.setName(updatedGoods.getName());
         }
@@ -104,6 +110,7 @@ public class GoodsServiceImpl implements GoodsService {
         if (updatedGoods.getLocation() != null) {
             existingGoods.setLocation(updatedGoods.getLocation());
         }
+
         return goodsMapper.toUpdateResponse(updateGoods(existingGoods));
     }
 
@@ -178,7 +185,7 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setUser(user);
         goods.setStatus(GoodsStatus.ACTIVE);
         goods.setCreatedAt(OffsetDateTime.now());
-        if (goods.getGoodsCondition()==null){
+        if (goods.getGoodsCondition() == null) {
             goods.setGoodsCondition(GoodsCondition.USED);
         }
         checkPrice(goods.getPrice());
@@ -189,35 +196,32 @@ public class GoodsServiceImpl implements GoodsService {
         if (!categoryRepository.existsById(categoryId)) {
             throw CategoryExceptions.categoryNotFound(categoryId);
         }
-        Location existingLocation = locationRepository.findByUniqueSettlementID(Math.toIntExact(request.getLocationId()));
+        goods.setLocation(getLocationOrThrow(request.getLocationId()));
 
-        if (existingLocation != null) {
-            goods.setLocation(existingLocation);
-        } else {
-            LocationException.locationNotFound(Math.toIntExact(request.getLocationId()));
-        }
         return goodsMapper.toCreateResponse(goodsRepository.save(goods));
     }
 
     private void checkPrice(Price price) {
-        if(price.getPriceType()==null){
-            price.setPriceType(price.getPriceAmount() ==null?PriceType.NEGOTIATED_PRICE:PriceType.NON_NEGOTIATED_PRICE);
+        if (price.getPriceType() == null) {
+            price.setPriceType(price.getPriceAmount() == null ? PriceType.NEGOTIATED_PRICE : PriceType.NON_NEGOTIATED_PRICE);
         }
-        if(price.getPriceAmount()!=null&&price.getPriceCurrency()==null){
+        if (price.getPriceAmount() != null && price.getPriceCurrency() == null) {
             throw GoodsExceptions.currencyIsNull(price.getClass().getSimpleName());
         }
     }
+
     private void checkDeposit(Deposit deposit) {
-        if(deposit.getDepositAmount()!=null&&deposit.getDepositCurrency()==null){
+        if (deposit.getDepositAmount() != null && deposit.getDepositCurrency() == null) {
             throw GoodsExceptions.currencyIsNull(deposit.getClass().getSimpleName());
         }
     }
+
     private void checkWeekendsPrice(WeekendsPrice weekendsPrice) {
-        if(weekendsPrice.getWeekendsPriceType()==null){
-            weekendsPrice.setWeekendsPriceType(weekendsPrice.getWeekendsPriceAmount()==null
-                    ?PriceType.NEGOTIATED_PRICE:PriceType.NON_NEGOTIATED_PRICE);
+        if (weekendsPrice.getWeekendsPriceType() == null) {
+            weekendsPrice.setWeekendsPriceType(weekendsPrice.getWeekendsPriceAmount() == null
+                    ? PriceType.NEGOTIATED_PRICE : PriceType.NON_NEGOTIATED_PRICE);
         }
-        if(weekendsPrice.getWeekendsPriceAmount() !=null&&weekendsPrice.getWeekendsPriceCurrency()==null){
+        if (weekendsPrice.getWeekendsPriceAmount() != null && weekendsPrice.getWeekendsPriceCurrency() == null) {
             throw GoodsExceptions.currencyIsNull(weekendsPrice.getClass().getSimpleName());
         }
     }
@@ -270,5 +274,14 @@ public class GoodsServiceImpl implements GoodsService {
     private User getUser(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> UserExceptions.userNotFound(email));
+    }
+
+    private Location getLocationOrThrow(Long locationId) {
+        Integer updatedLocationId = Math.toIntExact(locationId);
+        Location location = locationRepository.findByUniqueSettlementID(updatedLocationId);
+        if (location == null) {
+            throw LocationException.locationNotFound(updatedLocationId);
+        }
+        return location;
     }
 }
