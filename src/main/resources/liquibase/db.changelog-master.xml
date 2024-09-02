@@ -1054,4 +1054,12 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="add_activation_token_to_user" author="Kyrylo Fursov">
+        <addColumn tableName="user">
+            <column name="activation_token" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
