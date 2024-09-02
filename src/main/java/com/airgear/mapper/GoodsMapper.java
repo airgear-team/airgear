@@ -13,8 +13,11 @@ import java.util.Set;
 public interface GoodsMapper {
 
     Goods toModel(GoodsCreateRequest dto);
+
     @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "viewsCount", expression = "java(goods.getGoodsViews().size())")
     GoodsGetResponse toGetResponse(Goods goods);
+
     GoodsUpdateResponse toUpdateResponse(Goods goods);
     GoodsCreateResponse toCreateResponse(Goods goods);
     Goods toModel(GoodsGetResponse dto);

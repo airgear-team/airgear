@@ -31,4 +31,5 @@ public class GoodsGetResponse {
     private PriceResponse price;
     private String phoneNumber;
     private String sourceUrl;
+    private Integer viewsCount;
 }

@@ -1044,6 +1044,16 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="create-telegram-user-sessions-table" author="Opanasenko-Mykhailo">
+        <createTable tableName="telegram_user_sessions">
+            <column name="chat_id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="session_data" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
     <changeSet id="add_activation_token_to_user" author="Kyrylo Fursov">
         <addColumn tableName="user">

@@ -84,6 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         permitAllUrls.add("/goods/random");
         permitAllUrls.add("/goods/similar");
         permitAllUrls.add("/goods/filter");
+        permitAllUrls.add("/goods/{id:\\d+}");
         permitAllUrls.add("/category/image/**");
         permitAllUrls.add("/locations/**");
         permitAllUrls.add("/auth/activate/**");
