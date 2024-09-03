@@ -193,9 +193,10 @@ public class GoodsServiceImpl implements GoodsService {
         checkWeekendsPrice(goods.getWeekendsPrice());
 
         Integer categoryId = request.getCategory().getId();
-        if (!categoryRepository.existsById(categoryId)) {
-            throw CategoryExceptions.categoryNotFound(categoryId);
-        }
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> CategoryExceptions.categoryNotFound(categoryId));
+        goods.setCategory(category);
+
         goods.setLocation(getLocationOrThrow(request.getLocationId()));
 
         return goodsMapper.toCreateResponse(goodsRepository.save(goods));
