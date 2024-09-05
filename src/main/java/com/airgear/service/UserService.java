@@ -14,4 +14,5 @@ public interface UserService {
 
     Set<GoodsSearchResponse> getFavoriteGoods(String email);
 
+    UserGetResponse updateDescription(String email, String description);
 }

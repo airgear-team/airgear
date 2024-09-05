@@ -809,18 +809,18 @@
     </changeSet>
 
     <changeSet id="modifyUserRolesJoinTable" author="Olena.Sinkevych">
-        <dropAllForeignKeyConstraints  baseTableName="user_roles"/>
-        <dropTable  cascadeConstraints="true"
-                    tableName="role"/>
+        <dropAllForeignKeyConstraints baseTableName="user_roles"/>
+        <dropTable cascadeConstraints="true"
+                   tableName="role"/>
         <dropColumn tableName="user_roles" columnName="role_id"/>
-        <addUniqueConstraint  columnNames="user_id, role"
-                              constraintName="user_role"
-                              deferrable="true"
-                              disabled="true"
-                              initiallyDeferred="true"
-                              tableName="user_roles"
-                              tablespace="A String"
-                              validate="true"/>
+        <addUniqueConstraint columnNames="user_id, role"
+                             constraintName="user_role"
+                             deferrable="true"
+                             disabled="true"
+                             initiallyDeferred="true"
+                             tableName="user_roles"
+                             tablespace="A String"
+                             validate="true"/>
         <addForeignKeyConstraint
                 baseTableName="user_roles"
                 baseColumnNames="user_id"
@@ -894,13 +894,14 @@
     <changeSet id="moveGoodsStatusToFieldGoodsStatusInGoods" author="vitalii.kalinchyk">
         <preConditions onFail="MARK_RAN">
             <and>
-                <tableExists tableName="goods_goods_status" />
-                <tableExists tableName="goods_status" />
+                <tableExists tableName="goods_goods_status"/>
+                <tableExists tableName="goods_status"/>
             </and>
         </preConditions>
-        <sql>UPDATE goods g JOIN goods_goods_status ggs ON g.id = ggs.goods_id
-            JOIN goods_status gs ON ggs.goods_status_id = gs.id
-            SET g.status = gs.name</sql>
+        <sql>UPDATE goods g JOIN goods_goods_status ggs
+             ON g.id = ggs.goods_id
+                 JOIN goods_status gs ON ggs.goods_status_id = gs.id
+                 SET g.status = gs.name</sql>
     </changeSet>
 
     <changeSet id="dropGoodsGoodsStatusTable" author="vitalii.kalinchyk">
@@ -1058,6 +1059,13 @@
     <changeSet id="add_activation_token_to_user" author="Kyrylo Fursov">
         <addColumn tableName="user">
             <column name="activation_token" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="add-description-to-user" author="Opanasenko-Mykhailo">
+        <addColumn tableName="user">
+            <column name="description" type="varchar(1000)">
                 <constraints nullable="true"/>
             </column>
         </addColumn>
