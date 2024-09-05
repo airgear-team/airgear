@@ -26,5 +26,5 @@ public class UserGetResponse {
     private OffsetDateTime deleteAt;
     private UserStatus status;
     private Set<UserReviewGetResponse> userReviews;
-
+    private String userDescription;
 }

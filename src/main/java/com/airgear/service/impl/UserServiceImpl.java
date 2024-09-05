@@ -101,4 +101,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> UserExceptions.userNotFound(email));
     }
+    public UserGetResponse updateDescription(String email, String description) {
+        User user = getUser(email);
+        user.setDescription(description);
+        userRepository.save(user);
+        return userMapper.toDto(user);
+    }
 }

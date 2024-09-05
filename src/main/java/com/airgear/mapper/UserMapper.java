@@ -12,6 +12,7 @@ import java.util.List;
 public interface UserMapper {
 
     @Mapping(target = "goods", ignore = true)
+    @Mapping(target = "userDescription", source = "description")
     UserGetResponse toDto(User user);
 
     @Mapping(target = "goods", ignore = true)
