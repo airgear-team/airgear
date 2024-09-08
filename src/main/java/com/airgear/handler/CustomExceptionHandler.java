@@ -3,7 +3,6 @@ package com.airgear.handler;
 import com.airgear.entity.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,8 +21,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodNotAllowedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public ErrorResponse handleMethodNotAllowedExceptionException(MethodNotAllowedException ex,
-                                                                  HttpServletRequest request) {
+    public ErrorResponse handleMethodNotAllowedException(MethodNotAllowedException ex,
+                                                         HttpServletRequest request) {
         return new ErrorResponse(
                 new Date(),
                 HttpStatus.METHOD_NOT_ALLOWED.value(),
@@ -35,8 +34,7 @@ public class CustomExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(MethodArgumentNotValidException ex,
                                                    HttpServletRequest request) {
-        BindingResult result = ex.getBindingResult();
-        List<FieldError> fieldErrors = result.getFieldErrors();
+        List<FieldError> fieldErrors = ex.getFieldErrors();
         List<String> errorMessages = fieldErrors.stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.toList());
